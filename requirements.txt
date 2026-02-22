@@ -5,6 +5,5 @@ SQLAlchemy==2.0.23
 python-dotenv==1.0.0
 requests==2.31.0
 gunicorn==20.1.0
-psycopg2-binary==2.9.9
-python-dateutil==2.8.2
-uuid==1.30
+setuptools==65.5.0
+wheel==0.38.4
