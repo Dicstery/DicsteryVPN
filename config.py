@@ -1,0 +1,36 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+BOT_TOKEN = os.getenv("BOT_TOKEN", "8342577111:AAE-laMYkf0ol0MGnZmdUx2R2tJnio9dQsI")
+PORT = os.getenv("PORT", "8080")
+API_HOST = "0.0.0.0"
+API_PORT = int(PORT)
+API_URL = os.getenv("API_URL", "https://dicstery-vpn.fly.dev")
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://dicstery.github.io/DicsteryVPN/")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///vpn_service.db")
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+SECRET_KEY = os.getenv("SECRET_KEY", "p^7;@dche4]*og5+")
+JWT_SECRET = os.getenv("JWT_SECRET", "+FF[4Fr_WzA8iLUu")
+CRYPTOBOT_API_KEY = os.getenv("CRYPTOBOT_API_KEY", "")
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY", "")
+
+TRIAL_DAYS = 3
+TRIAL_TRAFFIC_LIMIT_GB = 20
+BASIC_DAYS = 30
+BASIC_TRAFFIC_LIMIT_GB = 0
+VIP_DAYS = 30
+VIP_TRAFFIC_LIMIT_GB = 0
+DEFAULT_TRAFFIC_LIMIT_GB = 0
+
+ADMIN_IDS = [7383521067]
+
+REFERRAL_BONUS_DAYS = 1
+REFERRALS_NEEDED_FOR_BONUS = 5
+MAX_REFERRALS_PER_USER = 100
+REFERRAL_COOLDOWN_DAYS = 0
+
+SERVER_CHECK_INTERVAL = 60
+SERVER_TIMEOUT = 5
+MAX_FAILED_CHECKS = 3
