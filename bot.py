@@ -1,12 +1,13 @@
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import requests
 import uuid
 from datetime import datetime, timedelta
 import threading
 import time
+import os
 
-from config import BOT_TOKEN, WEBAPP_URL, ADMIN_IDS
+from config import BOT_TOKEN, API_URL, ADMIN_IDS
 from database import SessionLocal, User, Payment, AdminAction
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -14,7 +15,7 @@ bot = telebot.TeleBot(BOT_TOKEN)
 def main_menu():
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
-        InlineKeyboardButton("🚀 Личный кабинет", web_app={"url": WEBAPP_URL}),
+        InlineKeyboardButton("🚀 Личный кабинет", web_app={"url": f"{API_URL}/webapp"}),
         InlineKeyboardButton("💳 Купить подписку", callback_data="buy_subscription")
     )
     markup.add(
@@ -56,7 +57,7 @@ def start(message):
     first_name = message.from_user.first_name or ""
     last_name = message.from_user.last_name or ""
     
-    response = requests.post(f"http://localhost:5000/api/user/create", json={
+    response = requests.post(f"{API_URL}/api/user/create", json={
         "id": telegram_id,
         "username": username,
         "first_name": first_name,
@@ -66,7 +67,7 @@ def start(message):
     data = response.json()
     
     if referrer_code and data.get("status") == "ok":
-        requests.post(f"http://localhost:5000/api/referral/add", json={
+        requests.post(f"{API_URL}/api/referral/add", json={
             "referrer_code": referrer_code,
             "referred_id": telegram_id
         })
@@ -105,7 +106,7 @@ def callback_handler(call):
         )
     
     elif call.data == "sub_trial":
-        response = requests.post(f"http://localhost:5000/api/user/subscription/activate", json={
+        response = requests.post(f"{API_URL}/api/user/subscription/activate", json={
             "id": call.from_user.id,
             "type": "trial"
         })
@@ -170,7 +171,7 @@ def callback_handler(call):
         amount = 500 if sub_type == "basic" else 1500
         days = 30
         
-        response = requests.post(f"http://localhost:5000/api/payments/create", json={
+        response = requests.post(f"{API_URL}/api/payments/create", json={
             "user_id": call.from_user.id,
             "amount": amount,
             "days": days,
@@ -198,7 +199,7 @@ def callback_handler(call):
     elif call.data.startswith("confirm_"):
         payment_id = call.data.replace("confirm_", "")
         
-        response = requests.post(f"http://localhost:5000/api/payments/confirm", json={
+        response = requests.post(f"{API_URL}/api/payments/confirm", json={
             "payment_id": payment_id
         })
         
@@ -213,7 +214,7 @@ def callback_handler(call):
             bot.answer_callback_query(call.id, "❌ Ошибка подтверждения", show_alert=True)
     
     elif call.data == "referral":
-        response = requests.get(f"http://localhost:5000/api/referral/list", params={"user_id": call.from_user.id})
+        response = requests.get(f"{API_URL}/api/referral/list", params={"user_id": call.from_user.id})
         
         if response.status_code == 200:
             data = response.json()
@@ -232,7 +233,7 @@ def callback_handler(call):
             bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=markup)
     
     elif call.data == "traffic":
-        response = requests.get(f"http://localhost:5000/api/traffic/usage", params={"id": call.from_user.id})
+        response = requests.get(f"{API_URL}/api/traffic/usage", params={"id": call.from_user.id})
         
         if response.status_code == 200:
             data = response.json()
@@ -261,16 +262,15 @@ def callback_handler(call):
             bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=markup)
     
     elif call.data == "servers_list":
-        response = requests.get(f"http://localhost:5000/api/servers", params={"user_id": call.from_user.id})
+        response = requests.get(f"{API_URL}/api/servers", params={"user_id": call.from_user.id})
         
         if response.status_code == 200:
             data = response.json()
             
             text = "🖥 Доступные сервера:\n\n"
             for s in data["servers"]:
-                vip_mark = "👑 " if s["vip_only"] else ""
                 load_emoji = "🟢" if s["load"] < 50 else "🟡" if s["load"] < 80 else "🔴"
-                text += f"{vip_mark}{s['name']} {load_emoji} {s['load']:.0f}%\n"
+                text += f"{s['name']} {load_emoji} {s['load']:.0f}%\n"
             
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("🔙 Назад", callback_data="back_to_main"))
@@ -283,7 +283,7 @@ def callback_handler(call):
             "Dicstery VPN\n"
             "Версия: 3.0.0\n\n"
             "Особенности:\n"
-            "• 10+ серверов по всему миру\n"
+            "• 14+ серверов по всему миру\n"
             "• VIP сервера с приоритетом\n"
             "• Безлимитный трафик\n"
             "• Реферальная система\n"
@@ -298,7 +298,7 @@ def callback_handler(call):
             bot.answer_callback_query(call.id, "❌ Доступ запрещен", show_alert=True)
             return
         
-        response = requests.get(f"http://localhost:5000/api/admin/statistics")
+        response = requests.get(f"{API_URL}/api/admin/statistics", params={"admin_id": call.from_user.id})
         
         if response.status_code == 200:
             data = response.json()
@@ -307,6 +307,7 @@ def callback_handler(call):
                 f"Всего пользователей: {data['total_users']}\n"
                 f"Активных: {data['active']}\n"
                 f"VIP: {data['vip']}\n"
+                f"Админов: {data['admins']}\n"
                 f"С истекшей: {data['expired']}\n"
                 f"Использовали триал: {data['trial_used']}\n\n"
                 f"Платежей сегодня: {data['payments_today']}\n"
@@ -321,7 +322,7 @@ def callback_handler(call):
             bot.answer_callback_query(call.id, "❌ Доступ запрещен", show_alert=True)
             return
         
-        response = requests.get(f"http://localhost:5000/api/admin/users")
+        response = requests.get(f"{API_URL}/api/admin/users", params={"admin_id": call.from_user.id})
         
         if response.status_code == 200:
             data = response.json()
@@ -338,7 +339,7 @@ def callback_handler(call):
             bot.answer_callback_query(call.id, "❌ Доступ запрещен", show_alert=True)
             return
         
-        response = requests.get(f"http://localhost:5000/api/admin/payments")
+        response = requests.get(f"{API_URL}/api/admin/payments")
         
         if response.status_code == 200:
             data = response.json()
@@ -355,14 +356,14 @@ def callback_handler(call):
             bot.answer_callback_query(call.id, "❌ Доступ запрещен", show_alert=True)
             return
         
-        response = requests.get(f"http://localhost:5000/api/admin/servers")
+        response = requests.get(f"{API_URL}/api/admin/servers")
         
         if response.status_code == 200:
             data = response.json()
             text = "🖥 Сервера:\n\n"
             
             for s in data["servers"]:
-                vip_mark = "👑 " if s["vip_only"] else ""
+                vip_mark = "👑 " if s.get("vip_only") else ""
                 text += f"{vip_mark}{s['name']} - нагрузка {s['load']:.0f}%\n"
             
             bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=admin_menu())
@@ -389,7 +390,7 @@ def process_broadcast(message):
     
     text = message.text
     
-    response = requests.post(f"http://localhost:5000/api/admin/broadcast", json={
+    response = requests.post(f"{API_URL}/api/admin/broadcast", json={
         "message": text,
         "admin_id": message.from_user.id
     })

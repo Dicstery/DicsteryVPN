@@ -345,6 +345,53 @@ def activate_subscription():
     
     return jsonify({"status": "ok", "expire": end_date.isoformat()})
 
+@app.route("/api/user/subscription/extend", methods=["POST"])
+def extend_subscription():
+    db = SessionLocal()
+    data = request.json
+    telegram_id = data.get("id")
+    days = data.get("days", 30)
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    if user.subscription_end and user.subscription_end > datetime.utcnow():
+        user.subscription_end += timedelta(days=days)
+    else:
+        user.subscription_end = datetime.utcnow() + timedelta(days=days)
+    
+    if user.subscription_type == "vip":
+        user.status = "VIP"
+    else:
+        user.status = "ACTIVE"
+    
+    db.commit()
+    db.close()
+    
+    return jsonify({"status": "ok", "new_expire": user.subscription_end.isoformat()})
+
+@app.route("/api/user/subscription/expire", methods=["POST"])
+def expire_subscription():
+    db = SessionLocal()
+    data = request.json
+    telegram_id = data.get("id")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    user.status = "EXPIRED"
+    user.subscription_end = datetime.utcnow()
+    user.vip_support_access = False
+    user.priority_server_access = False
+    db.commit()
+    db.close()
+    
+    return jsonify({"status": "ok"})
+
 @app.route("/api/admin/make_admin", methods=["POST"])
 def make_admin():
     db = SessionLocal()
@@ -398,6 +445,7 @@ def list_servers():
                 "country": s.country,
                 "city": s.city,
                 "load": s.current_load,
+                "vip_only": s.vip_only,
                 "is_active": s.is_active
             })
     db.close()
@@ -458,8 +506,306 @@ def list_servers_detailed():
     db.close()
     return jsonify({"servers": result})
 
-@app.route("/api/user/subscription/status")
-def subscription_status():
+@app.route("/api/server/add", methods=["POST"])
+def add_server():
+    db = SessionLocal()
+    data = request.json
+    
+    server = Server(
+        name=data.get("name"),
+        location=data.get("location"),
+        country=data.get("country"),
+        city=data.get("city"),
+        host=data.get("host"),
+        port=data.get("port", 443),
+        protocol=data.get("protocol", "shadowsocks"),
+        method=data.get("method"),
+        password=data.get("password"),
+        uuid=data.get("uuid"),
+        flow=data.get("flow"),
+        security=data.get("security"),
+        network=data.get("network"),
+        tls=data.get("tls"),
+        sni=data.get("sni"),
+        fingerprint=data.get("fingerprint"),
+        alpn=data.get("alpn"),
+        public_key=data.get("public_key"),
+        short_id=data.get("short_id"),
+        grpc_mode=data.get("grpc_mode"),
+        grpc_service_name=data.get("grpc_service_name"),
+        allow_insecure=data.get("allow_insecure", False),
+        vip_only=data.get("vip_only", False)
+    )
+    
+    db.add(server)
+    db.commit()
+    db.refresh(server)
+    db.close()
+    
+    return jsonify({"status": "ok", "server_id": server.id})
+
+@app.route("/api/server/remove", methods=["POST"])
+def remove_server():
+    db = SessionLocal()
+    data = request.json
+    server_id = data.get("id")
+    
+    server = db.query(Server).filter(Server.id == server_id).first()
+    if server:
+        server.is_active = False
+        db.commit()
+    
+    db.close()
+    return jsonify({"status": "ok"})
+
+@app.route("/api/server/update_load", methods=["POST"])
+def update_server_load():
+    db = SessionLocal()
+    data = request.json
+    server_id = data.get("id")
+    load = data.get("load")
+    active_users = data.get("active_users")
+    
+    server = db.query(Server).filter(Server.id == server_id).first()
+    if server:
+        server.current_load = load
+        if active_users is not None:
+            server.active_users = active_users
+        server.last_check = datetime.utcnow()
+        server.failed_checks = 0
+        db.commit()
+    
+    db.close()
+    return jsonify({"status": "ok"})
+
+@app.route("/api/payments/create", methods=["POST"])
+def create_payment():
+    db = SessionLocal()
+    data = request.json
+    telegram_id = data.get("user_id")
+    amount = data.get("amount")
+    days = data.get("days", 30)
+    sub_type = data.get("subscription_type", "basic")
+    provider = data.get("provider", "cryptobot")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    payment_id = f"PAY{uuid.uuid4().hex[:12].upper()}"
+    payment = Payment(
+        user_id=user.id,
+        amount=amount,
+        provider=provider,
+        provider_payment_id=payment_id,
+        subscription_days=days,
+        subscription_type=sub_type,
+        status="PENDING"
+    )
+    
+    db.add(payment)
+    db.commit()
+    db.refresh(payment)
+    db.close()
+    
+    return jsonify({
+        "payment_id": payment_id,
+        "status": "PENDING",
+        "amount": amount,
+        "provider": provider
+    })
+
+@app.route("/api/payments/confirm", methods=["POST"])
+def confirm_payment():
+    db = SessionLocal()
+    data = request.json
+    payment_id = data.get("payment_id")
+    
+    payment = db.query(Payment).filter(Payment.provider_payment_id == payment_id).first()
+    if not payment:
+        db.close()
+        return jsonify({"error": "Payment not found"}), 404
+    
+    payment.status = "CONFIRMED"
+    payment.confirmed_at = datetime.utcnow()
+    
+    user = db.query(User).filter(User.id == payment.user_id).first()
+    if user:
+        if payment.subscription_type == "vip":
+            user.status = "VIP"
+            user.vip_support_access = True
+            user.priority_server_access = True
+        else:
+            user.status = "ACTIVE"
+            user.vip_support_access = False
+            user.priority_server_access = False
+        
+        if user.subscription_end and user.subscription_end > datetime.utcnow():
+            user.subscription_end += timedelta(days=payment.subscription_days)
+        else:
+            user.subscription_end = datetime.utcnow() + timedelta(days=payment.subscription_days)
+        
+        user.subscription_type = payment.subscription_type
+    
+    db.commit()
+    db.close()
+    
+    return jsonify({"status": "ok"})
+
+@app.route("/api/payments/list")
+def list_payments():
+    db = SessionLocal()
+    telegram_id = request.args.get("user_id")
+    
+    if telegram_id:
+        user = db.query(User).filter(User.telegram_id == telegram_id).first()
+        if user:
+            payments = db.query(Payment).filter(Payment.user_id == user.id).all()
+        else:
+            payments = []
+    else:
+        payments = db.query(Payment).all()
+    
+    result = []
+    for p in payments:
+        result.append({
+            "id": p.provider_payment_id,
+            "amount": p.amount,
+            "status": p.status,
+            "subscription_days": p.subscription_days,
+            "subscription_type": p.subscription_type,
+            "created_at": p.created_at.isoformat(),
+            "confirmed_at": p.confirmed_at.isoformat() if p.confirmed_at else None
+        })
+    
+    db.close()
+    return jsonify({"payments": result})
+
+@app.route("/api/referral/add", methods=["POST"])
+def add_referral():
+    db = SessionLocal()
+    data = request.json
+    referrer_code = data.get("referrer_code")
+    referred_id = data.get("referred_id")
+    
+    referrer = db.query(User).filter(User.referral_code == referrer_code).first()
+    referred = db.query(User).filter(User.telegram_id == referred_id).first()
+    
+    if not referrer or not referred:
+        db.close()
+        return jsonify({"error": "Invalid referral"}), 400
+    
+    if referrer.id == referred.id:
+        db.close()
+        return jsonify({"error": "Self-referral not allowed"}), 400
+    
+    if referred.invited_by:
+        db.close()
+        return jsonify({"error": "User already referred"}), 400
+    
+    referred.invited_by = referrer.id
+    referrer.referral_count += 1
+    
+    if referrer.referral_count % REFERRALS_NEEDED_FOR_BONUS == 0:
+        bonus_days = REFERRAL_BONUS_DAYS
+        bonus = ReferralBonus(
+            referrer_id=referrer.id,
+            referred_id=referred.id,
+            bonus_days=bonus_days
+        )
+        db.add(bonus)
+        
+        referrer.bonus_days_earned += bonus_days
+        
+        if referrer.subscription_end and referrer.subscription_end > datetime.utcnow():
+            referrer.subscription_end += timedelta(days=bonus_days)
+    
+    db.commit()
+    db.close()
+    
+    return jsonify({"status": "ok"})
+
+@app.route("/api/referral/list")
+def list_referrals():
+    db = SessionLocal()
+    telegram_id = request.args.get("user_id")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    referrals = db.query(User).filter(User.invited_by == user.id).all()
+    bonuses = db.query(ReferralBonus).filter(ReferralBonus.referrer_id == user.id).all()
+    
+    result = {
+        "total_referrals": len(referrals),
+        "total_bonus_days": user.bonus_days_earned,
+        "referral_code": user.referral_code,
+        "referrals": []
+    }
+    
+    for r in referrals:
+        result["referrals"].append({
+            "username": r.username,
+            "joined": r.created_at.isoformat(),
+            "status": r.status
+        })
+    
+    db.close()
+    return jsonify(result)
+
+@app.route("/api/traffic/report", methods=["POST"])
+def report_traffic():
+    db = SessionLocal()
+    data = request.json
+    telegram_id = data.get("id")
+    used = data.get("used", 0)
+    server_id = data.get("server_id")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if user:
+        user.traffic_used += used
+        user.last_active = datetime.utcnow()
+        
+        log = TrafficLog(
+            user_id=user.id,
+            server_id=server_id,
+            bytes_sent=used / 2,
+            bytes_received=used / 2
+        )
+        db.add(log)
+        
+        if user.traffic_limit > 0 and user.traffic_used > user.traffic_limit:
+            user.status = "EXPIRED"
+            user.vip_support_access = False
+            user.priority_server_access = False
+        
+        db.commit()
+    
+    db.close()
+    return jsonify({"status": "ok"})
+
+@app.route("/api/traffic/usage")
+def traffic_usage():
+    db = SessionLocal()
+    telegram_id = request.args.get("id")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    db.close()
+    return jsonify({
+        "used": user.traffic_used,
+        "limit": user.traffic_limit,
+        "percent": user.traffic_percent()
+    })
+
+@app.route("/api/subscription/json")
+def subscription_json():
     db = SessionLocal()
     telegram_id = request.args.get("id")
     
@@ -469,26 +815,141 @@ def subscription_status():
         return jsonify({"error": "User not found"}), 404
     
     if user.is_admin:
-        db.close()
-        return jsonify({
-            "is_active": True,
-            "days_left": 9999,
-            "traffic_used": user.traffic_used,
-            "traffic_limit": 0,
-            "is_admin": True
-        })
+        servers = db.query(Server).filter(Server.is_active == True).all()
+    elif user.status == "VIP":
+        servers = db.query(Server).filter(Server.is_active == True, Server.vip_only == False).all()
+    else:
+        servers = db.query(Server).filter(Server.is_active == True, Server.vip_only == False).all()
     
-    is_active = user.is_active()
-    days_left = user.days_remaining()
+    server_list = []
+    for s in servers:
+        if check_subscription_access(user, s):
+            server_list.append({
+                "id": s.id,
+                "name": s.name,
+                "location": s.location,
+                "host": s.host,
+                "port": s.port,
+                "protocol": s.protocol,
+                "method": s.method,
+                "password": s.password,
+                "uuid": s.uuid,
+                "flow": s.flow,
+                "security": s.security,
+                "network": s.network,
+                "tls": s.tls,
+                "sni": s.sni,
+                "fingerprint": s.fingerprint,
+                "alpn": s.alpn,
+                "public_key": s.public_key,
+                "short_id": s.short_id,
+                "grpc_service_name": s.grpc_service_name,
+                "vip_only": s.vip_only
+            })
     
-    db.close()
-    return jsonify({
-        "is_active": is_active,
-        "days_left": days_left,
+    result = {
+        "version": 2,
+        "type": "subscription",
+        "user_id": user.telegram_id,
+        "uuid": user.uuid,
+        "expire": user.subscription_end.isoformat() if user.subscription_end else None,
+        "status": user.status,
+        "subscription_type": user.subscription_type,
         "traffic_used": user.traffic_used,
         "traffic_limit": user.traffic_limit,
-        "is_admin": False
-    })
+        "vip_support": user.vip_support_access,
+        "priority_server": user.priority_server_access,
+        "servers": server_list
+    }
+    
+    db.close()
+    return jsonify(result)
+
+@app.route("/api/happ/configs")
+def happ_configs():
+    db = SessionLocal()
+    telegram_id = request.args.get("id")
+    server_id = request.args.get("server_id")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    if not user.is_active() and not user.is_admin:
+        db.close()
+        return jsonify({"error": "Subscription expired"}), 403
+    
+    if server_id:
+        server = db.query(Server).filter(Server.id == server_id, Server.is_active == True).first()
+        if not server:
+            db.close()
+            return jsonify({"error": "Server not found"}), 404
+        
+        if not check_subscription_access(user, server):
+            db.close()
+            return jsonify({"error": "Access denied"}), 403
+        
+        config = {
+            "name": server.name,
+            "server": server.host,
+            "port": server.port,
+            "password": server.password,
+            "method": server.method,
+            "protocol": server.protocol,
+            "uuid": server.uuid,
+            "flow": server.flow,
+            "security": server.security,
+            "network": server.network,
+            "tls": server.tls,
+            "sni": server.sni,
+            "fingerprint": server.fingerprint,
+            "alpn": server.alpn,
+            "public_key": server.public_key,
+            "short_id": server.short_id,
+            "grpc_service_name": server.grpc_service_name,
+            "remark": f"{server.country} - {server.name}"
+        }
+        db.close()
+        return jsonify(config)
+    
+    else:
+        if user.is_admin:
+            servers = db.query(Server).filter(Server.is_active == True).all()
+        elif user.status == "VIP":
+            servers = db.query(Server).filter(Server.is_active == True, Server.vip_only == False).all()
+        else:
+            servers = db.query(Server).filter(Server.is_active == True, Server.vip_only == False).all()
+        
+        configs = []
+        for s in servers:
+            if check_subscription_access(user, s):
+                configs.append({
+                    "id": s.id,
+                    "name": s.name,
+                    "server": s.host,
+                    "port": s.port,
+                    "password": s.password,
+                    "method": s.method,
+                    "protocol": s.protocol,
+                    "uuid": s.uuid,
+                    "flow": s.flow,
+                    "security": s.security,
+                    "network": s.network,
+                    "tls": s.tls,
+                    "sni": s.sni,
+                    "fingerprint": s.fingerprint,
+                    "alpn": s.alpn,
+                    "public_key": s.public_key,
+                    "short_id": s.short_id,
+                    "grpc_service_name": s.grpc_service_name,
+                    "location": s.location,
+                    "country": s.country,
+                    "vip_only": s.vip_only,
+                    "remark": f"{s.country} - {s.name}"
+                })
+        db.close()
+        return jsonify({"configs": configs})
 
 @app.route("/api/happ/sslinks")
 def ss_links():
@@ -531,18 +992,24 @@ def ss_links():
                 f"security={s.tls or 'none'}"
             ]
             if s.tls == "reality":
-                params.append(f"pbk={s.public_key}")
-                params.append(f"sni={s.sni or 'yandex.ru'}")
-                params.append(f"fp={s.fingerprint or 'chrome'}")
+                if s.public_key:
+                    params.append(f"pbk={s.public_key}")
+                if s.sni:
+                    params.append(f"sni={s.sni}")
+                if s.fingerprint:
+                    params.append(f"fp={s.fingerprint}")
                 if s.short_id:
                     params.append(f"sid={s.short_id}")
             if s.flow:
                 params.append(f"flow={s.flow}")
             if s.network == "grpc":
-                params.append(f"serviceName={s.grpc_service_name or 'grpc-vless'}")
-                params.append(f"mode={s.grpc_mode or 'gun'}")
+                if s.grpc_service_name:
+                    params.append(f"serviceName={s.grpc_service_name}")
+                params.append(f"mode=gun")
             if s.alpn:
                 params.append(f"alpn={s.alpn}")
+            if s.allow_insecure:
+                params.append(f"allowInsecure=1")
             
             params_str = "&".join(params)
             vless_link = f"vless://{s.uuid}@{s.host}:{s.port}?{params_str}#{s.name}"
@@ -553,6 +1020,100 @@ def ss_links():
     
     db.close()
     return jsonify({"links": links})
+
+@app.route("/api/vip/support/ticket", methods=["POST"])
+def create_vip_ticket():
+    db = SessionLocal()
+    data = request.json
+    telegram_id = data.get("user_id")
+    subject = data.get("subject")
+    message = data.get("message")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    if not user.vip_support_access:
+        db.close()
+        return jsonify({"error": "VIP only feature"}), 403
+    
+    ticket = VIPSupportTicket(
+        user_id=user.id,
+        subject=subject,
+        message=message,
+        status="OPEN",
+        priority="HIGH"
+    )
+    
+    db.add(ticket)
+    db.commit()
+    db.refresh(ticket)
+    db.close()
+    
+    return jsonify({"status": "ok", "ticket_id": ticket.id})
+
+@app.route("/api/vip/support/tickets")
+def list_vip_tickets():
+    db = SessionLocal()
+    telegram_id = request.args.get("user_id")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    if not user.vip_support_access:
+        db.close()
+        return jsonify({"error": "VIP only feature"}), 403
+    
+    tickets = db.query(VIPSupportTicket).filter(VIPSupportTicket.user_id == user.id).all()
+    
+    result = []
+    for t in tickets:
+        result.append({
+            "id": t.id,
+            "subject": t.subject,
+            "message": t.message,
+            "status": t.status,
+            "created_at": t.created_at.isoformat(),
+            "resolved_at": t.resolved_at.isoformat() if t.resolved_at else None
+        })
+    
+    db.close()
+    return jsonify({"tickets": result})
+
+@app.route("/api/user/subscription/status")
+def subscription_status():
+    db = SessionLocal()
+    telegram_id = request.args.get("id")
+    
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        db.close()
+        return jsonify({"error": "User not found"}), 404
+    
+    if user.is_admin:
+        db.close()
+        return jsonify({
+            "is_active": True,
+            "days_left": 9999,
+            "traffic_used": user.traffic_used,
+            "traffic_limit": 0,
+            "is_admin": True
+        })
+    
+    is_active = user.is_active()
+    days_left = user.days_remaining()
+    
+    db.close()
+    return jsonify({
+        "is_active": is_active,
+        "days_left": days_left,
+        "traffic_used": user.traffic_used,
+        "traffic_limit": user.traffic_limit,
+        "is_admin": False
+    })
 
 @app.route("/api/admin/users")
 def admin_users():
@@ -568,33 +1129,6 @@ def admin_users():
     result = [u.to_dict() for u in users]
     db.close()
     return jsonify({"users": result})
-
-@app.route("/api/admin/grant_admin", methods=["POST"])
-def grant_admin():
-    db = SessionLocal()
-    data = request.json
-    admin_id = data.get("admin_id")
-    target_id = data.get("target_id")
-    
-    admin = db.query(User).filter(User.telegram_id == admin_id).first()
-    if not admin or not admin.is_admin:
-        db.close()
-        return jsonify({"error": "Unauthorized"}), 403
-    
-    user = db.query(User).filter(User.telegram_id == target_id).first()
-    if not user:
-        db.close()
-        return jsonify({"error": "User not found"}), 404
-    
-    user.is_admin = True
-    user.vip_support_access = True
-    user.priority_server_access = True
-    user.status = "VIP"
-    
-    db.commit()
-    db.close()
-    
-    return jsonify({"status": "ok"})
 
 @app.route("/api/admin/statistics")
 def admin_statistics():
@@ -648,6 +1182,59 @@ def admin_statistics():
         "vip_servers": vip_servers
     })
 
+@app.route("/api/admin/payments")
+def admin_payments():
+    db = SessionLocal()
+    payments = db.query(Payment).all()
+    result = []
+    for p in payments:
+        user = db.query(User).filter(User.id == p.user_id).first()
+        result.append({
+            "id": p.provider_payment_id,
+            "user_id": user.telegram_id if user else None,
+            "username": user.username if user else None,
+            "amount": p.amount,
+            "status": p.status,
+            "subscription_days": p.subscription_days,
+            "subscription_type": p.subscription_type,
+            "created_at": p.created_at.isoformat(),
+            "confirmed_at": p.confirmed_at.isoformat() if p.confirmed_at else None
+        })
+    db.close()
+    return jsonify({"payments": result})
+
+@app.route("/api/admin/servers")
+def admin_servers():
+    db = SessionLocal()
+    servers = db.query(Server).all()
+    result = []
+    for s in servers:
+        result.append({
+            "id": s.id,
+            "name": s.name,
+            "location": s.location,
+            "host": s.host,
+            "port": s.port,
+            "protocol": s.protocol,
+            "method": s.method,
+            "vip_only": s.vip_only,
+            "is_active": s.is_active,
+            "load": s.current_load
+        })
+    db.close()
+    return jsonify({"servers": result})
+
+@app.route("/api/admin/broadcast", methods=["POST"])
+def admin_broadcast():
+    data = request.json
+    message = data.get("message")
+    admin_id = data.get("admin_id")
+    
+    if admin_id not in ADMIN_IDS:
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    return jsonify({"status": "ok", "message": "Broadcast queued", "recipients": 100})
+
 @app.route("/webapp")
 @app.route("/webapp/<path:path>")
 def serve_webapp(path="index.html"):
@@ -655,4 +1242,5 @@ def serve_webapp(path="index.html"):
 
 if __name__ == "__main__":
     init_servers()
-    app.run(host=API_HOST, port=API_PORT, debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)

@@ -573,7 +573,7 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000';
+        const API_URL = 'https://dicstery-vpn.fly.dev';
         
         function getTelegramID() {
             if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
@@ -764,6 +764,7 @@
                     params.push(`mode=gun`);
                 }
                 if (server.alpn) params.push(`alpn=${server.alpn}`);
+                if (server.allow_insecure) params.push(`allowInsecure=1`);
                 
                 const paramsStr = params.join('&');
                 return `vless://${server.uuid}@${server.host}:${server.port}?${paramsStr}#${server.name}`;

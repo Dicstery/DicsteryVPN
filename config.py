@@ -4,9 +4,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8342577111:AAE-laMYkf0ol0MGnZmdUx2R2tJnio9dQsI")
-API_HOST = os.getenv("API_HOST", "0.0.0.0")
-API_PORT = int(os.getenv("API_PORT", 5000))
-API_URL = os.getenv("API_URL", "http://localhost:5000")
+PORT = os.getenv("PORT", "8080")
+API_HOST = "0.0.0.0"
+API_PORT = int(PORT)
+API_URL = os.getenv("API_URL", "https://dicstery-vpn.fly.dev")
 WEBAPP_URL = os.getenv("WEBAPP_URL", "https://dicstery.github.io/DicsteryVPN/")
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///vpn_service.db")
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
