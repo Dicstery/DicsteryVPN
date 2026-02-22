@@ -93,7 +93,7 @@ def init_servers():
                 "vip_only": False
             },
             {
-                "name": "🇫🇷 France #1",
+                "name": "🇫🇷 France",
                 "location": "FR",
                 "country": "Франция",
                 "city": "Париж",
@@ -105,7 +105,7 @@ def init_servers():
                 "vip_only": False
             },
             {
-                "name": "🇺🇸 USA #1",
+                "name": "🇺🇸 USA",
                 "location": "US",
                 "country": "США",
                 "city": "Нью-Йорк",
@@ -117,7 +117,7 @@ def init_servers():
                 "vip_only": False
             },
             {
-                "name": "🇳🇱 Netherlands #1",
+                "name": "🇳🇱 Netherlands",
                 "location": "NL",
                 "country": "Нидерланды",
                 "city": "Амстердам",
@@ -129,7 +129,7 @@ def init_servers():
                 "vip_only": False
             },
             {
-                "name": "🇸🇪 Sweden #1",
+                "name": "🇸🇪 Sweden",
                 "location": "SE",
                 "country": "Швеция",
                 "city": "Стокгольм",
@@ -141,7 +141,7 @@ def init_servers():
                 "vip_only": False
             },
             {
-                "name": "🇯🇵 Japan #1",
+                "name": "🇯🇵 Japan",
                 "location": "JP",
                 "country": "Япония",
                 "city": "Токио",
@@ -153,7 +153,7 @@ def init_servers():
                 "vip_only": False
             },
             {
-                "name": "🇮🇹 Italy #1",
+                "name": "🇮🇹 Italy VIP",
                 "location": "IT",
                 "country": "Италия",
                 "city": "Милан",
@@ -172,7 +172,7 @@ def init_servers():
                 "vip_only": True
             },
             {
-                "name": "🇩🇪 Germany #2",
+                "name": "🇩🇪 Germany #2 VIP",
                 "location": "DE",
                 "country": "Германия",
                 "city": "Франкфурт",
@@ -190,7 +190,7 @@ def init_servers():
                 "vip_only": True
             },
             {
-                "name": "🇩🇪 Germany #3",
+                "name": "🇩🇪 Germany #3 VIP",
                 "location": "DE",
                 "country": "Германия",
                 "city": "Франкфурт",
@@ -210,7 +210,7 @@ def init_servers():
                 "vip_only": True
             },
             {
-                "name": "🇩🇪 Germany #4",
+                "name": "🇩🇪 Germany #4 VIP",
                 "location": "DE",
                 "country": "Германия",
                 "city": "Франкфурт",
@@ -450,7 +450,8 @@ def list_servers_detailed():
                 "grpc_mode": s.grpc_mode,
                 "grpc_service_name": s.grpc_service_name,
                 "allow_insecure": s.allow_insecure,
-                "load": s.current_load
+                "load": s.current_load,
+                "vip_only": s.vip_only
             }
             result.append(server_data)
     
@@ -540,6 +541,8 @@ def ss_links():
             if s.network == "grpc":
                 params.append(f"serviceName={s.grpc_service_name or 'grpc-vless'}")
                 params.append(f"mode={s.grpc_mode or 'gun'}")
+            if s.alpn:
+                params.append(f"alpn={s.alpn}")
             
             params_str = "&".join(params)
             vless_link = f"vless://{s.uuid}@{s.host}:{s.port}?{params_str}#{s.name}"
