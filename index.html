@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dicstery VPN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        :root {
+            --bg-dark: #0a0c14;
+            --bg-card: #141824;
+            --bg-card-hover: #1e2230;
+            --accent-primary: #4a6cf7;
+            --accent-secondary: #6b8aff;
+            --accent-glow: rgba(74, 108, 247, 0.4);
+            --vip-primary: #f1c40f;
+            --vip-secondary: #f39c12;
+            --vip-glow: rgba(241, 196, 15, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #8f9bb3;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --border-radius: 24px;
+            --border-radius-sm: 16px;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 20px var(--accent-glow);
+            --vip-shadow-glow: 0 0 20px var(--vip-glow);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            position: relative;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #1a1f2f, #0f1320);
+            padding: 30px 20px 20px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a5b9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .app-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .container {
+            padding: 0 16px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeInUp 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .vip-card {
+            background: linear-gradient(135deg, #1a1f2f, #1a1a2a);
+            border: 1px solid var(--vip-primary);
+        }
+
+        .vip-card:hover {
+            box-shadow: var(--vip-shadow-glow);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vip-title {
+            color: var(--vip-primary);
+            text-shadow: 0 0 10px var(--vip-glow);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-vip {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.15), rgba(243, 156, 18, 0.15));
+            color: var(--vip-primary);
+            border: 1px solid var(--vip-primary);
+        }
+
+        .status-expired {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .vip-progress-bar {
+            background: linear-gradient(90deg, var(--vip-primary), var(--vip-secondary));
+            box-shadow: 0 0 10px var(--vip-glow);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 20px;
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            box-shadow: 0 4px 15px rgba(74, 108, 247, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 108, 247, 0.5);
+        }
+
+        .btn-vip {
+            background: linear-gradient(135deg, var(--vip-primary), var(--vip-secondary));
+            border: none;
+            box-shadow: 0 4px 15px var(--vip-glow);
+            color: #000;
+        }
+
+        .btn-vip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--vip-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .server-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .server-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .server-item:hover {
+            background: rgba(74, 108, 247, 0.1);
+            border-color: var(--accent-primary);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(74, 108, 247, 0.2);
+        }
+
+        .vip-server-item {
+            border: 1px solid var(--vip-primary);
+        }
+
+        .vip-server-item:hover {
+            background: rgba(241, 196, 15, 0.1);
+            border-color: var(--vip-primary);
+            box-shadow: 0 0 20px var(--vip-glow);
+        }
+
+        .server-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .server-flag {
+            font-size: 28px;
+        }
+
+        .server-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .server-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--vip-primary);
+            color: #000;
+            margin-left: 5px;
+        }
+
+        .server-load {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .server-load-bar {
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 4px;
+        }
+
+        .server-load-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .connect-btn {
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .connect-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .vip-connect-btn {
+            border: 1px solid var(--vip-primary);
+            color: var(--vip-primary);
+        }
+
+        .vip-connect-btn:hover {
+            background: var(--vip-primary);
+            color: black;
+            box-shadow: 0 0 15px var(--vip-glow);
+        }
+
+        .referral-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 14px;
+            margin: 15px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(20, 24, 36, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 30px;
+        }
+
+        .nav-item:hover {
+            background: rgba(74, 108, 247, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            color: var(--accent-primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 18px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .payment-history {
+            margin-top: 15px;
+        }
+
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .vip-glow-text {
+            text-shadow: 0 0 10px var(--vip-glow);
+        }
+
+        .vip-badge {
+            background: var(--vip-primary);
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        @media (max-width: 380px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .filter-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+        
+        .ss-link-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            word-break: break-all;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .vip-ss-link-box {
+            border: 1px solid var(--vip-primary);
+            background: rgba(241, 196, 15, 0.05);
+        }
+
+        .support-ticket {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            border-left: 3px solid var(--vip-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="app-title">⚡ DICSTERY VPN</div>
+        <div class="app-subtitle">10+ серверов по всему миру</div>
+    </div>
+
+    <div class="container">
+        <div id="homeSection" class="section active">
+            <div class="card" id="profileCard">
+                <div class="card-title">
+                    <span>👤</span> Профиль
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Пользователь</span>
+                    <span class="info-value" id="username">demo_user</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Статус</span>
+                    <span class="info-value"><span class="status-badge" id="statusBadge">ACTIVE</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Подписка до</span>
+                    <span class="info-value" id="expireDate">2026-12-31</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Тип</span>
+                    <span class="info-value" id="subType">Базовая</span>
+                </div>
+                <div class="info-row" id="vipSupportRow" style="display: none;">
+                    <span class="info-label">VIP поддержка</span>
+                    <span class="info-value vip-glow-text" id="vipSupportStatus">✓ Доступна</span>
+                </div>
+                <div class="info-row" id="vipServerRow" style="display: none;">
+                    <span class="info-label">VIP сервера</span>
+                    <span class="info-value vip-glow-text" id="vipServerStatus">✓ Доступны</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>📊</span> Трафик
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Использовано</span>
+                    <span class="info-value" id="trafficUsed">3.0 GB / 50 GB</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="trafficBar" style="width: 6%"></div>
+                </div>
+                <div class="info-row" style="margin-top: 10px;">
+                    <span class="info-label">Осталось</span>
+                    <span class="info-value" id="trafficLeft">47 GB</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>🚀</span> Быстрые действия
+                </div>
+                <div class="button-grid">
+                    <button class="btn btn-primary" onclick="showSection('serversSection')">
+                        <span>🖥</span> Сервера
+                    </button>
+                    <button class="btn btn-outline" onclick="showSection('subscriptionSection')">
+                        <span>💳</span> Подписка
+                    </button>
+                    <button class="btn btn-outline" onclick="showSection('referralSection')">
+                        <span>👥</span> Рефералы
+                    </button>
+                    <button class="btn btn-outline" onclick="showSection('clientsSection')">
+                        <span>📱</span> Клиенты
+                    </button>
+                </div>
+                <div id="vipSupportButton" style="margin-top: 10px; display: none;">
+                    <button class="btn btn-vip" onclick="showSection('vipSection')">
+                        <span>👑</span> VIP Поддержка
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">
+                    <span>🌍</span> Доступные локации
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <span style="background: rgba(74, 108, 247, 0.1); padding: 8px 12px; border-radius: 30px;">🇷🇺 Россия (2)</span>
+                    <span style="background: rgba(74, 108, 247, 0.1); padding: 8px 12px; border-radius: 30px;">🇬🇧 Великобритания (2)</span>
+                    <span style="background: rgba(74, 108, 247, 0.1); padding: 8px 12px; border-radius: 30px;">🇫🇷 Франция</span>
+                    <span style="background: rgba(74, 108, 247, 0.1); padding: 8px 12px; border-radius: 30px;">🇺🇸 США</span>
+                    <span style="background: rgba(74, 108, 247, 0.1); padding: 8px 12px; border-radius: 30px;">🇳🇱 Нидерланды</span>
+                    <span style="background: var(--vip-primary); color: black; padding: 8px 12px; border-radius: 30px;">👑 VIP (3)</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="serversSection" class="section">
+            <div class="card" id="serversCard">
+                <div class="card-title">
+                    <span>🖥</span> Доступные сервера
+                </div>
+                <div class="filter-bar" id="serverFilters">
+                    <button class="filter-btn active" data-filter="all">Все</button>
+                    <button class="filter-btn" data-filter="RU">🇷🇺 Россия</button>
+                    <button class="filter-btn" data-filter="GB">🇬🇧 Великобритания</button>
+                    <button class="filter-btn" data-filter="FR">🇫🇷 Франция</button>
+                    <button class="filter-btn" data-filter="US">🇺🇸 США</button>
+                    <button class="filter-btn" data-filter="NL">🇳🇱 Нидерланды</button>
+                    <button class="filter-btn" data-filter="DE">🇩🇪 Германия</button>
+                    <button class="filter-btn" data-filter="CH">🇨🇭 Швейцария</button>
+                </div>
+                <div class="server-list" id="serverList">
+                </div>
+            </div>
+        </div>
+
+        <div id="subscriptionSection" class="section">
+            <div class="card">
+                <div class="card-title">
+                    <span>💳</span> Подписки
+                </div>
+                <div class="button-grid">
+                    <button class="btn btn-primary" onclick="activateSubscription('trial')">
+                        🎁 Пробная (3 дня / 20 ГБ)
+                    </button>
+                    <button class="btn btn-outline" onclick="activateSubscription('basic')">
+                        ⭐ Базовая (30 дней / безлимит)
+                    </button>
+                    <button class="btn btn-vip" onclick="activateSubscription('vip')">
+                        👑 VIP (30 дней / безлимит + привилегии)
+                    </button>
+                </div>
+            </div>
+
+            <div class="card" id="vipBenefitsCard" style="display: none;">
+                <div class="card-title vip-title">
+                    <span>👑</span> VIP Преимущества
+                </div>
+                <div class="info-row">
+                    <span class="info-label">✨ VIP сервера</span>
+                    <span class="info-value">Германия, Швейцария, Нидерланды</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">⚡ Приоритетная скорость</span>
+                    <span class="info-value">Выделенные каналы</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🎯 Приоритетная поддержка</span>
+                    <span class="info-value">24/7</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>📋</span> История платежей
+                </div>
+                <div class="payment-history" id="paymentHistory">
+                    <div class="payment-item">
+                        <span>15.03.2026</span>
+                        <span>500₽</span>
+                        <span class="status-badge status-active">✓</span>
+                    </div>
+                    <div class="payment-item">
+                        <span>10.02.2026</span>
+                        <span>500₽</span>
+                        <span class="status-badge status-active">✓</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vipSection" class="section">
+            <div class="card vip-card">
+                <div class="card-title vip-title">
+                    <span>👑</span> VIP Поддержка
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Статус</span>
+                    <span class="info-value"><span class="vip-badge" id="vipStatus">ACTIVE</span></span>
+                </div>
+                <div style="margin-top: 20px;">
+                    <input type="text" id="ticketSubject" placeholder="Тема обращения" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--vip-primary); border-radius: 12px; color: white; margin-bottom: 10px;">
+                    <textarea id="ticketMessage" placeholder="Опишите вашу проблему..." rows="4" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--vip-primary); border-radius: 12px; color: white; margin-bottom: 10px;"></textarea>
+                    <button class="btn btn-vip" onclick="createTicket()">📨 Отправить</button>
+                </div>
+                <div id="ticketsList" style="margin-top: 20px;">
+                </div>
+            </div>
+        </div>
+
+        <div id="referralSection" class="section">
+            <div class="card">
+                <div class="card-title">
+                    <span>👥</span> Реферальная система
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ваша ссылка</span>
+                    <span class="info-value" id="referralCode">VPN-XXXX</span>
+                </div>
+                <div class="referral-box" id="referralLink">https://t.me/vpn_bot?start=ABC123</div>
+                <button class="btn btn-primary" onclick="copyReferral()">
+                    📋 Скопировать ссылку
+                </button>
+                <div class="stats-grid" style="margin-top: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="referralCount">0</div>
+                        <div class="stat-label">Приглашено</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="bonusDays">0</div>
+                        <div class="stat-label">Бонус дней</div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; text-align: center; color: var(--vip-primary);">
+                    🎁 5 друзей = 1 день подписки
+                </div>
+            </div>
+        </div>
+
+        <div id="clientsSection" class="section">
+            <div class="card">
+                <div class="card-title">
+                    <span>📱</span> Настройка клиентов
+                </div>
+                <div class="button-grid">
+                    <button class="btn btn-outline" onclick="installClient('happ')">
+                        <span>📲</span> Happ
+                    </button>
+                    <button class="btn btn-outline" onclick="installClient('v2ray')">
+                        <span>📡</span> v2rayNG
+                    </button>
+                    <button class="btn btn-outline" onclick="installClient('clash')">
+                        <span>⚡</span> Clash
+                    </button>
+                    <button class="btn btn-outline" onclick="installClient('shadowrocket')">
+                        <span>🚀</span> Shadowrocket
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>🔗</span> SS-ссылки для импорта
+                </div>
+                <div id="ssLinksContainer"></div>
+            </div>
+        </div>
+
+        <div id="profileSection" class="section">
+            <div class="card">
+                <div class="card-title">
+                    <span>⚙️</span> Настройки профиля
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" id="userId">123456789</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">UUID</span>
+                    <span class="info-value" id="userUuid">abc-123-def</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Дата регистрации</span>
+                    <span class="info-value" id="regDate">01.01.2026</span>
+                </div>
+                <button class="btn btn-outline" style="margin-top: 15px;" onclick="logout()">
+                    🚪 Выйти
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showSection('homeSection', this)">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Главная</span>
+        </div>
+        <div class="nav-item" onclick="showSection('serversSection', this)">
+            <span class="nav-icon">🖥</span>
+            <span class="nav-label">Сервера</span>
+        </div>
+        <div class="nav-item" onclick="showSection('subscriptionSection', this)">
+            <span class="nav-icon">💳</span>
+            <span class="nav-label">Подписки</span>
+        </div>
+        <div class="nav-item" onclick="showSection('profileSection', this)">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Профиль</span>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        const TELEGRAM_ID = 7383521067;
+
+        let userData = {
+            username: 'demo_user',
+            status: 'ACTIVE',
+            subscription_end: '2026-12-31',
+            subscription_type: 'basic',
+            traffic_used: 3072,
+            traffic_limit: 51200,
+            uuid: '550e8400-e29b-41d4-a716-446655440000',
+            referral_code: 'VPN-ABC123',
+            referral_count: 0,
+            bonus_days: 0,
+            vip_support: false,
+            priority_server: false,
+            created_at: '2026-01-01'
+        };
+
+        let servers = [];
+        let currentFilter = 'all';
+
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            if (sectionId === 'serversSection') {
+                fetchServers();
+            }
+            if (sectionId === 'referralSection') updateReferralInfo();
+            if (sectionId === 'clientsSection') loadSSLinks();
+            if (sectionId === 'vipSection' && userData.vip_support) {
+                loadTickets();
+            }
+        }
+
+        function fetchServers() {
+            fetch(`${API_URL}/api/servers/detailed?user_id=${TELEGRAM_ID}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.servers) {
+                        servers = data.servers.map(s => ({
+                            ...s,
+                            flag: s.location === 'RU' ? '🇷🇺' : 
+                                  s.location === 'GB' ? '🇬🇧' : 
+                                  s.location === 'FR' ? '🇫🇷' : 
+                                  s.location === 'US' ? '🇺🇸' : 
+                                  s.location === 'NL' ? '🇳🇱' :
+                                  s.location === 'DE' ? '🇩🇪' :
+                                  s.location === 'CH' ? '🇨🇭' : '🌍'
+                        }));
+                        renderServers();
+                    }
+                })
+                .catch(() => {
+                    servers = [
+                        {id: 1, name: 'Russia #1', location: 'RU', country: 'Россия', host: '212.192.14.234', port: 24441, method: 'chacha20-ietf-poly1305', vip_only: false, load: 23, flag: '🇷🇺'},
+                        {id: 2, name: 'Russia #2', location: 'RU', country: 'Россия', host: '62.113.114.116', port: 42320, method: 'chacha20-ietf-poly1305', vip_only: false, load: 45, flag: '🇷🇺'},
+                        {id: 3, name: 'UK #1', location: 'GB', country: 'Великобритания', host: 'series-a1.samanehha.co', port: 443, method: 'chacha20-ietf-poly1305', vip_only: false, load: 34, flag: '🇬🇧'},
+                        {id: 4, name: 'UK #2', location: 'GB', country: 'Великобритания', host: 'admin.c2.havij.co', port: 443, method: 'chacha20-ietf-poly1305', vip_only: false, load: 56, flag: '🇬🇧'},
+                        {id: 5, name: 'France #1', location: 'FR', country: 'Франция', host: '95.111.250.4', port: 80, method: 'aes-256-gcm', vip_only: false, load: 67, flag: '🇫🇷'},
+                        {id: 6, name: 'USA #1', location: 'US', country: 'США', host: '154.38.176.7', port: 80, method: 'aes-256-gcm', vip_only: false, load: 78, flag: '🇺🇸'},
+                        {id: 7, name: 'Netherlands #1', location: 'NL', country: 'Нидерланды', host: '82.38.31.62', port: 8080, method: 'chacha20-ietf-poly1305', vip_only: false, load: 12, flag: '🇳🇱'},
+                        {id: 8, name: 'VIP Germany #1', location: 'DE', country: 'Германия', host: 'vip.germany.premium', port: 443, method: 'chacha20-ietf-poly1305', vip_only: true, load: 8, flag: '🇩🇪'},
+                        {id: 9, name: 'VIP Switzerland #1', location: 'CH', country: 'Швейцария', host: 'vip.swiss.premium', port: 443, method: 'aes-256-gcm', vip_only: true, load: 5, flag: '🇨🇭'},
+                        {id: 10, name: 'VIP Netherlands #2', location: 'NL', country: 'Нидерланды', host: 'vip.netherlands.premium', port: 443, method: 'chacha20-ietf-poly1305', vip_only: true, load: 3, flag: '🇳🇱'}
+                    ];
+                    renderServers();
+                });
+        }
+
+        function renderServers() {
+            const container = document.getElementById('serverList');
+            container.innerHTML = '';
+            
+            const filteredServers = currentFilter === 'all' 
+                ? servers 
+                : servers.filter(s => s.location === currentFilter);
+            
+            filteredServers.forEach(server => {
+                if (server.vip_only && !userData.vip_support) return;
+                
+                const loadColor = server.load < 50 ? '#2ecc71' : server.load < 80 ? '#f39c12' : '#e74c3c';
+                const isVip = server.vip_only;
+                
+                const serverEl = document.createElement('div');
+                serverEl.className = `server-item ${isVip ? 'vip-server-item' : ''}`;
+                serverEl.innerHTML = `
+                    <div class="server-info">
+                        <span class="server-flag">${server.flag}</span>
+                        <div>
+                            <div class="server-name">
+                                ${server.name}
+                                ${isVip ? '<span class="server-badge">VIP</span>' : ''}
+                            </div>
+                            <div class="server-load">${server.host}:${server.port} | ${server.method}</div>
+                            <div class="server-load-bar">
+                                <div class="server-load-fill" style="width: ${server.load}%; background: ${loadColor};"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="connect-btn ${isVip ? 'vip-connect-btn' : ''}" onclick="showServerConfig(${server.id})">
+                        ${isVip ? '👑' : '🔌'} Конфиг
+                    </button>
+                `;
+                container.appendChild(serverEl);
+            });
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderServers();
+                });
+            });
+        }
+
+        function showServerConfig(serverId) {
+            const server = servers.find(s => s.id === serverId);
+            if (!server) return;
+            
+            if (server.vip_only && !userData.vip_support) {
+                alert('❌ Этот сервер только для VIP пользователей');
+                return;
+            }
+            
+            const ssString = `${server.method}:${server.password}`;
+            const ssBase64 = btoa(ssString);
+            const ssLink = `ss://${ssBase64}@${server.host}:${server.port}#${server.name}`;
+            
+            const configText = `Сервер: ${server.name}\nАдрес: ${server.host}\nПорт: ${server.port}\nМетод: ${server.method}\nПароль: ${server.password}\n\nSS-ссылка:\n${ssLink}`;
+            
+            alert(configText);
+            navigator.clipboard.writeText(ssLink).then(() => {
+                alert('✅ SS-ссылка скопирована!');
+            });
+        }
+
+        function loadSSLinks() {
+            const container = document.getElementById('ssLinksContainer');
+            container.innerHTML = '';
+            
+            fetch(`${API_URL}/api/happ/sslinks?id=${TELEGRAM_ID}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.links) {
+                        data.links.forEach(link => {
+                            if (link.vip_only && !userData.vip_support) return;
+                            
+                            const div = document.createElement('div');
+                            div.className = `ss-link-box ${link.vip_only ? 'vip-ss-link-box' : ''}`;
+                            div.innerHTML = `
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>${link.name} ${link.vip_only ? '👑' : ''}</span>
+                                    <button class="connect-btn ${link.vip_only ? 'vip-connect-btn' : ''}" style="padding: 4px 12px;" onclick="copyText('${link.link}')">Копировать</button>
+                                </div>
+                                <div style="font-size: 10px; margin-top: 5px; opacity: 0.7;">${link.link.substring(0, 50)}...</div>
+                            `;
+                            container.appendChild(div);
+                        });
+                    }
+                })
+                .catch(() => {});
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            alert('✅ Скопировано!');
+        }
+
+        function activateSubscription(type) {
+            const plans = {
+                trial: { name: 'Пробная', days: 3, price: 0, traffic: '20 ГБ' },
+                basic: { name: 'Базовая', days: 30, price: 500, traffic: 'Безлимит' },
+                vip: { name: 'VIP', days: 30, price: 1500, traffic: 'Безлимит + Привилегии' }
+            };
+            
+            const plan = plans[type];
+            
+            if (type === 'trial') {
+                if (confirm('Активировать пробную подписку на 3 дня (20 ГБ)?')) {
+                    fetch(`${API_URL}/api/user/subscription/activate`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({id: TELEGRAM_ID, type: 'trial'})
+                    }).then(r => r.json()).then(data => {
+                        if (data.status === 'ok') {
+                            alert('✅ Пробная подписка активирована!');
+                            fetchUserData();
+                        } else {
+                            alert('❌ Пробный период уже использован');
+                        }
+                    });
+                }
+            } else {
+                if (confirm(`Оплатить ${plan.name} подписку за ${plan.price}₽?`)) {
+                    fetch(`${API_URL}/api/payments/create`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            user_id: TELEGRAM_ID,
+                            amount: plan.price,
+                            days: plan.days,
+                            subscription_type: type,
+                            provider: 'telegram'
+                        })
+                    }).then(r => r.json()).then(data => {
+                        if (data.payment_id) {
+                            if (confirm(`Счет создан. Подтвердить оплату?`)) {
+                                fetch(`${API_URL}/api/payments/confirm`, {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify({payment_id: data.payment_id})
+                                }).then(() => {
+                                    alert(`✅ Оплата прошла успешно!`);
+                                    fetchUserData();
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        function createTicket() {
+            const subject = document.getElementById('ticketSubject').value;
+            const message = document.getElementById('ticketMessage').value;
+            
+            if (!subject || !message) {
+                alert('❌ Заполните все поля');
+                return;
+            }
+            
+            fetch(`${API_URL}/api/vip/support/ticket`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user_id: TELEGRAM_ID,
+                    subject: subject,
+                    message: message
+                })
+            }).then(r => r.json()).then(data => {
+                if (data.status === 'ok') {
+                    alert('✅ Тикет создан! Ожидайте ответа.');
+                    document.getElementById('ticketSubject').value = '';
+                    document.getElementById('ticketMessage').value = '';
+                    loadTickets();
+                }
+            });
+        }
+
+        function loadTickets() {
+            fetch(`${API_URL}/api/vip/support/tickets?user_id=${TELEGRAM_ID}`)
+                .then(r => r.json())
+                .then(data => {
+                    const container = document.getElementById('ticketsList');
+                    container.innerHTML = '<h4 style="margin-bottom: 10px;">Ваши обращения:</h4>';
+                    
+                    if (data.tickets && data.tickets.length > 0) {
+                        data.tickets.forEach(t => {
+                            const div = document.createElement('div');
+                            div.className = 'support-ticket';
+                            div.innerHTML = `
+                                <div style="display: flex; justify-content: space-between;">
+                                    <strong>${t.subject}</strong>
+                                    <span style="color: ${t.status === 'OPEN' ? '#f39c12' : '#2ecc71'}">${t.status}</span>
+                                </div>
+                                <div style="font-size: 12px; margin-top: 5px;">${t.message}</div>
+                                <div style="font-size: 10px; margin-top: 5px; opacity: 0.5;">${new Date(t.created_at).toLocaleString()}</div>
+                            `;
+                            container.appendChild(div);
+                        });
+                    } else {
+                        container.innerHTML += '<p style="opacity: 0.5;">Нет обращений</p>';
+                    }
+                });
+        }
+
+        function installClient(client) {
+            const clients = {
+                happ: 'Happ для iOS',
+                v2ray: 'v2rayNG для Android',
+                clash: 'Clash для Windows/Mac',
+                shadowrocket: 'Shadowrocket для iOS'
+            };
+            alert(`📲 Скачайте ${clients[client]} и импортируйте SS-ссылку из раздела "Клиенты"`);
+        }
+
+        function copyReferral() {
+            const link = document.getElementById('referralLink').innerText;
+            navigator.clipboard.writeText(link);
+            alert('✅ Реферальная ссылка скопирована!');
+        }
+
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                alert('👋 До свидания!');
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('username').innerText = userData.username;
+            document.getElementById('expireDate').innerText = userData.subscription_end || '—';
+            
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.innerText = userData.status;
+            statusBadge.className = 'status-badge';
+            if (userData.status === 'VIP') {
+                statusBadge.classList.add('status-vip');
+                document.getElementById('profileCard').classList.add('vip-card');
+                document.getElementById('vipSupportRow').style.display = 'flex';
+                document.getElementById('vipServerRow').style.display = 'flex';
+                document.getElementById('vipSupportButton').style.display = 'block';
+                document.getElementById('vipBenefitsCard').style.display = 'block';
+                document.getElementById('vipStatus').innerText = 'ACTIVE';
+            } else if (userData.status === 'ACTIVE') {
+                statusBadge.classList.add('status-active');
+                document.getElementById('profileCard').classList.remove('vip-card');
+                document.getElementById('vipSupportRow').style.display = 'none';
+                document.getElementById('vipServerRow').style.display = 'none';
+                document.getElementById('vipSupportButton').style.display = 'none';
+                document.getElementById('vipBenefitsCard').style.display = 'none';
+            } else {
+                statusBadge.classList.add('status-expired');
+            }
+            
+            document.getElementById('subType').innerText = 
+                userData.subscription_type === 'vip' ? 'VIP' : 
+                userData.subscription_type === 'trial' ? 'Пробная' : 'Базовая';
+            
+            document.getElementById('vipSupportStatus').innerText = userData.vip_support ? '✓ Доступна' : '✗ Нет';
+            document.getElementById('vipServerStatus').innerText = userData.priority_server ? '✓ Доступны' : '✗ Нет';
+            
+            const usedGB = (userData.traffic_used / 1024).toFixed(1);
+            let limitText = '';
+            if (userData.traffic_limit === 0) {
+                limitText = 'Безлимит';
+                document.getElementById('trafficUsed').innerText = `${usedGB} GB / Безлимит`;
+                document.getElementById('trafficLeft').innerText = 'Безлимит';
+                document.getElementById('trafficBar').style.width = '0%';
+            } else {
+                const limitGB = (userData.traffic_limit / 1024).toFixed(1);
+                const percent = (userData.traffic_used / userData.traffic_limit) * 100;
+                document.getElementById('trafficUsed').innerText = `${usedGB} GB / ${limitGB} GB`;
+                document.getElementById('trafficLeft').innerText = `${((userData.traffic_limit - userData.traffic_used) / 1024).toFixed(1)} GB`;
+                document.getElementById('trafficBar').style.width = `${percent}%`;
+                if (percent > 90) {
+                    document.getElementById('trafficBar').style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+                }
+            }
+            
+            document.getElementById('referralCode').innerText = userData.referral_code;
+            document.getElementById('referralLink').innerText = `https://t.me/vpn_bot?start=${userData.referral_code}`;
+            document.getElementById('referralCount').innerText = userData.referral_count || 0;
+            document.getElementById('bonusDays').innerText = userData.bonus_days || 0;
+            
+            document.getElementById('userId').innerText = TELEGRAM_ID;
+            document.getElementById('userUuid').innerText = userData.uuid;
+            document.getElementById('regDate').innerText = userData.created_at ? new Date(userData.created_at).toLocaleDateString('ru-RU') : '01.01.2026';
+        }
+
+        function fetchUserData() {
+            fetch(`${API_URL}/api/user/info?id=${TELEGRAM_ID}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && !data.error) {
+                        userData = { ...userData, ...data };
+                        updateUI();
+                    }
+                })
+                .catch(() => {
+                    updateUI();
+                });
+        }
+
+        function updateReferralInfo() {
+            fetch(`${API_URL}/api/referral/list?user_id=${TELEGRAM_ID}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && !data.error) {
+                        userData.referral_count = data.total_referrals || 0;
+                        userData.bonus_days = data.total_bonus_days || 0;
+                        document.getElementById('referralCount').innerText = userData.referral_count;
+                        document.getElementById('bonusDays').innerText = userData.bonus_days;
+                    }
+                })
+                .catch(() => {});
+        }
+
+        if (window.Telegram?.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+
+        fetchUserData();
+        fetchServers();
+        setInterval(fetchUserData, 30000);
+    </script>
+</body>
+</html>
