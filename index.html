@@ -318,7 +318,65 @@
             margin-right: 10px;
         }
 
-        .happ-btn {
+        .server-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px 5px;
+            margin: 15px 0;
+        }
+
+        .server-item {
+            background: rgba(20, 25, 40, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .server-item:hover {
+            background: rgba(74, 108, 247, 0.1);
+            border-color: #4a6cf7;
+            transform: translateX(5px);
+        }
+
+        .server-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .server-flag {
+            font-size: 24px;
+        }
+
+        .server-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .server-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 34px;
+            font-size: 13px;
+            color: #8f9bb3;
+        }
+
+        .separator-item {
+            text-align: center;
+            padding: 15px;
+            margin: 10px 0;
+            font-weight: 700;
+            color: #f1c40f;
+            letter-spacing: 1px;
+        }
+
+        .main-btn {
             background: linear-gradient(135deg, #4a6cf7, #6b8aff);
             border: none;
             color: white;
@@ -332,13 +390,9 @@
             box-shadow: 0 10px 30px rgba(74, 108, 247, 0.5);
             transition: all 0.3s ease;
             letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
 
-        .happ-btn:hover {
+        .main-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 35px rgba(74, 108, 247, 0.7);
         }
@@ -377,6 +431,13 @@
             margin: 20px 0;
             text-align: center;
             color: #a5b9ff;
+        }
+
+        .premium-note {
+            color: #f1c40f;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
         }
     </style>
 </head>
@@ -439,13 +500,13 @@
                             <span class="step-number">1</span> Установите приложение Happ из Google Play или скачайте APK.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">2</span> Нажмите кнопку "Добавить подписку в Happ" ниже.
+                            <span class="step-number">2</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Приложение автоматически откроется и добавит подписку.
+                            <span class="step-number">3</span> Откройте Happ, нажмите "+" и выберите "Добавить по ссылке".
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">4</span> После добавления нажмите на профиль для подключения.
+                            <span class="step-number">4</span> Вставьте скопированный текст и нажмите "Добавить".
                         </div>
                     </div>
                 </div>
@@ -458,13 +519,13 @@
                             <span class="step-number">1</span> Установите приложение Happ из App Store.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">2</span> Нажмите кнопку "Добавить подписку в Happ" ниже.
+                            <span class="step-number">2</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Приложение автоматически откроется и добавит подписку.
+                            <span class="step-number">3</span> Откройте Happ, нажмите "+" и выберите "Добавить по ссылке".
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">4</span> Разрешите установку VPN-конфигурации, введите пароль.
+                            <span class="step-number">4</span> Вставьте скопированный текст и нажмите "Добавить".
                         </div>
                     </div>
                 </div>
@@ -480,10 +541,10 @@
                             <span class="step-number">2</span> Установите приложение, перетащив его в папку "Программы".
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Откройте Happ и нажмите кнопку "Добавить подписку в Happ" ниже.
+                            <span class="step-number">3</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">4</span> Подтвердите добавление VPN-конфигурации.
+                            <span class="step-number">4</span> Откройте Happ и вставьте скопированный текст.
                         </div>
                     </div>
                 </div>
@@ -499,10 +560,10 @@
                             <span class="step-number">2</span> Запустите установку и следуйте инструкциям.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Откройте Happ и нажмите кнопку "Добавить подписку в Happ" ниже.
+                            <span class="step-number">3</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">4</span> Подтвердите добавление сетевого адаптера.
+                            <span class="step-number">4</span> Откройте Happ и вставьте скопированный текст.
                         </div>
                     </div>
                 </div>
@@ -518,10 +579,10 @@
                             <span class="step-number">2</span> Сделайте файл исполняемым: chmod +x Happ.AppImage
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Запустите приложение и нажмите кнопку "Добавить подписку в Happ" ниже.
+                            <span class="step-number">3</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">4</span> Готово к использованию.
+                            <span class="step-number">4</span> Откройте Happ и вставьте скопированный текст.
                         </div>
                     </div>
                 </div>
@@ -534,10 +595,10 @@
                             <span class="step-number">1</span> Установите приложение Happ из App Store на Apple TV.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">2</span> Откройте приложение, перейдите в настройки профиля.
+                            <span class="step-number">2</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Введите ссылку, скопированную при нажатии кнопки ниже.
+                            <span class="step-number">3</span> Введите скопированный текст в приложении.
                         </div>
                         <div class="instruction-step">
                             <span class="step-number">4</span> Подтвердите установку VPN-конфигурации.
@@ -553,10 +614,10 @@
                             <span class="step-number">1</span> Установите приложение Happ из Google Play на Android TV.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">2</span> Откройте приложение, используйте пульт для навигации.
+                            <span class="step-number">2</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Введите ссылку, скопированную при нажатии кнопки ниже.
+                            <span class="step-number">3</span> Введите скопированный текст в приложении.
                         </div>
                         <div class="instruction-step">
                             <span class="step-number">4</span> Подтвердите добавление профиля.
@@ -565,8 +626,8 @@
                 </div>
             </div>
 
-            <button class="happ-btn" id="copySubscriptionBtn">
-                <span>➕</span> ДОБАВИТЬ ПОДПИСКУ В HAPP
+            <button class="main-btn" id="copySubscriptionBtn">
+                📋 СКОПИРОВАТЬ ПОДПИСКУ
             </button>
 
             <button class="close-btn" onclick="Telegram.WebApp.close()">✕ ЗАКРЫТЬ ПРИЛОЖЕНИЕ</button>
@@ -619,7 +680,7 @@
             {id: 11, name: '🇫🇮 Финляндия #1', flag: '🇫🇮', host: 'fin-q9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-q9.plugvpn.ru', fingerprint: 'chrome', public_key: 'qbnV1snO8ix66vt0VfKbyKloBnfZXUMCdZtA8-SwdBc', short_id: 'c8d761c11162e733', is_premium: true},
             {id: 12, name: '🇫🇮 Финляндия #2', flag: '🇫🇮', host: 'fin-a7.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-a7.plugvpn.ru', fingerprint: 'chrome', public_key: '0TZaSq_Gz1-D25c6HeJD8qAgSkeoR7pRIbvI57QJ1XY', short_id: '985dfc082ead551b', is_premium: true},
             {id: 13, name: '🇩🇪 Германия #1', flag: '🇩🇪', host: 'deu-h9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'deu-h9.plugvpn.ru', fingerprint: 'chrome', public_key: 'H80wZ3PsnPMixNbjeVq8p_g6UJaLCasHCtTaUlzWOGk', short_id: 'c32214ffa4d6ced6', is_premium: true},
-            {id: 14, name: '⬇️⬇️ ОБХОД БЕЛЫХ СПИСКОВ ⬇️⬇️', flag: '⬇️', host: '', port: 0, protocol: 'separator'},
+            {id: 14, name: '⬇️⬇️ ОБХОД БЕЛЫХ СПИСКОВ ⬇️⬇️', flag: '⬇️', host: '', port: 0, protocol: 'separator', is_premium: true},
             {id: 15, name: '🇷🇺 Россия #1', flag: '🇷🇺', host: '158.160.171.167', port: 443, protocol: 'vless', uuid: '53fa2131-611e-413f-8b1a-3aed45529a52', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: '84.img.avito.st', fingerprint: 'chrome', public_key: 'w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F', short_id: '331a54c7ab4b', is_premium: true},
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
@@ -636,6 +697,7 @@
                     photoUrl = data.photo_url;
                     isAuthenticated = true;
                     isAdmin = ADMIN_IDS.includes(telegramId);
+                    isPremium = data.is_premium || false;
                     showMainContent();
                 } catch (e) {
                     showLogin();
@@ -649,16 +711,19 @@
                 photoUrl = user.photo_url || '';
                 isAuthenticated = true;
                 isAdmin = ADMIN_IDS.includes(telegramId);
+                isPremium = false;
                 
                 localStorage.setItem('dicstery_auth', JSON.stringify({
                     telegram_id: telegramId,
                     username: username,
                     first_name: firstName,
                     last_name: lastName,
-                    photo_url: photoUrl
+                    photo_url: photoUrl,
+                    is_premium: isPremium
                 }));
                 
-                showMainContent();
+                const botLink = `https://t.me/${BOT_USERNAME}?start=register_${Date.now()}`;
+                window.location.href = botLink;
             } else {
                 showLogin();
             }
@@ -773,16 +838,6 @@
             });
         }
 
-        function openHapp() {
-            const subscriptionText = generateSubscriptionText();
-            const base64Data = btoa(unescape(encodeURIComponent(subscriptionText)));
-            const happUrl = `happ://add/${base64Data}`;
-            
-            window.location.href = happUrl;
-            
-            setTimeout(copySubscription, 500);
-        }
-
         document.getElementById('loginBtn').addEventListener('click', function() {
             const botLink = `https://t.me/${BOT_USERNAME}?start=register_${Date.now()}`;
             window.location.href = botLink;
@@ -806,7 +861,7 @@
             });
         });
 
-        document.getElementById('copySubscriptionBtn').addEventListener('click', openHapp);
+        document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
 
         if (tg) {
             tg.ready();
