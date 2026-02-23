@@ -69,6 +69,52 @@
             border-color: rgba(74, 108, 247, 0.3);
         }
 
+        .welcome-card {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff, #a5b9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-text {
+            color: #8f9bb3;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #4a6cf7, #6b8aff);
+            border: none;
+            color: white;
+            padding: 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(74, 108, 247, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(74, 108, 247, 0.7);
+        }
+
         .profile-header {
             display: flex;
             align-items: center;
@@ -101,6 +147,13 @@
             font-size: 20px;
             box-shadow: 0 5px 15px rgba(74, 108, 247, 0.4);
             text-transform: uppercase;
+            overflow: hidden;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .user-info h3 {
@@ -337,24 +390,53 @@
             color: #8f9bb3;
             font-size: 16px;
         }
+
+        .registered-info {
+            background: rgba(74, 108, 247, 0.1);
+            border: 1px solid #4a6cf7;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: #a5b9ff;
+        }
     </style>
 </head>
 <body>
     <div class="stars" id="stars"></div>
 
     <div class="container">
-        <div id="loading" class="loading">⏳ ЗАГРУЗКА ДАННЫХ...</div>
+        <div id="loading" class="loading">⏳ ЗАГРУЗКА...</div>
+
+        <div id="loginScreen" style="display: none;">
+            <div class="glass-card welcome-card">
+                <div class="welcome-title">Добро пожаловать!</div>
+                <div class="welcome-text">
+                    Войдите через Telegram, чтобы получить доступ к VPN серверам Dicstery VPN.
+                </div>
+                <button class="login-btn" id="loginBtn">
+                    <span>🔐</span> Войти через Telegram
+                </button>
+            </div>
+        </div>
 
         <div id="content" style="display: none;">
             <div class="profile-header">
                 <div class="profile-left">
-                    <div class="avatar" id="avatar">👤</div>
+                    <div class="avatar" id="avatar">
+                        <img id="avatarImg" class="avatar-img" src="" style="display: none;">
+                        <span id="avatarText">👤</span>
+                    </div>
                     <div class="user-info">
                         <h3 id="displayName">Загрузка...</h3>
                         <p id="displayId">ID: —</p>
                     </div>
                 </div>
                 <div class="status-badge" id="statusBadge">FREE</div>
+            </div>
+
+            <div class="registered-info" id="registeredInfo" style="display: none;">
+                ✅ Вы зарегистрированы в системе
             </div>
 
             <div class="platform-nav">
@@ -533,29 +615,15 @@
         createStars();
 
         const tg = window.Telegram?.WebApp;
-        
-        if (!tg) {
-            document.body.innerHTML = '<div style="padding:50px;text-align:center;">❌ Это приложение работает только в Telegram</div>';
-            throw new Error('Not in Telegram');
-        }
+        let telegramId = null;
+        let username = '';
+        let firstName = '';
+        let lastName = '';
+        let photoUrl = '';
+        let isAuthenticated = false;
 
-        tg.ready();
-        tg.expand();
-
-        const tgUser = tg.initDataUnsafe?.user;
-        if (!tgUser) {
-            document.body.innerHTML = '<div style="padding:50px;text-align:center;">❌ Не удалось получить данные пользователя</div>';
-            throw new Error('No user data');
-        }
-
+        const BOT_USERNAME = 'DicsteryVPN_bot';
         const ADMIN_IDS = [7383521067];
-        const telegramId = tgUser.id;
-        const username = tgUser.username || '';
-        const firstName = tgUser.first_name || '';
-        const lastName = tgUser.last_name || '';
-
-        const isAdmin = ADMIN_IDS.includes(telegramId);
-        const userStatus = isAdmin ? 'admin' : (Math.random() < 0.3 ? 'premium' : 'free');
 
         const servers = [
             {id: 1, name: '🇷🇺 Россия', flag: '🇷🇺', host: '212.192.14.234', port: 24441, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_free: true},
@@ -575,12 +643,123 @@
             {id: 15, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
-        function getAvailableServers() {
-            if (isAdmin || userStatus === 'premium') {
+        function checkAuth() {
+            const authData = localStorage.getItem('dicstery_auth');
+            if (authData) {
+                try {
+                    const data = JSON.parse(authData);
+                    telegramId = data.telegram_id;
+                    username = data.username;
+                    firstName = data.first_name;
+                    lastName = data.last_name;
+                    photoUrl = data.photo_url;
+                    isAuthenticated = true;
+                    showMainContent();
+                } catch (e) {
+                    showLogin();
+                }
+            } else if (tg && tg.initDataUnsafe?.user) {
+                const user = tg.initDataUnsafe.user;
+                telegramId = user.id;
+                username = user.username || '';
+                firstName = user.first_name || '';
+                lastName = user.last_name || '';
+                photoUrl = user.photo_url || '';
+                isAuthenticated = true;
+                
+                localStorage.setItem('dicstery_auth', JSON.stringify({
+                    telegram_id: telegramId,
+                    username: username,
+                    first_name: firstName,
+                    last_name: lastName,
+                    photo_url: photoUrl
+                }));
+                
+                showMainContent();
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('content').style.display = 'none';
+        }
+
+        function showMainContent() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('registeredInfo').style.display = 'block';
+            loadUserData();
+        }
+
+        function loadUserData() {
+            let initials = '';
+            if (firstName) initials += firstName.charAt(0);
+            if (lastName) initials += lastName.charAt(0);
+            if (!initials) initials = (username || 'U').charAt(0).toUpperCase();
+            
+            const avatarText = document.getElementById('avatarText');
+            const avatarImg = document.getElementById('avatarImg');
+            
+            if (photoUrl) {
+                avatarImg.src = photoUrl;
+                avatarImg.style.display = 'block';
+                avatarText.style.display = 'none';
+            } else {
+                avatarText.innerText = initials;
+                avatarText.style.display = 'block';
+                avatarImg.style.display = 'none';
+            }
+            
+            document.getElementById('displayName').innerText = firstName || username || 'User';
+            document.getElementById('displayId').innerText = `ID: ${telegramId}`;
+            
+            const isAdmin = ADMIN_IDS.includes(telegramId);
+            const badge = document.getElementById('statusBadge');
+            
+            if (isAdmin) {
+                badge.innerText = 'ADMIN';
+                badge.className = 'status-badge badge-admin';
+            } else {
+                badge.innerText = 'FREE';
+                badge.className = 'status-badge badge-free';
+            }
+            
+            renderServers(isAdmin);
+        }
+
+        function getAvailableServers(isAdmin) {
+            if (isAdmin) {
                 return servers;
             } else {
                 return servers.filter(s => s.is_free === true);
             }
+        }
+
+        function renderServers(isAdmin) {
+            const container = document.getElementById('serverList');
+            container.innerHTML = '';
+            
+            const availableServers = getAvailableServers(isAdmin);
+            
+            availableServers.forEach(server => {
+                const serverEl = document.createElement('div');
+                serverEl.className = 'server-item';
+                serverEl.innerHTML = `
+                    <div class="server-header">
+                        <span class="server-flag">${server.flag}</span>
+                        <span class="server-name">${server.name}</span>
+                    </div>
+                    <div class="server-details">
+                        <span>${server.host}:${server.port}</span>
+                        <span>${server.protocol}</span>
+                    </div>
+                `;
+                container.appendChild(serverEl);
+            });
         }
 
         function generateConfig(server) {
@@ -611,74 +790,26 @@
             return '';
         }
 
-        function generateAllConfigs() {
-            return getAvailableServers().map(s => generateConfig(s)).join('\n');
-        }
-
-        function loadUserData() {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('content').style.display = 'none';
-            
-            let initials = '';
-            if (firstName) initials += firstName.charAt(0);
-            if (lastName) initials += lastName.charAt(0);
-            if (!initials) initials = (username || 'U').charAt(0).toUpperCase();
-            
-            document.getElementById('avatar').innerText = initials;
-            document.getElementById('displayName').innerText = firstName || username || 'User';
-            document.getElementById('displayId').innerText = `ID: ${telegramId}`;
-            
-            const badge = document.getElementById('statusBadge');
-            if (isAdmin) {
-                badge.innerText = 'ADMIN';
-                badge.className = 'status-badge badge-admin';
-            } else if (userStatus === 'premium') {
-                badge.innerText = 'PREMIUM';
-                badge.className = 'status-badge badge-premium';
-            } else {
-                badge.innerText = 'FREE';
-                badge.className = 'status-badge badge-free';
-            }
-            
-            renderServers();
-            
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
-        }
-
-        function renderServers() {
-            const container = document.getElementById('serverList');
-            container.innerHTML = '';
-            
-            const availableServers = getAvailableServers();
-            
-            availableServers.forEach(server => {
-                const serverEl = document.createElement('div');
-                serverEl.className = 'server-item';
-                serverEl.innerHTML = `
-                    <div class="server-header">
-                        <span class="server-flag">${server.flag}</span>
-                        <span class="server-name">${server.name}</span>
-                    </div>
-                    <div class="server-details">
-                        <span>${server.host}:${server.port}</span>
-                        <span>${server.protocol}</span>
-                    </div>
-                `;
-                container.appendChild(serverEl);
-            });
+        function generateAllConfigs(isAdmin) {
+            return getAvailableServers(isAdmin).map(s => generateConfig(s)).join('\n');
         }
 
         function copySubscription() {
-            const configs = generateAllConfigs();
-            const status = isAdmin ? 'ADMIN' : (userStatus === 'premium' ? 'PREMIUM' : 'FREE');
-            const header = `⚡ DICSTERY VPN ⚡\n\n👤 Пользователь: ${firstName || username || 'User'}\n🔒 ID: ${telegramId}\n👑 Статус: ${status}\n💬 Бот: @DicsteryVPN_bot\n\n`;
+            const isAdmin = ADMIN_IDS.includes(telegramId);
+            const configs = generateAllConfigs(isAdmin);
+            const status = isAdmin ? 'ADMIN' : 'FREE';
+            const header = `⚡ DICSTERY VPN ⚡\n\n👤 Пользователь: ${firstName || username || 'User'}\n🔒 ID: ${telegramId}\n👑 Статус: ${status}\n💬 Бот: @${BOT_USERNAME}\n\n`;
             const fullText = header + configs;
             
             navigator.clipboard.writeText(fullText).then(() => {
                 alert('✅ Подписка скопирована!\nВставьте в Happ для активации');
             });
         }
+
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const botLink = `https://t.me/${BOT_USERNAME}?start=register_${Date.now()}`;
+            window.location.href = botLink;
+        });
 
         document.querySelectorAll('.platform-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -700,7 +831,12 @@
 
         document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
 
-        loadUserData();
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        checkAuth();
     </script>
 </body>
 </html>
