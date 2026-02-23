@@ -532,130 +532,132 @@
     </div>
 
     <script>
+        const API_URL = 'http://d1.qwertyx.host:25775';
         const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
+        
+        if (!tg) {
+            document.body.innerHTML = '<div style="padding:50px;text-align:center;">❌ Это приложение работает только в Telegram</div>';
+            throw new Error('Not in Telegram');
         }
 
-        const token = new URLSearchParams(window.location.search).get('token');
-        
-        if (!token) {
-            document.body.innerHTML = '<div style="padding: 50px; text-align: center; color: #fff;">❌ Неверная ссылка доступа</div>';
-            throw new Error('No token');
+        tg.ready();
+        tg.expand();
+
+        const tgUser = tg.initDataUnsafe?.user;
+        if (!tgUser) {
+            document.body.innerHTML = '<div style="padding:50px;text-align:center;">❌ Не удалось получить данные пользователя</div>';
+            throw new Error('No user data');
         }
+
+        const telegramId = tgUser.id;
+        const username = tgUser.username || '';
+        const firstName = tgUser.first_name || '';
+        const lastName = tgUser.last_name || '';
 
         let userData = {
-            telegram_id: 0,
-            username: '',
-            first_name: '',
-            last_name: '',
+            telegram_id: telegramId,
+            username: username,
+            first_name: firstName,
+            last_name: lastName,
             is_admin: false,
             status: 'free'
         };
 
-        const servers = [
-            {id: 1, name: '🇷🇺 Россия #1', flag: '🇷🇺', host: '212.192.14.234', port: 24441, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_free: true},
-            {id: 2, name: '🇫🇷 Франция', flag: '🇫🇷', host: '95.111.250.4', port: 80, protocol: 'shadowsocks', method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_free: true},
-            {id: 3, name: '🇳🇱 Нидерланды', flag: '🇳🇱', host: '82.38.31.62', port: 8080, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_free: true},
-            {id: 4, name: '🇳🇱 Нидерланды #1', flag: '🇳🇱', host: 'nld-b3.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-b3.plugvpn.ru', fingerprint: 'chrome', public_key: 'fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU', short_id: '6117f326d85222ea', is_premium: true},
-            {id: 5, name: '🇳🇱 Нидерланды #2', flag: '🇳🇱', host: 'nld-x8.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-x8.plugvpn.ru', fingerprint: 'chrome', public_key: '5H0Z3DWs6UEdCx-uw3Jvv3dyFCsgoFjMNdlapdbwQXk', short_id: '7c050e5f16cb21de', is_premium: true},
-            {id: 6, name: '🇵🇱 Польша #1', flag: '🇵🇱', host: 'pol-m6.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'pol-m6.plugvpn.ru', fingerprint: 'chrome', public_key: '7zfV0yJHG46hnUm-89N5D8t4ZCN2_9yD8rs8uCCPgk0', short_id: 'c2c516d6fcfec79b', is_premium: true},
-            {id: 7, name: '🇵🇱 Польша #2', flag: '🇵🇱', host: 'pol-x1.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'pol-x1.plugvpn.ru', is_premium: true},
-            {id: 8, name: '🇺🇸 США #1', flag: '🇺🇸', host: 'usa-n5.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'usa-n5.plugvpn.ru', fingerprint: 'chrome', public_key: 'vTaqMH16V9S6jiOE74vCBXxplfbCrKByasYloyeeE0k', short_id: '61522fca4fc18140', is_premium: true},
-            {id: 9, name: '🇺🇸 США #2', flag: '🇺🇸', host: 'usa-f2.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'usa-f2.plugvpn.ru', is_premium: true},
-            {id: 10, name: '🇫🇮 Финляндия #1', flag: '🇫🇮', host: 'fin-q9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-q9.plugvpn.ru', fingerprint: 'chrome', public_key: 'qbnV1snO8ix66vt0VfKbyKloBnfZXUMCdZtA8-SwdBc', short_id: 'c8d761c11162e733', is_premium: true},
-            {id: 11, name: '🇫🇮 Финляндия #2', flag: '🇫🇮', host: 'fin-a7.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-a7.plugvpn.ru', fingerprint: 'chrome', public_key: '0TZaSq_Gz1-D25c6HeJD8qAgSkeoR7pRIbvI57QJ1XY', short_id: '985dfc082ead551b', is_premium: true},
-            {id: 12, name: '🇩🇪 Германия #1', flag: '🇩🇪', host: 'deu-h9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'deu-h9.plugvpn.ru', fingerprint: 'chrome', public_key: 'H80wZ3PsnPMixNbjeVq8p_g6UJaLCasHCtTaUlzWOGk', short_id: 'c32214ffa4d6ced6', is_premium: true},
-            {id: 13, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '158.160.171.167', port: 443, protocol: 'vless', uuid: '53fa2131-611e-413f-8b1a-3aed45529a52', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: '84.img.avito.st', fingerprint: 'chrome', public_key: 'w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F', short_id: '331a54c7ab4b', is_premium: true},
-            {id: 14, name: '🇷🇺 Россия #3', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
-        ];
+        let servers = [];
 
-        function getServersByStatus() {
-            if (userData.is_admin || userData.status === 'premium') {
-                return servers;
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 MB';
+            if (bytes < 1024 * 1024 * 1024) {
+                return Math.floor(bytes / (1024 * 1024)) + ' MB';
             } else {
-                return servers.filter(s => s.is_free === true);
+                return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
             }
         }
 
-        function generateConfigs() {
-            const availableServers = getServersByStatus();
-            let configs = [];
-            
-            for (let s of availableServers) {
-                if (s.protocol === 'shadowsocks') {
-                    let str = `${s.method}:${s.password}`;
-                    let base64 = btoa(str);
-                    configs.push(`ss://${base64}@${s.host}:${s.port}#${s.name}`);
-                } else if (s.protocol === 'vless') {
-                    let params = [`type=${s.network || 'tcp'}`, `security=${s.tls || 'none'}`];
-                    if (s.tls === 'reality') {
-                        if (s.public_key) params.push(`pbk=${s.public_key}`);
-                        if (s.sni) params.push(`sni=${s.sni}`);
-                        if (s.fingerprint) params.push(`fp=${s.fingerprint}`);
-                        if (s.short_id) params.push(`sid=${s.short_id}`);
-                    }
-                    if (s.flow) params.push(`flow=${s.flow}`);
-                    if (s.network === 'grpc') {
-                        if (s.grpc_service_name) params.push(`serviceName=${s.grpc_service_name}`);
-                        params.push(`mode=gun`);
-                    }
-                    if (s.network === 'ws') {
-                        if (s.ws_host) params.push(`host=${s.ws_host}`);
-                        if (s.ws_path) params.push(`path=${encodeURIComponent(s.ws_path)}`);
-                    }
-                    let paramsStr = params.join('&');
-                    configs.push(`vless://${s.uuid}@${s.host}:${s.port}?${paramsStr}#${s.name}`);
+        function generateConfig(server) {
+            if (server.protocol === 'shadowsocks') {
+                let str = `${server.method}:${server.password}`;
+                let base64 = btoa(str);
+                return `ss://${base64}@${server.host}:${server.port}#${server.name}`;
+            } else if (server.protocol === 'vless') {
+                let params = [`type=${server.network || 'tcp'}`, `security=${server.tls || 'none'}`];
+                if (server.tls === 'reality') {
+                    if (server.public_key) params.push(`pbk=${server.public_key}`);
+                    if (server.sni) params.push(`sni=${server.sni}`);
+                    if (server.fingerprint) params.push(`fp=${server.fingerprint}`);
+                    if (server.short_id) params.push(`sid=${server.short_id}`);
                 }
+                if (server.flow) params.push(`flow=${server.flow}`);
+                if (server.network === 'grpc') {
+                    if (server.grpc_service_name) params.push(`serviceName=${server.grpc_service_name}`);
+                    params.push(`mode=gun`);
+                }
+                if (server.network === 'ws') {
+                    if (server.ws_host) params.push(`host=${server.ws_host}`);
+                    if (server.ws_path) params.push(`path=${encodeURIComponent(server.ws_path)}`);
+                }
+                let paramsStr = params.join('&');
+                return `vless://${server.uuid}@${server.host}:${server.port}?${paramsStr}#${server.name}`;
             }
-            
-            return configs.join('\n');
+            return '';
+        }
+
+        function generateAllConfigs() {
+            return servers.map(s => generateConfig(s)).join('\n');
         }
 
         function loadUserData() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('content').style.display = 'none';
             
-            if (tg && tg.initDataUnsafe?.user) {
-                const tgUser = tg.initDataUnsafe.user;
-                userData.telegram_id = tgUser.id;
-                userData.username = tgUser.username || '';
-                userData.first_name = tgUser.first_name || '';
-                userData.last_name = tgUser.last_name || '';
-                
-                let initials = '';
-                if (userData.first_name) initials += userData.first_name.charAt(0);
-                if (userData.last_name) initials += userData.last_name.charAt(0);
-                if (!initials) initials = (userData.username || 'U').charAt(0).toUpperCase();
-                
-                document.getElementById('avatar').innerText = initials;
-                document.getElementById('displayName').innerText = userData.first_name || userData.username || 'User';
-                document.getElementById('displayId').innerText = `ID: ${userData.telegram_id}`;
-            } else {
-                document.getElementById('avatar').innerText = 'U';
-                document.getElementById('displayName').innerText = 'User';
-                document.getElementById('displayId').innerText = `ID: —`;
-            }
+            let initials = '';
+            if (firstName) initials += firstName.charAt(0);
+            if (lastName) initials += lastName.charAt(0);
+            if (!initials) initials = (username || 'U').charAt(0).toUpperCase();
             
-            const isAdmin = userData.telegram_id === 7383521067;
+            document.getElementById('avatar').innerText = initials;
+            document.getElementById('displayName').innerText = firstName || username || 'User';
+            document.getElementById('displayId').innerText = `ID: ${telegramId}`;
             
-            if (isAdmin) {
-                userData.is_admin = true;
-                userData.status = 'admin';
-            } else {
-                const random = Math.random();
-                if (random < 0.3) {
-                    userData.status = 'premium';
-                } else {
-                    userData.status = 'free';
-                }
-            }
+            fetch(`${API_URL}/api/user/status?telegram_id=${telegramId}`)
+                .then(response => response.json())
+                .then(data => {
+                    userData.status = data.status;
+                    userData.is_admin = data.is_admin;
+                    updateUI();
+                    return fetch(`${API_URL}/api/servers?telegram_id=${telegramId}`);
+                })
+                .then(response => response.json())
+                .then(data => {
+                    servers = data;
+                    renderServers();
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('content').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loading').innerHTML = '❌ Ошибка загрузки. Попробуйте позже.';
+                });
+        }
+
+        function renderServers() {
+            const container = document.getElementById('serverList');
+            if (!container) return;
             
-            updateUI();
+            container.innerHTML = '';
             
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
+            servers.forEach(server => {
+                const serverEl = document.createElement('div');
+                serverEl.className = 'server-item';
+                serverEl.innerHTML = `
+                    <div class="server-header">
+                        <span class="server-flag">${server.flag}</span>
+                        <span class="server-name">${server.name}</span>
+                    </div>
+                    <div class="server-host">${server.host}:${server.port}</div>
+                `;
+                container.appendChild(serverEl);
+            });
         }
 
         function updateUI() {
@@ -671,14 +673,14 @@
                 badge.className = 'status-badge badge-free';
             }
             
-            document.getElementById('manualLink').innerText = `https://dicstery.github.io/DicsteryVPN/?token=${token}`;
+            document.getElementById('manualLink').innerText = `https://t.me/DicsteryVPN_bot/VPN?start=${telegramId}`;
         }
 
         function copySubscription() {
-            const configs = generateConfigs();
-            let displayName = userData.first_name || userData.username || 'User';
+            const configs = generateAllConfigs();
+            let displayName = firstName || username || 'User';
             const status = userData.is_admin ? 'ADMIN' : (userData.status === 'premium' ? 'PREMIUM' : 'FREE');
-            const header = `⚡ DICSTERY VPN ⚡\n\n👤 Пользователь: ${displayName}\n🔒 ID: ${userData.telegram_id}\n👑 Статус: ${status}\n💬 Бот: @DicsteryVPN_bot\n\n`;
+            const header = `⚡ DICSTERY VPN ⚡\n\n👤 Пользователь: ${displayName}\n🔒 ID: ${telegramId}\n👑 Статус: ${status}\n💬 Бот: @DicsteryVPN_bot\n\n`;
             const fullText = header + configs;
             
             navigator.clipboard.writeText(fullText).then(() => {
@@ -687,7 +689,7 @@
         }
 
         function copyManualLink() {
-            const link = `https://dicstery.github.io/DicsteryVPN/?token=${token}`;
+            const link = `https://t.me/DicsteryVPN_bot/VPN?start=${telegramId}`;
             navigator.clipboard.writeText(link).then(() => {
                 alert('✅ Ссылка скопирована!');
             });
