@@ -22,6 +22,9 @@
             --vip-primary: #f1c40f;
             --vip-secondary: #f39c12;
             --vip-glow: rgba(241, 196, 15, 0.4);
+            --premium-primary: #ff6b6b;
+            --premium-secondary: #ff8e8e;
+            --premium-glow: rgba(255, 107, 107, 0.4);
             --text-primary: #ffffff;
             --text-secondary: #8f9bb3;
             --success: #2ecc71;
@@ -163,6 +166,12 @@
             border: 1px solid var(--vip-primary);
         }
 
+        .status-premium {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 142, 142, 0.15));
+            color: var(--premium-primary);
+            border: 1px solid var(--premium-primary);
+        }
+
         .status-expired {
             background: rgba(231, 76, 60, 0.15);
             color: var(--danger);
@@ -250,6 +259,17 @@
             box-shadow: 0 0 20px var(--vip-glow);
         }
 
+        .premium-server {
+            border: 2px solid var(--premium-primary);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(255, 142, 142, 0.05));
+        }
+
+        .premium-server:hover {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--premium-primary);
+            box-shadow: 0 0 20px var(--premium-glow);
+        }
+
         .server-header {
             display: flex;
             align-items: center;
@@ -276,6 +296,14 @@
             border-radius: 4px;
             background: var(--vip-primary);
             color: #000;
+        }
+
+        .premium-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--premium-primary);
+            color: #fff;
         }
 
         .server-details {
@@ -326,6 +354,16 @@
 
         .btn-vip:hover {
             box-shadow: 0 8px 25px var(--vip-glow);
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, var(--premium-primary), var(--premium-secondary));
+            color: white;
+            box-shadow: 0 4px 15px var(--premium-glow);
+        }
+
+        .btn-premium:hover {
+            box-shadow: 0 8px 25px var(--premium-glow);
         }
 
         .expired-message {
@@ -412,16 +450,16 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Статус</span>
-                    <span class="info-value"><span class="status-badge" id="statusBadge">-</span></span>
+                    <span class="info-value"><span class="status-badge" id="statusBadge">FREE</span></span>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-block">
-                        <div class="stat-number" id="daysLeft">0</div>
+                        <div class="stat-number" id="daysLeft">∞</div>
                         <div class="stat-label">дней осталось</div>
                     </div>
                     <div class="stat-block">
-                        <div class="stat-number" id="trafficUsed">0</div>
-                        <div class="stat-label">ГБ / <span id="trafficLimit">0</span></div>
+                        <div class="stat-number" id="trafficUsed">0.0</div>
+                        <div class="stat-label">ГБ / <span id="trafficLimit">0.1</span></div>
                     </div>
                 </div>
             </div>
@@ -433,11 +471,11 @@
                 <div class="info-box">
                     <div class="info-line">
                         <span class="label">📅 Истекает:</span>
-                        <span class="value" id="expireDate">-</span>
+                        <span class="value" id="expireDate">Бессрочно</span>
                     </div>
                     <div class="info-line">
                         <span class="label">📧 Дней осталось:</span>
-                        <span class="value" id="daysLeftDetail">0</span>
+                        <span class="value" id="daysLeftDetail">∞</span>
                     </div>
                     <div class="info-line">
                         <span class="label">🔒 ID:</span>
@@ -449,11 +487,11 @@
                     </div>
                     <div class="info-line">
                         <span class="label">📊 Трафик:</span>
-                        <span class="value" id="trafficDetail">0 MB / 0 GB</span>
+                        <span class="value" id="trafficDetail">0 MB / 0.1 GB</span>
                     </div>
                     <div class="info-line">
                         <span class="label">⚡ Скорость:</span>
-                        <span class="value" id="speedText">-</span>
+                        <span class="value" id="speedText">🐢 5 Мбит/с</span>
                     </div>
                 </div>
                 <div class="progress-container">
@@ -500,20 +538,248 @@
         };
 
         let servers = [
-            {id: 1, name: 'Russia #1', flag: '🇷🇺', host: '212.192.14.234', port: 24441, method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_vip: false, is_free: true, ping: 23},
-            {id: 2, name: 'Russia #2', flag: '🇷🇺', host: '62.113.114.116', port: 42320, method: 'chacha20-ietf-poly1305', password: 'BShcek5ydlWbXEnhl2vlym', is_vip: false, is_free: false, ping: 45},
-            {id: 3, name: 'Russia #3', flag: '🇷🇺', host: 'spb.scroogethebest.com', port: 443, method: 'chacha20-ietf-poly1305', password: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1', is_vip: false, is_free: false, ping: 18},
-            {id: 4, name: 'UK #1', flag: '🇬🇧', host: 'series-a1.samanehha.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'W74XFALLLuw6m5IA', is_vip: false, is_free: false, ping: 78},
-            {id: 5, name: 'UK #2', flag: '🇬🇧', host: 'admin.c2.havij.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'kaQH3hGdcP80XEDI', is_vip: false, is_free: false, ping: 82},
-            {id: 6, name: 'France', flag: '🇫🇷', host: '95.111.250.4', port: 80, method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_vip: false, is_free: true, ping: 67},
-            {id: 7, name: 'USA', flag: '🇺🇸', host: '154.38.176.7', port: 80, method: 'aes-256-gcm', password: 'nKeE2ZFWVaE4DyjR', is_vip: false, is_free: false, ping: 145},
-            {id: 8, name: 'Netherlands', flag: '🇳🇱', host: '82.38.31.62', port: 8080, method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_vip: false, is_free: true, ping: 56},
-            {id: 9, name: 'Sweden', flag: '🇸🇪', host: '46.246.97.140', port: 53908, method: 'chacha20-ietf-poly1305', password: 'ZweuXavjovuhzt1AF0d6qx', is_vip: false, is_free: false, ping: 62},
-            {id: 10, name: 'Japan', flag: '🇯🇵', host: '103.106.228.175', port: 8009, method: 'aes-256-gcm', password: 'XKFKI2rULjlP74', is_vip: false, is_free: false, ping: 185},
-            {id: 11, name: 'Italy VIP', flag: '🇮🇹', host: '80.211.133.156', port: 443, method: 'aes-256-gcm', password: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532', is_vip: true, is_free: false, ping: 58},
-            {id: 12, name: 'Germany #2 VIP', flag: '🇩🇪', host: '93.94.51.13', port: 25451, method: 'aes-256-gcm', password: 'a90f4742-2f30-47b5-9f17-b6ab04cc98e8', is_vip: true, is_free: false, ping: 32},
-            {id: 13, name: 'Germany #3 VIP', flag: '🇩🇪', host: 'deu469.unboundworld.org', port: 8443, method: 'aes-256-gcm', password: 'cc9f7840-757a-430b-bddc-a73478bea434', is_vip: true, is_free: false, ping: 41},
-            {id: 14, name: 'Germany #4 VIP', flag: '🇩🇪', host: '81.19.141.190', port: 51529, method: 'aes-256-gcm', password: 'ad2879c1-7f77-4a4c-ba50-c24dd5ceffa4', is_vip: true, is_free: false, ping: 28}
+            {
+                id: 1,
+                name: '⚡ GERMANY PREMIUM ⚡',
+                flag: '⚡',
+                host: '95.85.237.48',
+                port: 443,
+                protocol: 'vless',
+                uuid: 'f7072123-7a41-4eb1-a712-c149bd4c3177',
+                flow: 'xtls-rprx-vision',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'cdnjs.com',
+                fingerprint: 'chrome',
+                public_key: 'LCbjlpZeyt-k8ZwbFLMFsgE1-is1CWYGng-9nsKRWis',
+                is_premium: true,
+                is_vip: true,
+                is_free: false,
+                ping: 18,
+                priority: 1000
+            },
+            {
+                id: 2,
+                name: 'Russia #1',
+                flag: '🇷🇺',
+                host: '212.192.14.234',
+                port: 24441,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'Ow8iSExQNaobZPY9bJ4EPI',
+                is_vip: false,
+                is_free: true,
+                ping: 23,
+                priority: 1
+            },
+            {
+                id: 3,
+                name: 'Russia #2',
+                flag: '🇷🇺',
+                host: '62.113.114.116',
+                port: 42320,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'BShcek5ydlWbXEnhl2vlym',
+                is_vip: false,
+                is_free: false,
+                ping: 45,
+                priority: 2
+            },
+            {
+                id: 4,
+                name: 'Russia #3',
+                flag: '🇷🇺',
+                host: 'spb.scroogethebest.com',
+                port: 443,
+                protocol: 'vless',
+                uuid: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1',
+                flow: 'xtls-rprx-vision',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'spb.scroogethebest.com',
+                fingerprint: 'chrome',
+                public_key: 'C3hc32Cknec2shasKJIH2DYVb7Fyu64RF9v71L3ipEg',
+                short_id: '9c2378562188c3cb',
+                is_vip: false,
+                is_free: false,
+                ping: 18,
+                priority: 3
+            },
+            {
+                id: 5,
+                name: 'UK #1',
+                flag: '🇬🇧',
+                host: 'series-a1.samanehha.co',
+                port: 443,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'W74XFALLLuw6m5IA',
+                is_vip: false,
+                is_free: false,
+                ping: 78,
+                priority: 4
+            },
+            {
+                id: 6,
+                name: 'UK #2',
+                flag: '🇬🇧',
+                host: 'admin.c2.havij.co',
+                port: 443,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'kaQH3hGdcP80XEDI',
+                is_vip: false,
+                is_free: false,
+                ping: 82,
+                priority: 5
+            },
+            {
+                id: 7,
+                name: 'France',
+                flag: '🇫🇷',
+                host: '95.111.250.4',
+                port: 80,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: 'BbOUgNLUyT6rdrxE',
+                is_vip: false,
+                is_free: true,
+                ping: 67,
+                priority: 6
+            },
+            {
+                id: 8,
+                name: 'USA',
+                flag: '🇺🇸',
+                host: '154.38.176.7',
+                port: 80,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: 'nKeE2ZFWVaE4DyjR',
+                is_vip: false,
+                is_free: false,
+                ping: 145,
+                priority: 7
+            },
+            {
+                id: 9,
+                name: 'Netherlands',
+                flag: '🇳🇱',
+                host: '82.38.31.62',
+                port: 8080,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'oZloA69Q8yhcQV8ka3Pa3A',
+                is_vip: false,
+                is_free: true,
+                ping: 56,
+                priority: 8
+            },
+            {
+                id: 10,
+                name: 'Sweden',
+                flag: '🇸🇪',
+                host: '46.246.97.140',
+                port: 53908,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'ZweuXavjovuhzt1AF0d6qx',
+                is_vip: false,
+                is_free: false,
+                ping: 62,
+                priority: 9
+            },
+            {
+                id: 11,
+                name: 'Japan',
+                flag: '🇯🇵',
+                host: '103.106.228.175',
+                port: 8009,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: 'XKFKI2rULjlP74',
+                is_vip: false,
+                is_free: false,
+                ping: 185,
+                priority: 10
+            },
+            {
+                id: 12,
+                name: 'Turkey',
+                flag: '🇹🇷',
+                host: 'freeiran.lookanet.app',
+                port: 2052,
+                protocol: 'vless',
+                uuid: 'f2eeaf91-6ac0-47f3-9673-39476e75c02d',
+                security: 'none',
+                network: 'ws',
+                header_type: '--',
+                ws_host: 'metaplayer.gameredzone.top',
+                ws_path: '/t.me.V2RayyNGvpn?ed=1024',
+                tls: 'none',
+                is_vip: false,
+                is_free: true,
+                ping: 92,
+                priority: 11
+            },
+            {
+                id: 13,
+                name: 'Italy VIP',
+                flag: '🇮🇹',
+                host: '80.211.133.156',
+                port: 443,
+                protocol: 'vless',
+                uuid: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532',
+                flow: 'xtls-rprx-vision',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'gmail.com',
+                fingerprint: 'chrome',
+                alpn: 'h2',
+                public_key: 'ckRcueERkPqqjZABwxqni_J_Nbb70Q6k5fEEUAjoImw',
+                is_vip: true,
+                is_free: false,
+                ping: 58,
+                priority: 12
+            },
+            {
+                id: 14,
+                name: 'Germany #1',
+                flag: '🇩🇪',
+                host: 'de.prod.n7.homes',
+                port: 8443,
+                protocol: 'vless',
+                uuid: '010c8bf7-0a43-404f-a6c5-2427acb4d476',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'sun6-21.userapi.com',
+                fingerprint: 'chrome',
+                public_key: 'upDCW94g-pSYQrmXvOrTVYlwBUrSKhYFF9QwrqObdVo',
+                short_id: '3ca620a7ed5f3196',
+                is_vip: true,
+                is_free: false,
+                ping: 32,
+                priority: 13
+            },
+            {
+                id: 15,
+                name: 'Germany #3',
+                flag: '🇩🇪',
+                host: '2.58.81.221',
+                port: 80,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: '9dQS3geeylyrRth9',
+                is_vip: false,
+                is_free: false,
+                ping: 41,
+                priority: 14
+            }
         ];
 
         function getSpeedText(status, is_admin) {
@@ -522,6 +788,18 @@
             if (status === 'basic') return "⚡ 50 Мбит/с (Premium)";
             if (status === 'trial') return "🔄 30 Мбит/с (Пробный)";
             return "🐢 5 Мбит/с (Бесплатный)";
+        }
+
+        function getAvailableServers() {
+            if (userData.is_admin) {
+                return servers;
+            } else if (userData.status === 'vip') {
+                return servers.filter(s => !s.is_premium || s.is_vip);
+            } else if (userData.status === 'basic' || userData.status === 'trial') {
+                return servers.filter(s => !s.is_vip && !s.is_premium);
+            } else {
+                return servers.filter(s => s.is_free === true);
+            }
         }
 
         function loadUserData() {
@@ -537,90 +815,89 @@
                 userData.first_name = tgUser.first_name || '';
             }
             
-            fetchUserFromBot();
-        }
-
-        function fetchUserFromBot() {
-            fetch(`https://ваш-бот-хост.com/api/user?token=${token}`)
-                .then(response => response.json())
-                .then(data => {
-                    userData = {...userData, ...data};
-                    updateUI();
-                    renderServers();
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('content').style.display = 'block';
-                })
-                .catch(error => {
-                    console.log('Using mock data', error);
-                    const isAdmin = userData.telegram_id === 7383521067;
-                    
-                    if (isAdmin) {
-                        userData.is_admin = true;
-                        userData.status = 'admin';
-                        userData.subscription_type = 'admin';
-                        userData.subscription_end = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
-                        userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
-                        userData.traffic_limit = 1000000 * 1024 * 1024 * 1024;
-                    } else {
-                        const randomStatus = Math.random();
-                        if (randomStatus < 0.3) {
-                            userData.status = 'vip';
-                            userData.subscription_type = 'vip';
-                            userData.subscription_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-                            userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
-                            userData.traffic_limit = 10000 * 1024 * 1024 * 1024;
-                        } else {
-                            userData.status = 'free';
-                            userData.subscription_type = 'free';
-                            userData.traffic_used = Math.floor(Math.random() * 50) * 1024 * 1024;
-                            userData.traffic_limit = 100 * 1024 * 1024;
-                        }
-                    }
-                    
-                    updateUI();
-                    renderServers();
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('content').style.display = 'block';
-                });
+            const isAdmin = userData.telegram_id === 7383521067;
+            
+            if (isAdmin) {
+                userData.is_admin = true;
+                userData.status = 'admin';
+                userData.subscription_type = 'admin';
+                userData.subscription_end = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+                userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
+                userData.traffic_limit = 1000000 * 1024 * 1024 * 1024;
+            } else {
+                const randomStatus = Math.random();
+                if (randomStatus < 0.2) {
+                    userData.status = 'vip';
+                    userData.subscription_type = 'vip';
+                    userData.subscription_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                    userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
+                    userData.traffic_limit = 10000 * 1024 * 1024 * 1024;
+                } else if (randomStatus < 0.5) {
+                    userData.status = 'basic';
+                    userData.subscription_type = 'basic';
+                    userData.subscription_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                    userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
+                    userData.traffic_limit = 1000 * 1024 * 1024 * 1024;
+                } else {
+                    userData.status = 'free';
+                    userData.subscription_type = 'free';
+                    userData.traffic_used = Math.floor(Math.random() * 50) * 1024 * 1024;
+                    userData.traffic_limit = 100 * 1024 * 1024;
+                }
+            }
+            
+            updateUI();
+            renderServers();
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
         }
 
         function renderServers() {
             const container = document.getElementById('serverList');
             container.innerHTML = '';
             
-            const isVip = userData.status === 'vip' || userData.is_admin;
+            const availableServers = getAvailableServers();
+            
+            availableServers.sort((a, b) => {
+                if (a.priority !== b.priority) return b.priority - a.priority;
+                return a.ping - b.ping;
+            });
+            
             const isActive = userData.is_admin || userData.status !== 'free' || (userData.status === 'free' && userData.daily_traffic_used < userData.traffic_limit);
             
-            if (!isActive) {
+            if (!isActive && userData.status === 'free') {
                 document.getElementById('expiredMessage').style.display = 'block';
                 document.getElementById('content').style.opacity = '0.5';
                 document.getElementById('content').style.pointerEvents = 'none';
                 return;
             }
             
-            let availableServers;
-            if (userData.is_admin || userData.status === 'vip' || userData.status === 'basic' || userData.status === 'trial') {
-                availableServers = servers.filter(s => s.is_active !== false);
-            } else {
-                availableServers = servers.filter(s => s.is_free === true);
-            }
-            
-            availableServers.sort((a, b) => a.ping - b.ping);
-            
             availableServers.forEach(server => {
                 const isVipServer = server.is_vip;
+                const isPremiumServer = server.is_premium;
                 const pingColor = server.ping < 50 ? '#2ecc71' : server.ping < 100 ? '#f39c12' : '#e74c3c';
                 
+                let serverClass = 'server-item';
+                if (isPremiumServer) serverClass += ' premium-server';
+                else if (isVipServer) serverClass += ' vip-server';
+                
                 const serverEl = document.createElement('div');
-                serverEl.className = `server-item ${isVipServer ? 'vip-server' : ''}`;
+                serverEl.className = serverClass;
+                
+                let badgeHtml = '';
+                if (isPremiumServer) badgeHtml = '<span class="premium-badge">PREMIUM</span>';
+                else if (isVipServer) badgeHtml = '<span class="server-badge">VIP</span>';
+                
+                let freeIcon = server.is_free ? '<span style="font-size:11px;margin-left:4px;color:#2ecc71;">🆓</span>' : '';
                 
                 serverEl.innerHTML = `
                     <div class="server-header">
                         <span class="server-flag">${server.flag}</span>
                         <div class="server-name">
                             ${server.name}
-                            ${isVipServer ? '<span class="server-badge">VIP</span>' : ''}
-                            ${server.is_free ? '<span style="font-size:11px;margin-left:4px;color:#2ecc71;">🆓</span>' : ''}
+                            ${badgeHtml}
+                            ${freeIcon}
                         </div>
                     </div>
                     <div class="server-details">
@@ -633,7 +910,35 @@
         }
 
         function generateConfig(server) {
-            return `ss://${btoa(`${server.method}:${server.password}`)}@${server.host}:${server.port}#${server.flag} ${server.name}`;
+            if (server.protocol === 'shadowsocks') {
+                return `ss://${btoa(`${server.method}:${server.password}`)}@${server.host}:${server.port}#${server.flag} ${server.name}`;
+            } else if (server.protocol === 'vless') {
+                let params = [
+                    `type=${server.network || 'tcp'}`,
+                    `security=${server.tls || 'none'}`
+                ];
+                if (server.tls === 'reality') {
+                    if (server.public_key) params.push(`pbk=${server.public_key}`);
+                    if (server.sni) params.push(`sni=${server.sni}`);
+                    if (server.fingerprint) params.push(`fp=${server.fingerprint}`);
+                    if (server.short_id) params.push(`sid=${server.short_id}`);
+                }
+                if (server.flow) params.push(`flow=${server.flow}`);
+                if (server.network === 'grpc') {
+                    if (server.grpc_service_name) params.push(`serviceName=${server.grpc_service_name}`);
+                    params.push(`mode=gun`);
+                }
+                if (server.alpn) params.push(`alpn=${server.alpn}`);
+                if (server.allow_insecure) params.push(`allowInsecure=1`);
+                if (server.network === 'ws') {
+                    if (server.ws_host) params.push(`host=${server.ws_host}`);
+                    if (server.ws_path) params.push(`path=${encodeURIComponent(server.ws_path)}`);
+                }
+                
+                const paramsStr = params.join('&');
+                return `vless://${server.uuid}@${server.host}:${server.port}?${paramsStr}#${server.flag} ${server.name}`;
+            }
+            return '';
         }
 
         function formatBytes(bytes) {
@@ -656,19 +961,11 @@
         }
 
         function copySubscription() {
-            const isVip = userData.status === 'vip' || userData.is_admin;
-            let availableServers;
-            
-            if (userData.is_admin || userData.status === 'vip' || userData.status === 'basic' || userData.status === 'trial') {
-                availableServers = servers.filter(s => s.is_active !== false);
-            } else {
-                availableServers = servers.filter(s => s.is_free === true);
-            }
-            
+            const availableServers = getAvailableServers();
             const configs = availableServers.map(s => generateConfig(s)).join('\n');
             
-            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : new Date();
-            const daysLeft = userData.is_admin ? '∞' : Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24)));
+            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : null;
+            const daysLeft = userData.is_admin ? '∞' : (expireDate ? Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24))) : '∞');
             
             const usedGB = (userData.traffic_used / (1024 * 1024 * 1024)).toFixed(1);
             const limitGB = userData.traffic_limit === 0 ? '∞' : (userData.traffic_limit / (1024 * 1024 * 1024)).toFixed(1);
@@ -708,10 +1005,10 @@
             const limitGB = userData.traffic_limit === 0 ? '∞' : (userData.traffic_limit / (1024 * 1024 * 1024)).toFixed(1);
             
             document.getElementById('trafficUsed').innerText = usedGB;
-            document.getElementById('trafficLimit').innerText = limitGB;
+            document.getElementById('trafficLimit').innerText = limitGB === '∞' ? '∞' : (parseFloat(limitGB) < 1 ? '0.1' : limitGB);
             
             const usedMB = Math.floor(userData.traffic_used / (1024 * 1024));
-            document.getElementById('trafficDetail').innerText = `${usedMB} MB / ${limitGB} GB`;
+            document.getElementById('trafficDetail').innerText = `${usedMB} MB / ${limitGB === '∞' ? '∞' : limitGB} GB`;
             
             const speedText = getSpeedText(userData.status, userData.is_admin);
             document.getElementById('speedText').innerText = speedText;
@@ -743,13 +1040,13 @@
             
             const copyBtn = document.getElementById('copySubscriptionBtn');
             if (userData.is_admin) {
-                copyBtn.classList.add('btn-vip');
+                copyBtn.classList.add('btn-premium');
                 copyBtn.innerHTML = '👑 Скопировать админ-подписку';
             } else if (userData.status === 'vip') {
                 copyBtn.classList.add('btn-vip');
                 copyBtn.innerHTML = '⭐ Скопировать VIP подписку';
             } else {
-                copyBtn.classList.remove('btn-vip');
+                copyBtn.classList.remove('btn-vip', 'btn-premium');
                 copyBtn.innerHTML = '📋 Добавить подписку в Happ';
             }
         }
