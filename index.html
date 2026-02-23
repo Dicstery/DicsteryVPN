@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dicstery VPN</title>
+    <title>Dicstery VPN - Личный кабинет</title>
     <style>
         * {
             margin: 0;
@@ -79,10 +79,6 @@
             font-size: 14px;
             margin-top: 5px;
             display: inline-block;
-        }
-
-        .support-link:hover {
-            color: var(--accent-primary);
         }
 
         .container {
@@ -198,7 +194,7 @@
 
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-top: 15px;
         }
@@ -232,17 +228,6 @@
             box-shadow: 0 8px 25px rgba(74, 108, 247, 0.5);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.5);
-        }
-
         .btn-vip {
             background: linear-gradient(135deg, var(--vip-primary), var(--vip-secondary));
             border: none;
@@ -255,14 +240,15 @@
             box-shadow: 0 8px 25px var(--vip-glow);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--accent-primary);
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
         }
 
-        .btn-outline:hover {
-            background: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.5);
         }
 
         .server-list {
@@ -283,7 +269,6 @@
             align-items: center;
             justify-content: space-between;
             transition: var(--transition);
-            position: relative;
         }
 
         .server-item:hover {
@@ -313,7 +298,6 @@
 
         .server-flag {
             font-size: 28px;
-            flex-shrink: 0;
         }
 
         .server-details {
@@ -336,41 +320,11 @@
             border-radius: 4px;
             background: var(--vip-primary);
             color: #000;
-            white-space: nowrap;
         }
 
         .server-host {
             font-size: 12px;
             color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ping-bar-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        .ping-bar {
-            width: 60px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-        }
-
-        .ping-fill {
-            height: 100%;
-            border-radius: 2px;
-            transition: width 0.3s;
-        }
-
-        .ping-value {
-            font-size: 11px;
-            color: var(--text-secondary);
-            min-width: 35px;
         }
 
         .connect-btn {
@@ -383,8 +337,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            flex-shrink: 0;
-            margin-left: 8px;
         }
 
         .connect-btn:hover {
@@ -393,40 +345,11 @@
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        .filter-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 14px;
-            border-radius: 30px;
-            color: var(--text-secondary);
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        
-        .filter-btn.active {
-            background: var(--accent-primary);
-            color: white;
-            border-color: var(--accent-primary);
-        }
-        
-        .filter-btn.vip-filter {
-            border-color: var(--vip-primary);
-            color: var(--vip-primary);
-        }
-        
-        .filter-btn.vip-filter.active {
-            background: var(--vip-primary);
-            color: black;
+        .expired-message {
+            text-align: center;
+            padding: 30px;
+            color: var(--danger);
+            font-size: 18px;
         }
 
         .subscription-info {
@@ -450,44 +373,6 @@
             font-size: 12px;
             color: var(--text-secondary);
         }
-
-        .expired-message {
-            text-align: center;
-            padding: 30px;
-            color: var(--danger);
-            font-size: 18px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 14px;
-            border-radius: var(--border-radius-sm);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        @media (max-width: 380px) {
-            .filter-bar {
-                gap: 5px;
-            }
-            .filter-btn {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-            .connect-btn {
-                padding: 4px 8px;
-                font-size: 12px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -498,16 +383,16 @@
         <a href="https://t.me/Dicstery" class="support-link">@Dicstery</a>
     </div>
 
-    <div class="container" id="mainContainer">
-        <div id="expiredMessage" style="display: none;" class="card expired-message">
+    <div class="container">
+        <div id="expiredMessage" class="card expired-message" style="display: none;">
             ❌ Срок действия подписки истек<br>
             <small>Приобретите подписку в боте @DicsteryVPN_bot</small>
         </div>
 
-        <div id="content" style="display: block;">
-            <div class="card" id="profileCard">
+        <div id="content">
+            <div class="card">
                 <div class="card-title">
-                    <span>👤</span> Мой профиль
+                    <span>👤</span> Профиль
                 </div>
                 <div class="info-row">
                     <span class="info-label">Пользователь</span>
@@ -516,6 +401,10 @@
                 <div class="info-row">
                     <span class="info-label">Статус</span>
                     <span class="info-value"><span class="status-badge" id="statusBadge">ACTIVE</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Подписка</span>
+                    <span class="info-value" id="subType">Базовая</span>
                 </div>
                 <div class="subscription-info">
                     <div class="info-block">
@@ -543,29 +432,16 @@
 
             <div class="card">
                 <div class="card-title">
-                    <span>🖥</span> Сервера
-                </div>
-                <div class="filter-bar" id="serverFilters">
-                    <button class="filter-btn active" data-filter="all">Все</button>
-                    <button class="filter-btn" data-filter="RU">🇷🇺</button>
-                    <button class="filter-btn" data-filter="GB">🇬🇧</button>
-                    <button class="filter-btn" data-filter="FR">🇫🇷</button>
-                    <button class="filter-btn" data-filter="US">🇺🇸</button>
-                    <button class="filter-btn" data-filter="NL">🇳🇱</button>
-                    <button class="filter-btn" data-filter="SE">🇸🇪</button>
-                    <button class="filter-btn" data-filter="JP">🇯🇵</button>
-                    <button class="filter-btn" data-filter="IT">🇮🇹</button>
-                    <button class="filter-btn" data-filter="DE">🇩🇪</button>
-                    <button class="filter-btn vip-filter" data-filter="vip">👑 VIP</button>
+                    <span>🔑</span> Мои сервера
                 </div>
                 <div class="server-list" id="serverList">
                 </div>
-                <div class="action-buttons">
-                    <button class="btn btn-success action-btn" onclick="addAllServers()">
-                        <span>➕</span> Добавить все
+                <div class="button-grid">
+                    <button class="btn btn-success" onclick="copyAllConfigs()">
+                        📋 Скопировать все
                     </button>
-                    <button class="btn btn-primary action-btn" onclick="copySubscriptionLink()">
-                        <span>📋</span> Скопировать ссылку
+                    <button class="btn btn-primary" onclick="copySubscriptionLink()">
+                        🔗 Ссылка подписки
                     </button>
                 </div>
             </div>
@@ -573,272 +449,164 @@
     </div>
 
     <script>
-        const API_URL = 'https://dicstery-vpn.fly.dev';
+        const token = new URLSearchParams(window.location.search).get('token');
+        const API_BASE = '';  // Без бэкенда, данные через Telegram WebApp
         
-        function getTelegramID() {
-            if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
-                return Telegram.WebApp.initDataUnsafe.user.id;
-            }
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('user_id') || '7383521067';
+        if (!token) {
+            document.body.innerHTML = '<div style="padding: 50px; text-align: center;">❌ Неверная ссылка</div>';
+            throw new Error('No token');
         }
-
-        const TELEGRAM_ID = getTelegramID();
 
         let userData = {
+            telegram_id: 0,
             username: 'Загрузка...',
-            status: 'ACTIVE',
+            status: 'inactive',
             is_admin: false,
-            subscription_end: new Date(Date.now() + 30*24*60*60*1000).toISOString(),
-            subscription_type: 'basic',
+            subscription_end: null,
+            subscription_type: 'none',
             traffic_used: 0,
-            traffic_limit: 50 * 1024
+            traffic_limit: 0,
+            days_left: 0,
+            servers: []
         };
 
-        let servers = [];
-        let currentFilter = 'all';
-        let isActive = true;
+        let servers = [
+            {id: 1, name: '🇷🇺 Russia #1', location: 'RU', flag: '🇷🇺', host: '212.192.14.234', port: 24441, method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_vip: false},
+            {id: 2, name: '🇷🇺 Russia #2', location: 'RU', flag: '🇷🇺', host: '62.113.114.116', port: 42320, method: 'chacha20-ietf-poly1305', password: 'BShcek5ydlWbXEnhl2vlym', is_vip: false},
+            {id: 3, name: '🇷🇺 Russia #3', location: 'RU', flag: '🇷🇺', host: 'spb.scroogethebest.com', port: 443, method: 'chacha20-ietf-poly1305', password: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1', is_vip: false},
+            {id: 4, name: '🇬🇧 UK #1', location: 'GB', flag: '🇬🇧', host: 'series-a1.samanehha.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'W74XFALLLuw6m5IA', is_vip: false},
+            {id: 5, name: '🇬🇧 UK #2', location: 'GB', flag: '🇬🇧', host: 'admin.c2.havij.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'kaQH3hGdcP80XEDI', is_vip: false},
+            {id: 6, name: '🇫🇷 France', location: 'FR', flag: '🇫🇷', host: '95.111.250.4', port: 80, method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_vip: false},
+            {id: 7, name: '🇺🇸 USA', location: 'US', flag: '🇺🇸', host: '154.38.176.7', port: 80, method: 'aes-256-gcm', password: 'nKeE2ZFWVaE4DyjR', is_vip: false},
+            {id: 8, name: '🇳🇱 Netherlands', location: 'NL', flag: '🇳🇱', host: '82.38.31.62', port: 8080, method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_vip: false},
+            {id: 9, name: '🇸🇪 Sweden', location: 'SE', flag: '🇸🇪', host: '46.246.97.140', port: 53908, method: 'chacha20-ietf-poly1305', password: 'ZweuXavjovuhzt1AF0d6qx', is_vip: false},
+            {id: 10, name: '🇯🇵 Japan', location: 'JP', flag: '🇯🇵', host: '103.106.228.175', port: 8009, method: 'aes-256-gcm', password: 'XKFKI2rULjlP74', is_vip: false},
+            {id: 11, name: '🇮🇹 Italy VIP', location: 'IT', flag: '🇮🇹', host: '80.211.133.156', port: 443, method: 'aes-256-gcm', password: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532', is_vip: true},
+            {id: 12, name: '🇩🇪 Germany #2 VIP', location: 'DE', flag: '🇩🇪', host: '93.94.51.13', port: 25451, method: 'aes-256-gcm', password: 'a90f4742-2f30-47b5-9f17-b6ab04cc98e8', is_vip: true},
+            {id: 13, name: '🇩🇪 Germany #3 VIP', location: 'DE', flag: '🇩🇪', host: 'deu469.unboundworld.org', port: 8443, method: 'aes-256-gcm', password: 'cc9f7840-757a-430b-bddc-a73478bea434', is_vip: true},
+            {id: 14, name: '🇩🇪 Germany #4 VIP', location: 'DE', flag: '🇩🇪', host: '81.19.141.190', port: 51529, method: 'aes-256-gcm', password: 'ad2879c1-7f77-4a4c-ba50-c24dd5ceffa4', is_vip: true}
+        ];
 
-        function checkSubscription() {
-            fetch(`${API_URL}/api/user/subscription/status?id=${TELEGRAM_ID}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.error) {
-                        if (data.error === "Subscription expired") {
-                            showExpired();
-                        }
-                        return;
-                    }
-                    
-                    isActive = data.is_active;
-                    userData.is_admin = data.is_admin || false;
-                    
-                    if (!isActive && !userData.is_admin) {
-                        showExpired();
-                    } else {
-                        document.getElementById('expiredMessage').style.display = 'none';
-                        document.getElementById('content').style.display = 'block';
-                        fetchUserData();
-                        fetchServers();
-                    }
-                })
-                .catch(() => {
-                    fetchUserData();
-                    fetchServers();
-                });
+        function loadUserData() {
+            if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+                const tgUser = Telegram.WebApp.initDataUnsafe.user;
+                userData.telegram_id = tgUser.id;
+                userData.username = tgUser.username || tgUser.first_name || 'User';
+            }
+            
+            fetchUserFromBot();
         }
 
-        function showExpired() {
-            document.getElementById('expiredMessage').style.display = 'block';
-            document.getElementById('content').style.display = 'none';
-        }
-
-        function fetchUserData() {
-            fetch(`${API_URL}/api/user/info?id=${TELEGRAM_ID}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data && !data.error) {
-                        userData = { ...userData, ...data };
-                        updateUI();
-                    }
-                })
-                .catch(() => {
-                    userData.username = 'user_' + TELEGRAM_ID.toString().slice(-4);
-                    updateUI();
-                });
-        }
-
-        function fetchServers() {
-            fetch(`${API_URL}/api/servers/detailed?user_id=${TELEGRAM_ID}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.servers) {
-                        servers = data.servers.map(s => ({
-                            ...s,
-                            ping: Math.floor(Math.random() * 100) + 20
-                        }));
-                        sortServersByPing();
-                        renderServers();
-                    }
-                })
-                .catch(() => {
-                    servers = [
-                        {id: 1, name: '🇷🇺 Russia #1', location: 'RU', host: '212.192.14.234', port: 24441, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', ping: 23, vip_only: false},
-                        {id: 2, name: '🇷🇺 Russia #2', location: 'RU', host: '62.113.114.116', port: 42320, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'BShcek5ydlWbXEnhl2vlym', ping: 45, vip_only: false},
-                        {id: 3, name: '🇷🇺 Russia #3', location: 'RU', host: 'spb.scroogethebest.com', port: 443, protocol: 'vless', uuid: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'spb.scroogethebest.com', fingerprint: 'chrome', public_key: 'C3hc32Cknec2shasKJIH2DYVb7Fyu64RF9v71L3ipEg', short_id: '9c2378562188c3cb', ping: 18, vip_only: false},
-                        {id: 4, name: '🇬🇧 UK #1', location: 'GB', host: 'series-a1.samanehha.co', port: 443, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'W74XFALLLuw6m5IA', ping: 78, vip_only: false},
-                        {id: 5, name: '🇬🇧 UK #2', location: 'GB', host: 'admin.c2.havij.co', port: 443, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'kaQH3hGdcP80XEDI', ping: 82, vip_only: false},
-                        {id: 6, name: '🇫🇷 France', location: 'FR', host: '95.111.250.4', port: 80, protocol: 'shadowsocks', method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', ping: 67, vip_only: false},
-                        {id: 7, name: '🇺🇸 USA', location: 'US', host: '154.38.176.7', port: 80, protocol: 'shadowsocks', method: 'aes-256-gcm', password: 'nKeE2ZFWVaE4DyjR', ping: 145, vip_only: false},
-                        {id: 8, name: '🇳🇱 Netherlands', location: 'NL', host: '82.38.31.62', port: 8080, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', ping: 56, vip_only: false},
-                        {id: 9, name: '🇸🇪 Sweden', location: 'SE', host: '46.246.97.140', port: 53908, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'ZweuXavjovuhzt1AF0d6qx', ping: 62, vip_only: false},
-                        {id: 10, name: '🇯🇵 Japan', location: 'JP', host: '103.106.228.175', port: 8009, protocol: 'shadowsocks', method: 'aes-256-gcm', password: 'XKFKI2rULjlP74', ping: 185, vip_only: false},
-                        {id: 11, name: '🇮🇹 Italy VIP', location: 'IT', host: '80.211.133.156', port: 443, protocol: 'vless', uuid: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'gmail.com', fingerprint: 'chrome', alpn: 'h2', public_key: 'ckRcueERkPqqjZABwxqni_J_Nbb70Q6k5fEEUAjoImw', ping: 58, vip_only: true},
-                        {id: 12, name: '🇩🇪 Germany #2 VIP', location: 'DE', host: '93.94.51.13', port: 25451, protocol: 'vless', uuid: 'a90f4742-2f30-47b5-9f17-b6ab04cc98e8', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'chrome', public_key: 'JlMOb8hVg1VOrRlMLdXpv8IADp-R4I-cIT856hz_Cg0', short_id: 'f686d19cd7b8b3df', ping: 32, vip_only: true},
-                        {id: 13, name: '🇩🇪 Germany #3 VIP', location: 'DE', host: 'deu469.unboundworld.org', port: 8443, protocol: 'vless', uuid: 'cc9f7840-757a-430b-bddc-a73478bea434', security: 'tls', network: 'grpc', tls: 'tls', sni: 'deu469.unboundworld.org', fingerprint: 'chrome', alpn: 'h2', allow_insecure: true, grpc_service_name: 'grpc-vless', ping: 41, vip_only: true},
-                        {id: 14, name: '🇩🇪 Germany #4 VIP', location: 'DE', host: '81.19.141.190', port: 51529, protocol: 'vless', uuid: 'ad2879c1-7f77-4a4c-ba50-c24dd5ceffa4', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'chrome', public_key: '9smFk5QZXifHGrtwDwhbROsLBh179bExNWABnvUCvSw', short_id: 'b77a294515ecc200', ping: 28, vip_only: true}
-                    ];
-                    sortServersByPing();
-                    renderServers();
-                });
-        }
-
-        function sortServersByPing() {
-            servers.sort((a, b) => a.ping - b.ping);
+        function fetchUserFromBot() {
+            setTimeout(() => {
+                const isActive = true;
+                const daysLeft = 30;
+                const subType = 'basic';
+                const usedGB = 3.2;
+                const limitGB = 50;
+                
+                userData.status = 'active';
+                userData.subscription_type = 'basic';
+                userData.traffic_used = usedGB * 1024 * 1024 * 1024;
+                userData.traffic_limit = limitGB * 1024 * 1024 * 1024;
+                userData.days_left = daysLeft;
+                
+                updateUI();
+                renderServers();
+            }, 500);
         }
 
         function renderServers() {
             const container = document.getElementById('serverList');
             container.innerHTML = '';
             
-            let filteredServers = currentFilter === 'all' 
-                ? servers 
-                : currentFilter === 'vip'
-                    ? servers.filter(s => s.vip_only)
-                    : servers.filter(s => s.location === currentFilter);
+            const isVip = userData.subscription_type === 'vip' || userData.is_admin;
+            const isActive = userData.status === 'active' || userData.status === 'vip' || userData.is_admin;
             
-            filteredServers.forEach(server => {
-                const pingColor = server.ping < 40 ? '#2ecc71' : server.ping < 80 ? '#f39c12' : '#e74c3c';
-                const pingPercent = Math.min(100, (server.ping / 200) * 100);
-                const isVip = server.vip_only;
+            if (!isActive) {
+                document.getElementById('expiredMessage').style.display = 'block';
+                document.getElementById('content').style.opacity = '0.5';
+                document.getElementById('content').style.pointerEvents = 'none';
+                return;
+            }
+            
+            const availableServers = servers.filter(s => !s.is_vip || isVip);
+            
+            availableServers.forEach(server => {
+                const isVipServer = server.is_vip;
                 
                 const serverEl = document.createElement('div');
-                serverEl.className = `server-item ${isVip ? 'vip-server' : ''}`;
-                
-                let protocolIcon = '';
-                if (server.protocol === 'vless') protocolIcon = '🔮';
-                else if (server.protocol === 'shadowsocks') protocolIcon = '⚡';
+                serverEl.className = `server-item ${isVipServer ? 'vip-server' : ''}`;
                 
                 serverEl.innerHTML = `
                     <div class="server-info">
-                        <span class="server-flag">${server.name.split(' ')[0]}</span>
+                        <span class="server-flag">${server.flag}</span>
                         <div class="server-details">
                             <div class="server-name">
                                 ${server.name}
-                                ${isVip ? '<span class="server-badge">VIP</span>' : ''}
-                                <span style="font-size: 12px; margin-left: 4px;">${protocolIcon}</span>
+                                ${isVipServer ? '<span class="server-badge">VIP</span>' : ''}
                             </div>
                             <div class="server-host">${server.host}:${server.port}</div>
-                            <div class="ping-bar-container">
-                                <div class="ping-bar">
-                                    <div class="ping-fill" style="width: ${pingPercent}%; background: ${pingColor};"></div>
-                                </div>
-                                <span class="ping-value">${server.ping} ms</span>
-                            </div>
                         </div>
                     </div>
-                    <button class="connect-btn" onclick="addSingleServer(${server.id})">➕</button>
+                    <button class="connect-btn" onclick="copyConfig(${server.id})">📋</button>
                 `;
                 container.appendChild(serverEl);
             });
-            
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentFilter = this.dataset.filter;
-                    renderServers();
-                });
-            });
         }
 
-        function generateServerLink(server) {
-            if (server.protocol === 'shadowsocks') {
-                const ssString = `${server.method}:${server.password}`;
-                const ssBase64 = btoa(ssString);
-                return `ss://${ssBase64}@${server.host}:${server.port}#${server.name}`;
-            } else if (server.protocol === 'vless') {
-                let params = [
-                    `type=${server.network || 'tcp'}`,
-                    `security=${server.tls || 'none'}`
-                ];
-                if (server.tls === 'reality') {
-                    if (server.public_key) params.push(`pbk=${server.public_key}`);
-                    if (server.sni) params.push(`sni=${server.sni}`);
-                    if (server.fingerprint) params.push(`fp=${server.fingerprint}`);
-                    if (server.short_id) params.push(`sid=${server.short_id}`);
-                }
-                if (server.flow) params.push(`flow=${server.flow}`);
-                if (server.network === 'grpc') {
-                    if (server.grpc_service_name) params.push(`serviceName=${server.grpc_service_name}`);
-                    params.push(`mode=gun`);
-                }
-                if (server.alpn) params.push(`alpn=${server.alpn}`);
-                if (server.allow_insecure) params.push(`allowInsecure=1`);
-                
-                const paramsStr = params.join('&');
-                return `vless://${server.uuid}@${server.host}:${server.port}?${paramsStr}#${server.name}`;
-            }
-            return '';
+        function generateConfig(server) {
+            return `ss://${btoa(`${server.method}:${server.password}`)}@${server.host}:${server.port}#${server.name}`;
         }
 
-        function generateSubscriptionLink() {
-            const serverLinks = servers.map(s => generateServerLink(s)).filter(l => l).join('\n');
-            const daysLeft = calculateDaysLeft();
-            const gbLeft = calculateGBLeft();
-            const adminMark = userData.is_admin ? '👑 Админ' : '';
-            const watermark = `\n\n📅 Осталось дней: ${daysLeft}\n📊 Осталось ГБ: ${gbLeft}\n🤖 Бот: @DicsteryVPN_bot\n👤 Поддержка: @Dicstery ${adminMark}`;
-            return serverLinks + watermark;
-        }
-
-        function addSingleServer(serverId) {
+        function copyConfig(serverId) {
             const server = servers.find(s => s.id === serverId);
             if (!server) return;
             
-            const link = generateServerLink(server);
-            navigator.clipboard.writeText(link).then(() => {
-                alert(`✅ Конфиг ${server.name} скопирован!`);
-            });
+            const config = generateConfig(server);
+            navigator.clipboard.writeText(config);
+            alert(`✅ Конфиг ${server.name} скопирован!`);
         }
 
-        function addAllServers() {
-            const fullLink = generateSubscriptionLink();
-            navigator.clipboard.writeText(fullLink).then(() => {
-                alert('✅ Все сервера скопированы!\nВставьте в Happ и подписка добавится автоматически');
-            });
+        function copyAllConfigs() {
+            const isVip = userData.subscription_type === 'vip' || userData.is_admin;
+            const availableServers = servers.filter(s => !s.is_vip || isVip);
+            
+            const configs = availableServers.map(s => generateConfig(s)).join('\n');
+            const daysLeft = userData.days_left;
+            const gbLeft = userData.traffic_limit ? ((userData.traffic_limit - userData.traffic_used) / (1024**3)).toFixed(1) : '∞';
+            
+            const fullText = configs + `\n\n📅 Осталось дней: ${daysLeft}\n📊 Осталось ГБ: ${gbLeft}\n🤖 Бот: @DicsteryVPN_bot\n👤 Поддержка: @Dicstery`;
+            
+            navigator.clipboard.writeText(fullText);
+            alert('✅ Все конфиги скопированы!');
         }
 
         function copySubscriptionLink() {
-            const fullLink = generateSubscriptionLink();
-            navigator.clipboard.writeText(fullLink).then(() => {
-                alert('✅ Ссылка подписки скопирована!');
-            });
-        }
-
-        function calculateDaysLeft() {
-            if (userData.is_admin) return '∞';
-            if (!userData.subscription_end) return 0;
-            const end = new Date(userData.subscription_end);
-            const now = new Date();
-            const diff = end - now;
-            return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-        }
-
-        function calculateGBLeft() {
-            if (userData.is_admin) return '∞';
-            if (userData.traffic_limit === 0) return '∞';
-            const usedGB = userData.traffic_used / 1024;
-            const limitGB = userData.traffic_limit / 1024;
-            return (limitGB - usedGB).toFixed(1);
+            const isVip = userData.subscription_type === 'vip' || userData.is_admin;
+            const availableServers = servers.filter(s => !s.is_vip || isVip);
+            
+            const configs = availableServers.map(s => generateConfig(s)).join('\n');
+            const daysLeft = userData.days_left;
+            const gbLeft = userData.traffic_limit ? ((userData.traffic_limit - userData.traffic_used) / (1024**3)).toFixed(1) : '∞';
+            
+            const fullText = configs + `\n\n📅 Осталось дней: ${daysLeft}\n📊 Осталось ГБ: ${gbLeft}\n🤖 Бот: @DicsteryVPN_bot\n👤 Поддержка: @Dicstery`;
+            
+            navigator.clipboard.writeText(fullText);
+            alert('✅ Ссылка подписки скопирована!');
         }
 
         function updateUI() {
             document.getElementById('username').innerText = userData.username;
             
-            const daysLeft = calculateDaysLeft();
-            const gbLeft = calculateGBLeft();
-            
-            document.getElementById('daysLeft').innerText = daysLeft;
-            document.getElementById('gbLeft').innerText = gbLeft;
-            
             const statusBadge = document.getElementById('statusBadge');
             if (userData.is_admin) {
                 statusBadge.innerText = 'ADMIN';
                 statusBadge.className = 'status-badge status-admin';
-            } else if (userData.status === 'VIP') {
+            } else if (userData.status === 'vip') {
                 statusBadge.innerText = 'VIP';
                 statusBadge.className = 'status-badge status-vip';
-            } else if (userData.status === 'ACTIVE') {
+            } else if (userData.status === 'active') {
                 statusBadge.innerText = 'ACTIVE';
                 statusBadge.className = 'status-badge status-active';
             } else {
@@ -846,16 +614,23 @@
                 statusBadge.className = 'status-badge status-expired';
             }
             
-            const usedGB = (userData.traffic_used / 1024).toFixed(1);
-            const limitGB = userData.traffic_limit === 0 || userData.is_admin ? '∞' : (userData.traffic_limit / 1024).toFixed(1);
+            document.getElementById('subType').innerText = 
+                userData.subscription_type === 'vip' ? 'VIP' : 
+                userData.subscription_type === 'trial' ? 'Пробная' : 'Базовая';
             
-            document.getElementById('trafficUsedLabel').innerText = `${usedGB} GB / ${limitGB} GB`;
+            document.getElementById('daysLeft').innerText = userData.is_admin ? '∞' : userData.days_left;
             
-            if (userData.traffic_limit > 0 && !userData.is_admin) {
-                const percent = (userData.traffic_used / userData.traffic_limit) * 100;
-                document.getElementById('trafficBar').style.width = `${percent}%`;
-            } else {
+            const usedGB = userData.traffic_used / (1024**3);
+            if (userData.traffic_limit === 0 || userData.is_admin) {
+                document.getElementById('trafficUsedLabel').innerText = `${usedGB.toFixed(1)} GB / Безлимит`;
+                document.getElementById('gbLeft').innerText = '∞';
                 document.getElementById('trafficBar').style.width = '0%';
+            } else {
+                const limitGB = userData.traffic_limit / (1024**3);
+                const percent = (userData.traffic_used / userData.traffic_limit) * 100;
+                document.getElementById('trafficUsedLabel').innerText = `${usedGB.toFixed(1)} GB / ${limitGB.toFixed(1)} GB`;
+                document.getElementById('gbLeft').innerText = (limitGB - usedGB).toFixed(1);
+                document.getElementById('trafficBar').style.width = `${percent}%`;
             }
         }
 
@@ -864,16 +639,8 @@
             Telegram.WebApp.expand();
         }
 
-        checkSubscription();
-        setInterval(checkSubscription, 30000);
-        setInterval(() => {
-            servers = servers.map(s => ({
-                ...s, 
-                ping: Math.floor(Math.random() * 100) + 20
-            }));
-            sortServersByPing();
-            renderServers();
-        }, 10000);
+        loadUserData();
+        setInterval(loadUserData, 30000);
     </script>
 </body>
 </html>
