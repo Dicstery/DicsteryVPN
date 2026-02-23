@@ -192,63 +192,26 @@
             box-shadow: 0 0 10px var(--accent-glow);
         }
 
-        .button-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        .stats-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: space-around;
             margin-top: 15px;
         }
 
-        .btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 14px 20px;
-            border-radius: var(--border-radius-sm);
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            backdrop-filter: blur(10px);
-            width: 100%;
+        .stat-block {
+            text-align: center;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border: none;
-            box-shadow: 0 4px 15px rgba(74, 108, 247, 0.3);
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-primary);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(74, 108, 247, 0.5);
-        }
-
-        .btn-vip {
-            background: linear-gradient(135deg, var(--vip-primary), var(--vip-secondary));
-            border: none;
-            box-shadow: 0 4px 15px var(--vip-glow);
-            color: #000;
-        }
-
-        .btn-vip:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--vip-glow);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.5);
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         .server-list {
@@ -258,6 +221,7 @@
             max-height: 400px;
             overflow-y: auto;
             padding-right: 5px;
+            margin-bottom: 15px;
         }
 
         .server-item {
@@ -267,8 +231,8 @@
             padding: 12px 16px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             transition: var(--transition);
+            cursor: default;
         }
 
         .server-item:hover {
@@ -327,22 +291,34 @@
             color: var(--text-secondary);
         }
 
-        .connect-btn {
-            background: transparent;
-            border: 1px solid var(--accent-primary);
-            color: var(--accent-primary);
-            padding: 6px 12px;
-            border-radius: 30px;
-            font-size: 14px;
+        .btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            padding: 16px;
+            border-radius: var(--border-radius-sm);
+            color: white;
             font-weight: 600;
+            font-size: 16px;
             cursor: pointer;
             transition: var(--transition);
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(74, 108, 247, 0.3);
         }
 
-        .connect-btn:hover {
-            background: var(--accent-primary);
-            color: white;
-            box-shadow: 0 0 15px var(--accent-glow);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 108, 247, 0.5);
+        }
+
+        .btn-vip {
+            background: linear-gradient(135deg, var(--vip-primary), var(--vip-secondary));
+            color: black;
+            box-shadow: 0 4px 15px var(--vip-glow);
+        }
+
+        .btn-vip:hover {
+            box-shadow: 0 8px 25px var(--vip-glow);
         }
 
         .expired-message {
@@ -350,28 +326,54 @@
             padding: 30px;
             color: var(--danger);
             font-size: 18px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--danger);
+            margin-bottom: 20px;
         }
 
-        .subscription-info {
+        .info-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-line {
             display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 10px;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
-        .info-block {
-            text-align: center;
+        .info-line:last-child {
+            margin-bottom: 0;
         }
 
-        .info-number {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
-
-        .info-label-small {
-            font-size: 12px;
+        .info-line .label {
             color: var(--text-secondary);
+        }
+
+        .info-line .value {
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .badge-vip {
+            background: var(--vip-primary);
+            color: black;
         }
     </style>
 </head>
@@ -384,46 +386,74 @@
     </div>
 
     <div class="container">
+        <div id="loading" class="card" style="text-align: center; padding: 40px;">
+            ⏳ Загрузка данных...
+        </div>
+
+        <div id="errorMessage" class="card expired-message" style="display: none;">
+            ❌ Ошибка загрузки данных<br>
+            <small>Попробуйте позже</small>
+        </div>
+
         <div id="expiredMessage" class="card expired-message" style="display: none;">
             ❌ Срок действия подписки истек<br>
             <small>Приобретите подписку в боте @DicsteryVPN_bot</small>
         </div>
 
-        <div id="content">
+        <div id="content" style="display: none;">
             <div class="card">
                 <div class="card-title">
                     <span>👤</span> Профиль
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Пользователь</span>
-                    <span class="info-value" id="username">Загрузка...</span>
+                    <span class="info-label">ID</span>
+                    <span class="info-value" id="userId">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Username</span>
+                    <span class="info-value" id="username">-</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Статус</span>
-                    <span class="info-value"><span class="status-badge" id="statusBadge">ACTIVE</span></span>
+                    <span class="info-value"><span class="status-badge" id="statusBadge">-</span></span>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Подписка</span>
-                    <span class="info-value" id="subType">Базовая</span>
-                </div>
-                <div class="subscription-info">
-                    <div class="info-block">
-                        <div class="info-number" id="daysLeft">30</div>
-                        <div class="info-label-small">дней осталось</div>
+                <div class="stats-grid">
+                    <div class="stat-block">
+                        <div class="stat-number" id="daysLeft">0</div>
+                        <div class="stat-label">дней осталось</div>
                     </div>
-                    <div class="info-block">
-                        <div class="info-number" id="gbLeft">50</div>
-                        <div class="info-label-small">ГБ осталось</div>
+                    <div class="stat-block">
+                        <div class="stat-number" id="trafficUsed">0</div>
+                        <div class="stat-label">ГБ / <span id="trafficLimit">0</span></div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-title">
-                    <span>📊</span> Использовано трафика
+                    <span>📊</span> Детали подписки
                 </div>
-                <div class="info-row">
-                    <span class="info-label" id="trafficUsedLabel">0 GB / 50 GB</span>
+                <div class="info-box">
+                    <div class="info-line">
+                        <span class="label">📅 Истекает:</span>
+                        <span class="value" id="expireDate">-</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">📧 Дней осталось:</span>
+                        <span class="value" id="daysLeftDetail">0</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">🔒 ID:</span>
+                        <span class="value" id="userIdDetail">-</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">💬 Продлить:</span>
+                        <span class="value">@DicsteryVPN_bot</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">📊 Трафик:</span>
+                        <span class="value" id="trafficDetail">0 MB / 0 GB</span>
+                    </div>
                 </div>
                 <div class="progress-container">
                     <div class="progress-bar" id="trafficBar" style="width: 0%"></div>
@@ -432,66 +462,68 @@
 
             <div class="card">
                 <div class="card-title">
-                    <span>🔑</span> Мои сервера
+                    <span>🌍</span> Доступные сервера
                 </div>
                 <div class="server-list" id="serverList">
                 </div>
-                <div class="button-grid">
-                    <button class="btn btn-success" onclick="copyAllConfigs()">
-                        📋 Скопировать все
-                    </button>
-                    <button class="btn btn-primary" onclick="copySubscriptionLink()">
-                        🔗 Ссылка подписки
-                    </button>
-                </div>
             </div>
+
+            <button class="btn" id="copySubscriptionBtn">
+                📋 Добавить подписку в Happ
+            </button>
         </div>
     </div>
 
     <script>
         const token = new URLSearchParams(window.location.search).get('token');
-        const API_BASE = '';  // Без бэкенда, данные через Telegram WebApp
         
         if (!token) {
-            document.body.innerHTML = '<div style="padding: 50px; text-align: center;">❌ Неверная ссылка</div>';
+            document.body.innerHTML = '<div style="padding: 50px; text-align: center;">❌ Неверная ссылка доступа</div>';
             throw new Error('No token');
         }
 
         let userData = {
             telegram_id: 0,
-            username: 'Загрузка...',
-            status: 'inactive',
+            username: '',
+            first_name: '',
             is_admin: false,
+            status: 'inactive',
             subscription_end: null,
             subscription_type: 'none',
             traffic_used: 0,
             traffic_limit: 0,
-            days_left: 0,
-            servers: []
+            referral_count: 0,
+            bonus_days: 0
         };
 
         let servers = [
-            {id: 1, name: '🇷🇺 Russia #1', location: 'RU', flag: '🇷🇺', host: '212.192.14.234', port: 24441, method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_vip: false},
-            {id: 2, name: '🇷🇺 Russia #2', location: 'RU', flag: '🇷🇺', host: '62.113.114.116', port: 42320, method: 'chacha20-ietf-poly1305', password: 'BShcek5ydlWbXEnhl2vlym', is_vip: false},
-            {id: 3, name: '🇷🇺 Russia #3', location: 'RU', flag: '🇷🇺', host: 'spb.scroogethebest.com', port: 443, method: 'chacha20-ietf-poly1305', password: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1', is_vip: false},
-            {id: 4, name: '🇬🇧 UK #1', location: 'GB', flag: '🇬🇧', host: 'series-a1.samanehha.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'W74XFALLLuw6m5IA', is_vip: false},
-            {id: 5, name: '🇬🇧 UK #2', location: 'GB', flag: '🇬🇧', host: 'admin.c2.havij.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'kaQH3hGdcP80XEDI', is_vip: false},
-            {id: 6, name: '🇫🇷 France', location: 'FR', flag: '🇫🇷', host: '95.111.250.4', port: 80, method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_vip: false},
-            {id: 7, name: '🇺🇸 USA', location: 'US', flag: '🇺🇸', host: '154.38.176.7', port: 80, method: 'aes-256-gcm', password: 'nKeE2ZFWVaE4DyjR', is_vip: false},
-            {id: 8, name: '🇳🇱 Netherlands', location: 'NL', flag: '🇳🇱', host: '82.38.31.62', port: 8080, method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_vip: false},
-            {id: 9, name: '🇸🇪 Sweden', location: 'SE', flag: '🇸🇪', host: '46.246.97.140', port: 53908, method: 'chacha20-ietf-poly1305', password: 'ZweuXavjovuhzt1AF0d6qx', is_vip: false},
-            {id: 10, name: '🇯🇵 Japan', location: 'JP', flag: '🇯🇵', host: '103.106.228.175', port: 8009, method: 'aes-256-gcm', password: 'XKFKI2rULjlP74', is_vip: false},
-            {id: 11, name: '🇮🇹 Italy VIP', location: 'IT', flag: '🇮🇹', host: '80.211.133.156', port: 443, method: 'aes-256-gcm', password: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532', is_vip: true},
-            {id: 12, name: '🇩🇪 Germany #2 VIP', location: 'DE', flag: '🇩🇪', host: '93.94.51.13', port: 25451, method: 'aes-256-gcm', password: 'a90f4742-2f30-47b5-9f17-b6ab04cc98e8', is_vip: true},
-            {id: 13, name: '🇩🇪 Germany #3 VIP', location: 'DE', flag: '🇩🇪', host: 'deu469.unboundworld.org', port: 8443, method: 'aes-256-gcm', password: 'cc9f7840-757a-430b-bddc-a73478bea434', is_vip: true},
-            {id: 14, name: '🇩🇪 Germany #4 VIP', location: 'DE', flag: '🇩🇪', host: '81.19.141.190', port: 51529, method: 'aes-256-gcm', password: 'ad2879c1-7f77-4a4c-ba50-c24dd5ceffa4', is_vip: true}
+            {id: 1, name: 'Russia #1', location: 'RU', flag: '🇷🇺', host: '212.192.14.234', port: 24441, method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_vip: false},
+            {id: 2, name: 'Russia #2', location: 'RU', flag: '🇷🇺', host: '62.113.114.116', port: 42320, method: 'chacha20-ietf-poly1305', password: 'BShcek5ydlWbXEnhl2vlym', is_vip: false},
+            {id: 3, name: 'Russia #3', location: 'RU', flag: '🇷🇺', host: 'spb.scroogethebest.com', port: 443, method: 'chacha20-ietf-poly1305', password: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1', is_vip: false},
+            {id: 4, name: 'UK #1', location: 'GB', flag: '🇬🇧', host: 'series-a1.samanehha.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'W74XFALLLuw6m5IA', is_vip: false},
+            {id: 5, name: 'UK #2', location: 'GB', flag: '🇬🇧', host: 'admin.c2.havij.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'kaQH3hGdcP80XEDI', is_vip: false},
+            {id: 6, name: 'France', location: 'FR', flag: '🇫🇷', host: '95.111.250.4', port: 80, method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_vip: false},
+            {id: 7, name: 'USA', location: 'US', flag: '🇺🇸', host: '154.38.176.7', port: 80, method: 'aes-256-gcm', password: 'nKeE2ZFWVaE4DyjR', is_vip: false},
+            {id: 8, name: 'Netherlands', location: 'NL', flag: '🇳🇱', host: '82.38.31.62', port: 8080, method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_vip: false},
+            {id: 9, name: 'Sweden', location: 'SE', flag: '🇸🇪', host: '46.246.97.140', port: 53908, method: 'chacha20-ietf-poly1305', password: 'ZweuXavjovuhzt1AF0d6qx', is_vip: false},
+            {id: 10, name: 'Japan', location: 'JP', flag: '🇯🇵', host: '103.106.228.175', port: 8009, method: 'aes-256-gcm', password: 'XKFKI2rULjlP74', is_vip: false},
+            {id: 11, name: 'Italy VIP', location: 'IT', flag: '🇮🇹', host: '80.211.133.156', port: 443, method: 'aes-256-gcm', password: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532', is_vip: true},
+            {id: 12, name: 'Germany #2 VIP', location: 'DE', flag: '🇩🇪', host: '93.94.51.13', port: 25451, method: 'aes-256-gcm', password: 'a90f4742-2f30-47b5-9f17-b6ab04cc98e8', is_vip: true},
+            {id: 13, name: 'Germany #3 VIP', location: 'DE', flag: '🇩🇪', host: 'deu469.unboundworld.org', port: 8443, method: 'aes-256-gcm', password: 'cc9f7840-757a-430b-bddc-a73478bea434', is_vip: true},
+            {id: 14, name: 'Germany #4 VIP', location: 'DE', flag: '🇩🇪', host: '81.19.141.190', port: 51529, method: 'aes-256-gcm', password: 'ad2879c1-7f77-4a4c-ba50-c24dd5ceffa4', is_vip: true}
         ];
 
         function loadUserData() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('expiredMessage').style.display = 'none';
+            
             if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
                 const tgUser = Telegram.WebApp.initDataUnsafe.user;
                 userData.telegram_id = tgUser.id;
-                userData.username = tgUser.username || tgUser.first_name || 'User';
+                userData.username = tgUser.username || '';
+                userData.first_name = tgUser.first_name || '';
             }
             
             fetchUserFromBot();
@@ -499,20 +531,40 @@
 
         function fetchUserFromBot() {
             setTimeout(() => {
-                const isActive = true;
-                const daysLeft = 30;
-                const subType = 'basic';
-                const usedGB = 3.2;
-                const limitGB = 50;
+                try {
+                    const savedUser = localStorage.getItem(`user_${token}`);
+                    if (savedUser) {
+                        const parsed = JSON.parse(savedUser);
+                        if (parsed.telegram_id === userData.telegram_id) {
+                            userData = {...userData, ...parsed};
+                        }
+                    }
+                } catch (e) {}
                 
-                userData.status = 'active';
-                userData.subscription_type = 'basic';
-                userData.traffic_used = usedGB * 1024 * 1024 * 1024;
-                userData.traffic_limit = limitGB * 1024 * 1024 * 1024;
-                userData.days_left = daysLeft;
+                const isAdmin = userData.telegram_id === 7383521067;
                 
+                if (isAdmin) {
+                    userData.is_admin = true;
+                    userData.status = 'admin';
+                    userData.subscription_type = 'admin';
+                    userData.subscription_end = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+                    userData.traffic_used = Math.floor(Math.random() * 30) * 1024 * 1024 * 1024;
+                    userData.traffic_limit = 0;
+                } else {
+                    userData.is_admin = false;
+                    userData.status = 'active';
+                    userData.subscription_type = 'basic';
+                    userData.subscription_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                    userData.traffic_used = Math.floor(Math.random() * 10) * 1024 * 1024 * 1024;
+                    userData.traffic_limit = 50 * 1024 * 1024 * 1024;
+                }
+                
+                localStorage.setItem(`user_${token}`, JSON.stringify(userData));
                 updateUI();
                 renderServers();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
             }, 500);
         }
 
@@ -520,7 +572,7 @@
             const container = document.getElementById('serverList');
             container.innerHTML = '';
             
-            const isVip = userData.subscription_type === 'vip' || userData.is_admin;
+            const isVip = userData.status === 'vip' || userData.is_admin;
             const isActive = userData.status === 'active' || userData.status === 'vip' || userData.is_admin;
             
             if (!isActive) {
@@ -549,7 +601,6 @@
                             <div class="server-host">${server.host}:${server.port}</div>
                         </div>
                     </div>
-                    <button class="connect-btn" onclick="copyConfig(${server.id})">📋</button>
                 `;
                 container.appendChild(serverEl);
             });
@@ -559,45 +610,75 @@
             return `ss://${btoa(`${server.method}:${server.password}`)}@${server.host}:${server.port}#${server.name}`;
         }
 
-        function copyConfig(serverId) {
-            const server = servers.find(s => s.id === serverId);
-            if (!server) return;
-            
-            const config = generateConfig(server);
-            navigator.clipboard.writeText(config);
-            alert(`✅ Конфиг ${server.name} скопирован!`);
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 MB';
+            if (bytes < 1024 * 1024 * 1024) {
+                return Math.floor(bytes / (1024 * 1024)) + ' MB';
+            } else {
+                return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+            }
         }
 
-        function copyAllConfigs() {
-            const isVip = userData.subscription_type === 'vip' || userData.is_admin;
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function copySubscription() {
+            const isVip = userData.status === 'vip' || userData.is_admin;
             const availableServers = servers.filter(s => !s.is_vip || isVip);
             
             const configs = availableServers.map(s => generateConfig(s)).join('\n');
-            const daysLeft = userData.days_left;
-            const gbLeft = userData.traffic_limit ? ((userData.traffic_limit - userData.traffic_used) / (1024**3)).toFixed(1) : '∞';
             
-            const fullText = configs + `\n\n📅 Осталось дней: ${daysLeft}\n📊 Осталось ГБ: ${gbLeft}\n🤖 Бот: @DicsteryVPN_bot\n👤 Поддержка: @Dicstery`;
+            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : new Date();
+            const daysLeft = userData.is_admin ? 9999 : Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24)));
             
-            navigator.clipboard.writeText(fullText);
-            alert('✅ Все конфиги скопированы!');
-        }
-
-        function copySubscriptionLink() {
-            const isVip = userData.subscription_type === 'vip' || userData.is_admin;
-            const availableServers = servers.filter(s => !s.is_vip || isVip);
+            const usedGB = (userData.traffic_used / (1024 * 1024 * 1024)).toFixed(1);
+            const limitGB = userData.traffic_limit === 0 ? '∞' : (userData.traffic_limit / (1024 * 1024 * 1024)).toFixed(1);
             
-            const configs = availableServers.map(s => generateConfig(s)).join('\n');
-            const daysLeft = userData.days_left;
-            const gbLeft = userData.traffic_limit ? ((userData.traffic_limit - userData.traffic_used) / (1024**3)).toFixed(1) : '∞';
+            const status = userData.is_admin ? 'ADMIN' : (userData.status === 'vip' ? 'VIP' : 'Active');
             
-            const fullText = configs + `\n\n📅 Осталось дней: ${daysLeft}\n📊 Осталось ГБ: ${gbLeft}\n🤖 Бот: @DicsteryVPN_bot\n👤 Поддержка: @Dicstery`;
+            const header = `⚡ DICSTERY VPN ⚡\n\n`;
+            const subInfo = `📅 Истекает: ${formatDate(userData.subscription_end)}\n📧 Дней осталось: ${daysLeft}\n🔒 ID: ${userData.telegram_id}\n💬 Продлить: @DicsteryVPN_bot\n📊 Трафик: ${usedGB}GB/${limitGB}GB\n👑 Статус: ${status}\n\n`;
             
-            navigator.clipboard.writeText(fullText);
-            alert('✅ Ссылка подписки скопирована!');
+            const fullText = header + subInfo + configs;
+            
+            navigator.clipboard.writeText(fullText).then(() => {
+                alert('✅ Подписка скопирована!\nВставьте в Happ для активации');
+                
+                const btn = document.getElementById('copySubscriptionBtn');
+                btn.textContent = '✅ Скопировано!';
+                setTimeout(() => {
+                    btn.textContent = '📋 Добавить подписку в Happ';
+                }, 2000);
+            });
         }
 
         function updateUI() {
-            document.getElementById('username').innerText = userData.username;
+            document.getElementById('userId').innerText = userData.telegram_id;
+            document.getElementById('username').innerText = userData.username || userData.first_name || 'User';
+            document.getElementById('userIdDetail').innerText = userData.telegram_id;
+            
+            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : new Date();
+            document.getElementById('expireDate').innerText = formatDate(userData.subscription_end);
+            
+            const daysLeft = userData.is_admin ? 9999 : Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24)));
+            document.getElementById('daysLeft').innerText = daysLeft;
+            document.getElementById('daysLeftDetail').innerText = daysLeft;
+            
+            const usedGB = (userData.traffic_used / (1024 * 1024 * 1024)).toFixed(1);
+            const limitGB = userData.traffic_limit === 0 ? '∞' : (userData.traffic_limit / (1024 * 1024 * 1024)).toFixed(1);
+            
+            document.getElementById('trafficUsed').innerText = usedGB;
+            document.getElementById('trafficLimit').innerText = limitGB;
+            
+            const usedMB = Math.floor(userData.traffic_used / (1024 * 1024));
+            document.getElementById('trafficDetail').innerText = `${usedMB} MB / ${limitGB} GB`;
             
             const statusBadge = document.getElementById('statusBadge');
             if (userData.is_admin) {
@@ -614,25 +695,27 @@
                 statusBadge.className = 'status-badge status-expired';
             }
             
-            document.getElementById('subType').innerText = 
-                userData.subscription_type === 'vip' ? 'VIP' : 
-                userData.subscription_type === 'trial' ? 'Пробная' : 'Базовая';
-            
-            document.getElementById('daysLeft').innerText = userData.is_admin ? '∞' : userData.days_left;
-            
-            const usedGB = userData.traffic_used / (1024**3);
-            if (userData.traffic_limit === 0 || userData.is_admin) {
-                document.getElementById('trafficUsedLabel').innerText = `${usedGB.toFixed(1)} GB / Безлимит`;
-                document.getElementById('gbLeft').innerText = '∞';
-                document.getElementById('trafficBar').style.width = '0%';
-            } else {
-                const limitGB = userData.traffic_limit / (1024**3);
+            if (userData.traffic_limit > 0) {
                 const percent = (userData.traffic_used / userData.traffic_limit) * 100;
-                document.getElementById('trafficUsedLabel').innerText = `${usedGB.toFixed(1)} GB / ${limitGB.toFixed(1)} GB`;
-                document.getElementById('gbLeft').innerText = (limitGB - usedGB).toFixed(1);
                 document.getElementById('trafficBar').style.width = `${percent}%`;
+            } else {
+                document.getElementById('trafficBar').style.width = '0%';
+            }
+            
+            const copyBtn = document.getElementById('copySubscriptionBtn');
+            if (userData.is_admin) {
+                copyBtn.classList.add('btn-vip');
+                copyBtn.innerHTML = '👑 Скопировать админ-подписку';
+            } else if (userData.status === 'vip') {
+                copyBtn.classList.add('btn-vip');
+                copyBtn.innerHTML = '⭐ Скопировать VIP подписку';
+            } else {
+                copyBtn.classList.remove('btn-vip');
+                copyBtn.innerHTML = '📋 Добавить подписку в Happ';
             }
         }
+
+        document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
 
         if (window.Telegram?.WebApp) {
             Telegram.WebApp.ready();
