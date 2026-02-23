@@ -462,6 +462,16 @@
             text-align: center;
             padding: 30px;
         }
+
+        .debug-info {
+            background: rgba(0,0,0,0.5);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin: 10px 0;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -470,6 +480,8 @@
 
     <div class="container">
         <div class="header-title">DicsteryVPN</div>
+
+        <div id="debug" class="debug-info"></div>
 
         <div id="loading" class="loading">⏳ ЗАГРУЗКА...</div>
 
@@ -683,6 +695,8 @@
         createStars();
 
         const tg = window.Telegram?.WebApp;
+        console.log('Telegram WebApp:', tg);
+        
         let telegramId = null;
         let username = '';
         let firstName = '';
@@ -744,30 +758,43 @@
         }
 
         function checkAuth() {
-            if (tg && tg.initDataUnsafe?.user) {
-                const user = tg.initDataUnsafe.user;
-                telegramId = user.id;
-                username = user.username || '';
-                firstName = user.first_name || '';
-                lastName = user.last_name || '';
-                photoUrl = user.photo_url || '';
+            console.log('🔍 Проверка авторизации...');
+            
+            if (tg) {
+                console.log('Telegram WebApp доступен');
+                tg.ready();
+                tg.expand();
                 
-                console.log(`👤 Пользователь Telegram: ${telegramId} (${firstName})`);
+                const user = tg.initDataUnsafe?.user;
+                console.log('Данные пользователя из Telegram:', user);
                 
-                const userData = loadUserData();
-                
-                if (userData && userData.registered) {
-                    isRegistered = true;
-                    isAdmin = ADMIN_IDS.includes(telegramId);
-                    isPremium = userData.is_premium || false;
-                    console.log(`✅ Зарегистрированный пользователь, Premium: ${isPremium}`);
-                    showMainContent();
+                if (user) {
+                    telegramId = user.id;
+                    username = user.username || '';
+                    firstName = user.first_name || '';
+                    lastName = user.last_name || '';
+                    photoUrl = user.photo_url || '';
+                    
+                    console.log(`👤 Пользователь Telegram: ${telegramId} (${firstName})`);
+                    
+                    const userData = loadUserData();
+                    
+                    if (userData && userData.registered) {
+                        isRegistered = true;
+                        isAdmin = ADMIN_IDS.includes(telegramId);
+                        isPremium = userData.is_premium || false;
+                        console.log(`✅ Зарегистрированный пользователь, Premium: ${isPremium}`);
+                        showMainContent();
+                    } else {
+                        console.log(`🆕 Новый пользователь, требуется регистрация`);
+                        showNotRegistered();
+                    }
                 } else {
-                    console.log(`🆕 Новый пользователь, требуется регистрация`);
+                    console.log('❌ Нет данных пользователя в Telegram');
                     showNotRegistered();
                 }
             } else {
-                console.log(`❌ Нет данных Telegram`);
+                console.log('❌ Telegram WebApp не доступен');
                 showNotRegistered();
             }
         }
@@ -782,11 +809,11 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('notRegisteredScreen').style.display = 'none';
             document.getElementById('content').style.display = 'block';
-            loadUserData();
+            loadUserDisplay();
             renderServers();
         }
 
-        function loadUserData() {
+        function loadUserDisplay() {
             let initials = '';
             if (firstName) initials += firstName.charAt(0);
             if (lastName) initials += lastName.charAt(0);
@@ -946,11 +973,6 @@
         });
 
         document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
-
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
 
         checkAuth();
     </script>
