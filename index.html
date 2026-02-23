@@ -113,7 +113,7 @@
             line-height: 1.6;
         }
 
-        .login-btn {
+        .register-btn {
             background: linear-gradient(135deg, #4a6cf7, #6b8aff);
             border: none;
             color: white;
@@ -133,9 +133,34 @@
             gap: 10px;
         }
 
-        .login-btn:hover {
+        .register-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 35px rgba(74, 108, 247, 0.7);
+        }
+
+        .confirm-btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            color: white;
+            padding: 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(46, 204, 113, 0.7);
         }
 
         .profile-header {
@@ -432,6 +457,11 @@
             text-align: center;
             color: #a5b9ff;
         }
+
+        .not-registered {
+            text-align: center;
+            padding: 30px;
+        }
     </style>
 </head>
 <body>
@@ -443,15 +473,19 @@
 
         <div id="loading" class="loading">⏳ ЗАГРУЗКА...</div>
 
-        <div id="loginScreen" style="display: none;">
-            <div class="glass-card welcome-card">
-                <div class="welcome-title">Добро пожаловать!</div>
-                <div class="welcome-text">
-                    Войдите через Telegram, чтобы получить доступ к VPN серверам DicsteryVPN.
-                </div>
-                <button class="login-btn" id="loginBtn">
-                    <span>🔐</span> Войти через Telegram
+        <div id="notRegisteredScreen" style="display: none;">
+            <div class="glass-card not-registered">
+                <div style="font-size: 60px; margin-bottom: 20px;">👋</div>
+                <h2 style="margin-bottom: 15px;">Добро пожаловать!</h2>
+                <p style="color: #8f9bb3; margin-bottom: 30px;">
+                    Для доступа к VPN серверам необходимо зарегистрироваться.
+                </p>
+                <button class="confirm-btn" id="confirmRegistrationBtn">
+                    <span>✅</span> ПОДТВЕРДИТЬ РЕГИСТРАЦИЮ
                 </button>
+                <p style="color: #8f9bb3; font-size: 12px; margin-top: 20px;">
+                    После подтверждения вы вернетесь в бот и получите доступ
+                </p>
             </div>
         </div>
 
@@ -470,7 +504,7 @@
                 <div class="status-badge" id="statusBadge">FREE</div>
             </div>
 
-            <div class="registered-info" id="registeredInfo" style="display: none;">
+            <div class="registered-info" id="registeredInfo">
                 ✅ Вы зарегистрированы в системе
             </div>
 
@@ -619,6 +653,8 @@
                 </div>
             </div>
 
+            <div class="server-list" id="serverList"></div>
+
             <button class="main-btn" id="copySubscriptionBtn">
                 📋 СКОПИРОВАТЬ ПОДПИСКУ
             </button>
@@ -652,7 +688,7 @@
         let firstName = '';
         let lastName = '';
         let photoUrl = '';
-        let isAuthenticated = false;
+        let isRegistered = false;
         let isAdmin = false;
         let isPremium = false;
 
@@ -688,12 +724,12 @@
                     firstName = data.first_name;
                     lastName = data.last_name;
                     photoUrl = data.photo_url;
-                    isAuthenticated = true;
+                    isRegistered = true;
                     isAdmin = ADMIN_IDS.includes(telegramId);
                     isPremium = data.is_premium || false;
                     showMainContent();
                 } catch (e) {
-                    showLogin();
+                    showNotRegistered();
                 }
             } else if (tg && tg.initDataUnsafe?.user) {
                 const user = tg.initDataUnsafe.user;
@@ -702,40 +738,25 @@
                 firstName = user.first_name || '';
                 lastName = user.last_name || '';
                 photoUrl = user.photo_url || '';
-                isAuthenticated = true;
-                isAdmin = ADMIN_IDS.includes(telegramId);
-                isPremium = false;
-                
-                const token = 'user_' + telegramId + '_' + Date.now();
-                
-                localStorage.setItem('dicstery_auth', JSON.stringify({
-                    telegram_id: telegramId,
-                    username: username,
-                    first_name: firstName,
-                    last_name: lastName,
-                    photo_url: photoUrl,
-                    is_premium: isPremium
-                }));
-                
-                const botLink = `https://t.me/${BOT_USERNAME}?start=register_${token}`;
-                window.location.href = botLink;
+                isRegistered = false;
+                showNotRegistered();
             } else {
-                showLogin();
+                showNotRegistered();
             }
         }
 
-        function showLogin() {
+        function showNotRegistered() {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('notRegisteredScreen').style.display = 'block';
             document.getElementById('content').style.display = 'none';
         }
 
         function showMainContent() {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('notRegisteredScreen').style.display = 'none';
             document.getElementById('content').style.display = 'block';
-            document.getElementById('registeredInfo').style.display = 'block';
             loadUserData();
+            renderServers();
         }
 
         function loadUserData() {
@@ -780,6 +801,36 @@
             } else {
                 return servers.filter(s => s.is_free === true);
             }
+        }
+
+        function renderServers() {
+            const container = document.getElementById('serverList');
+            container.innerHTML = '';
+            
+            const availableServers = getAvailableServers();
+            
+            availableServers.forEach(server => {
+                if (server.protocol === 'separator') {
+                    const separatorEl = document.createElement('div');
+                    separatorEl.className = 'separator-item';
+                    separatorEl.innerText = server.name;
+                    container.appendChild(separatorEl);
+                } else {
+                    const serverEl = document.createElement('div');
+                    serverEl.className = 'server-item';
+                    serverEl.innerHTML = `
+                        <div class="server-header">
+                            <span class="server-flag">${server.flag}</span>
+                            <span class="server-name">${server.name}</span>
+                        </div>
+                        <div class="server-details">
+                            <span>${server.host}:${server.port}</span>
+                            <span>${server.protocol}</span>
+                        </div>
+                    `;
+                    container.appendChild(serverEl);
+                }
+            });
         }
 
         function generateConfig(server) {
@@ -833,8 +884,23 @@
             });
         }
 
-        document.getElementById('loginBtn').addEventListener('click', function() {
-            const botLink = `https://t.me/${BOT_USERNAME}?start=register_${'user_' + telegramId + '_' + Date.now()}`;
+        document.getElementById('confirmRegistrationBtn').addEventListener('click', function() {
+            if (!telegramId) {
+                alert('❌ Не удалось получить данные пользователя');
+                return;
+            }
+            
+            const token = 'user_' + telegramId + '_' + Date.now();
+            localStorage.setItem('dicstery_auth', JSON.stringify({
+                telegram_id: telegramId,
+                username: username,
+                first_name: firstName,
+                last_name: lastName,
+                photo_url: photoUrl,
+                is_premium: false
+            }));
+            
+            const botLink = `https://t.me/${BOT_USERNAME}?start=register_${token}`;
             window.location.href = botLink;
         });
 
