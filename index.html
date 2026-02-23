@@ -14,7 +14,7 @@
         }
 
         body {
-            background: #0a0c12;
+            background: #03050a;
             color: #fff;
             min-height: 100vh;
             position: relative;
@@ -33,28 +33,15 @@
 
         .star {
             position: absolute;
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 24px;
-            animation: twinkle 5s infinite ease-in-out;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.1; transform: scale(1) rotate(0deg); }
-            50% { opacity: 0.6; transform: scale(1.2) rotate(5deg); }
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
-
-        .star1 { top: 5%; left: 5%; animation-delay: 0s; }
-        .star2 { top: 15%; right: 10%; animation-delay: 0.7s; }
-        .star3 { bottom: 10%; left: 15%; animation-delay: 1.2s; }
-        .star4 { bottom: 20%; right: 20%; animation-delay: 1.8s; }
-        .star5 { top: 30%; left: 30%; animation-delay: 2.3s; }
-        .star6 { top: 60%; right: 40%; animation-delay: 2.9s; }
-        .star7 { top: 70%; left: 60%; animation-delay: 3.4s; }
-        .star8 { top: 40%; right: 70%; animation-delay: 4.0s; }
-        .star9 { bottom: 30%; left: 45%; animation-delay: 4.5s; }
-        .star10 { bottom: 5%; right: 5%; animation-delay: 5.0s; }
-        .star11 { top: 80%; left: 80%; animation-delay: 5.5s; }
-        .star12 { top: 10%; left: 80%; animation-delay: 6.0s; }
 
         .container {
             position: relative;
@@ -65,7 +52,7 @@
         }
 
         .glass-card {
-            background: rgba(20, 24, 36, 0.6);
+            background: rgba(10, 15, 25, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: 30px;
@@ -86,7 +73,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(20, 24, 36, 0.7);
+            background: rgba(10, 15, 25, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: 40px;
@@ -160,7 +147,7 @@
         }
 
         .platform-btn {
-            background: rgba(30, 34, 48, 0.7);
+            background: rgba(20, 25, 40, 0.7);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -193,7 +180,7 @@
         }
 
         .instruction-card {
-            background: rgba(30, 34, 48, 0.5);
+            background: rgba(15, 20, 30, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-radius: 30px;
@@ -234,7 +221,7 @@
         }
 
         .instruction-step {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 20px;
             padding: 15px;
             margin-bottom: 12px;
@@ -253,6 +240,55 @@
             font-size: 13px;
             font-weight: 600;
             margin-right: 10px;
+        }
+
+        .server-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px 5px;
+            margin: 15px 0;
+        }
+
+        .server-item {
+            background: rgba(20, 25, 40, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .server-item:hover {
+            background: rgba(74, 108, 247, 0.1);
+            border-color: #4a6cf7;
+            transform: translateX(5px);
+        }
+
+        .server-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .server-flag {
+            font-size: 24px;
+        }
+
+        .server-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .server-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 34px;
+            font-size: 13px;
+            color: #8f9bb3;
         }
 
         .main-btn {
@@ -295,46 +331,6 @@
             border-color: #e74c3c;
         }
 
-        .manual-section {
-            background: rgba(30, 34, 48, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 20px;
-            margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .manual-link {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            padding: 14px;
-            margin: 12px 0;
-            word-break: break-all;
-            font-size: 13px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: #8f9bb3;
-            font-family: monospace;
-        }
-
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 14px;
-            border-radius: 40px;
-            width: 100%;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .copy-btn:hover {
-            background: rgba(74, 108, 247, 0.2);
-            border-color: #4a6cf7;
-        }
-
         .loading {
             text-align: center;
             padding: 40px;
@@ -344,20 +340,7 @@
     </style>
 </head>
 <body>
-    <div class="stars">
-        <div class="star star1">❄</div>
-        <div class="star star2">✦</div>
-        <div class="star star3">❅</div>
-        <div class="star star4">✧</div>
-        <div class="star star5">⋆</div>
-        <div class="star star6">⁕</div>
-        <div class="star star7">❆</div>
-        <div class="star star8">∗</div>
-        <div class="star star9">❄</div>
-        <div class="star star10">✦</div>
-        <div class="star star11">❅</div>
-        <div class="star star12">✧</div>
-    </div>
+    <div class="stars" id="stars"></div>
 
     <div class="container">
         <div id="loading" class="loading">⏳ ЗАГРУЗКА ДАННЫХ...</div>
@@ -390,7 +373,7 @@
                     <div class="instruction-title">ANDROID + HAPP</div>
                     <div class="instruction-text">
                         <div class="instruction-step">
-                            <span class="step-number">1</span> Установите приложение Happ из Google Play или скачайте APK с официального сайта.
+                            <span class="step-number">1</span> Установите приложение Happ из Google Play или скачайте APK.
                         </div>
                         <div class="instruction-step">
                             <span class="step-number">2</span> Откройте приложение, нажмите кнопку "+" в правом нижнем углу.
@@ -412,7 +395,7 @@
                             <span class="step-number">1</span> Установите приложение Happ из App Store.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">2</span> Откройте приложение, нажмите на иконку профиля в правом нижнем углу.
+                            <span class="step-number">2</span> Откройте приложение, нажмите на иконку профиля.
                         </div>
                         <div class="instruction-step">
                             <span class="step-number">3</span> Выберите "Добавить подписку" и вставьте скопированную ссылку.
@@ -447,7 +430,7 @@
                     <div class="instruction-title">WINDOWS + HAPP</div>
                     <div class="instruction-text">
                         <div class="instruction-step">
-                            <span class="step-number">1</span> Скачайте установочный файл Happ для Windows с официального сайта.
+                            <span class="step-number">1</span> Скачайте установочный файл Happ для Windows.
                         </div>
                         <div class="instruction-step">
                             <span class="step-number">2</span> Запустите установку и следуйте инструкциям.
@@ -519,20 +502,36 @@
                 </div>
             </div>
 
-            <button class="main-btn" id="copySubscriptionBtn">✨ ДОБАВИТЬ ПОДПИСКУ ✨</button>
-
-            <div class="manual-section">
-                <div style="color:#8f9bb3; font-size:14px; margin-bottom:10px; text-align:center;">ЕСЛИ НЕ ДОБАВИЛОСЬ АВТОМАТИЧЕСКИ</div>
-                <div class="manual-link" id="manualLink">https://dicstery.github.io/DicsteryVPN/?token=...</div>
-                <button class="copy-btn" id="copyManualBtn">📋 СКОПИРОВАТЬ ССЫЛКУ ВРУЧНУЮ</button>
+            <div class="glass-card">
+                <h3 style="margin-bottom: 15px;">🌍 Доступные сервера</h3>
+                <div class="server-list" id="serverList"></div>
             </div>
+
+            <button class="main-btn" id="copySubscriptionBtn">✨ ДОБАВИТЬ ПОДПИСКУ ✨</button>
 
             <button class="close-btn" onclick="Telegram.WebApp.close()">✕ ЗАКРЫТЬ ПРИЛОЖЕНИЕ</button>
         </div>
     </div>
 
     <script>
-        const API_URL = 'http://d1.qwertyx.host:25775';
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                star.style.animationDuration = Math.random() * 3 + 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        createStars();
+
         const tg = window.Telegram?.WebApp;
         
         if (!tg) {
@@ -549,28 +548,38 @@
             throw new Error('No user data');
         }
 
+        const ADMIN_IDS = [7383521067];
         const telegramId = tgUser.id;
         const username = tgUser.username || '';
         const firstName = tgUser.first_name || '';
         const lastName = tgUser.last_name || '';
 
-        let userData = {
-            telegram_id: telegramId,
-            username: username,
-            first_name: firstName,
-            last_name: lastName,
-            is_admin: false,
-            status: 'free'
-        };
+        const isAdmin = ADMIN_IDS.includes(telegramId);
+        const userStatus = isAdmin ? 'admin' : (Math.random() < 0.3 ? 'premium' : 'free');
 
-        let servers = [];
+        const servers = [
+            {id: 1, name: '🇷🇺 Россия', flag: '🇷🇺', host: '212.192.14.234', port: 24441, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_free: true},
+            {id: 2, name: '🇫🇷 Франция', flag: '🇫🇷', host: '95.111.250.4', port: 80, protocol: 'shadowsocks', method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_free: true},
+            {id: 3, name: '🇳🇱 Нидерланды', flag: '🇳🇱', host: '82.38.31.62', port: 8080, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_free: true},
+            {id: 4, name: '🇹🇷 Турция', flag: '🇹🇷', host: 'freeiran.lookanet.app', port: 2052, protocol: 'vless', uuid: 'f2eeaf91-6ac0-47f3-9673-39476e75c02d', security: 'none', network: 'ws', ws_host: 'metaplayer.gameredzone.top', ws_path: '/t.me.V2RayyNGvpn?ed=1024', tls: 'none', is_free: true},
+            {id: 5, name: '🇳🇱 Нидерланды #1', flag: '🇳🇱', host: 'nld-b3.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-b3.plugvpn.ru', fingerprint: 'chrome', public_key: 'fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU', short_id: '6117f326d85222ea', is_premium: true},
+            {id: 6, name: '🇳🇱 Нидерланды #2', flag: '🇳🇱', host: 'nld-x8.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-x8.plugvpn.ru', fingerprint: 'chrome', public_key: '5H0Z3DWs6UEdCx-uw3Jvv3dyFCsgoFjMNdlapdbwQXk', short_id: '7c050e5f16cb21de', is_premium: true},
+            {id: 7, name: '🇵🇱 Польша #1', flag: '🇵🇱', host: 'pol-m6.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'pol-m6.plugvpn.ru', fingerprint: 'chrome', public_key: '7zfV0yJHG46hnUm-89N5D8t4ZCN2_9yD8rs8uCCPgk0', short_id: 'c2c516d6fcfec79b', is_premium: true},
+            {id: 8, name: '🇵🇱 Польша #2', flag: '🇵🇱', host: 'pol-x1.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'pol-x1.plugvpn.ru', is_premium: true},
+            {id: 9, name: '🇺🇸 США #1', flag: '🇺🇸', host: 'usa-n5.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'usa-n5.plugvpn.ru', fingerprint: 'chrome', public_key: 'vTaqMH16V9S6jiOE74vCBXxplfbCrKByasYloyeeE0k', short_id: '61522fca4fc18140', is_premium: true},
+            {id: 10, name: '🇺🇸 США #2', flag: '🇺🇸', host: 'usa-f2.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'usa-f2.plugvpn.ru', is_premium: true},
+            {id: 11, name: '🇫🇮 Финляндия #1', flag: '🇫🇮', host: 'fin-q9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-q9.plugvpn.ru', fingerprint: 'chrome', public_key: 'qbnV1snO8ix66vt0VfKbyKloBnfZXUMCdZtA8-SwdBc', short_id: 'c8d761c11162e733', is_premium: true},
+            {id: 12, name: '🇫🇮 Финляндия #2', flag: '🇫🇮', host: 'fin-a7.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-a7.plugvpn.ru', fingerprint: 'chrome', public_key: '0TZaSq_Gz1-D25c6HeJD8qAgSkeoR7pRIbvI57QJ1XY', short_id: '985dfc082ead551b', is_premium: true},
+            {id: 13, name: '🇩🇪 Германия #1', flag: '🇩🇪', host: 'deu-h9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'deu-h9.plugvpn.ru', fingerprint: 'chrome', public_key: 'H80wZ3PsnPMixNbjeVq8p_g6UJaLCasHCtTaUlzWOGk', short_id: 'c32214ffa4d6ced6', is_premium: true},
+            {id: 14, name: '🇷🇺 Россия #1', flag: '🇷🇺', host: '158.160.171.167', port: 443, protocol: 'vless', uuid: '53fa2131-611e-413f-8b1a-3aed45529a52', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: '84.img.avito.st', fingerprint: 'chrome', public_key: 'w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F', short_id: '331a54c7ab4b', is_premium: true},
+            {id: 15, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
+        ];
 
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 MB';
-            if (bytes < 1024 * 1024 * 1024) {
-                return Math.floor(bytes / (1024 * 1024)) + ' MB';
+        function getAvailableServers() {
+            if (isAdmin || userStatus === 'premium') {
+                return servers;
             } else {
-                return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+                return servers.filter(s => s.is_free === true);
             }
         }
 
@@ -603,7 +612,7 @@
         }
 
         function generateAllConfigs() {
-            return servers.map(s => generateConfig(s)).join('\n');
+            return getAvailableServers().map(s => generateConfig(s)).join('\n');
         }
 
         function loadUserData() {
@@ -619,53 +628,11 @@
             document.getElementById('displayName').innerText = firstName || username || 'User';
             document.getElementById('displayId').innerText = `ID: ${telegramId}`;
             
-            fetch(`${API_URL}/api/user/status?telegram_id=${telegramId}`)
-                .then(response => response.json())
-                .then(data => {
-                    userData.status = data.status;
-                    userData.is_admin = data.is_admin;
-                    updateUI();
-                    return fetch(`${API_URL}/api/servers?telegram_id=${telegramId}`);
-                })
-                .then(response => response.json())
-                .then(data => {
-                    servers = data;
-                    renderServers();
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('content').style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('loading').innerHTML = '❌ Ошибка загрузки. Попробуйте позже.';
-                });
-        }
-
-        function renderServers() {
-            const container = document.getElementById('serverList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            servers.forEach(server => {
-                const serverEl = document.createElement('div');
-                serverEl.className = 'server-item';
-                serverEl.innerHTML = `
-                    <div class="server-header">
-                        <span class="server-flag">${server.flag}</span>
-                        <span class="server-name">${server.name}</span>
-                    </div>
-                    <div class="server-host">${server.host}:${server.port}</div>
-                `;
-                container.appendChild(serverEl);
-            });
-        }
-
-        function updateUI() {
             const badge = document.getElementById('statusBadge');
-            if (userData.is_admin) {
+            if (isAdmin) {
                 badge.innerText = 'ADMIN';
                 badge.className = 'status-badge badge-admin';
-            } else if (userData.status === 'premium') {
+            } else if (userStatus === 'premium') {
                 badge.innerText = 'PREMIUM';
                 badge.className = 'status-badge badge-premium';
             } else {
@@ -673,25 +640,43 @@
                 badge.className = 'status-badge badge-free';
             }
             
-            document.getElementById('manualLink').innerText = `https://t.me/DicsteryVPN_bot/VPN?start=${telegramId}`;
+            renderServers();
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }
+
+        function renderServers() {
+            const container = document.getElementById('serverList');
+            container.innerHTML = '';
+            
+            const availableServers = getAvailableServers();
+            
+            availableServers.forEach(server => {
+                const serverEl = document.createElement('div');
+                serverEl.className = 'server-item';
+                serverEl.innerHTML = `
+                    <div class="server-header">
+                        <span class="server-flag">${server.flag}</span>
+                        <span class="server-name">${server.name}</span>
+                    </div>
+                    <div class="server-details">
+                        <span>${server.host}:${server.port}</span>
+                        <span>${server.protocol}</span>
+                    </div>
+                `;
+                container.appendChild(serverEl);
+            });
         }
 
         function copySubscription() {
             const configs = generateAllConfigs();
-            let displayName = firstName || username || 'User';
-            const status = userData.is_admin ? 'ADMIN' : (userData.status === 'premium' ? 'PREMIUM' : 'FREE');
-            const header = `⚡ DICSTERY VPN ⚡\n\n👤 Пользователь: ${displayName}\n🔒 ID: ${telegramId}\n👑 Статус: ${status}\n💬 Бот: @DicsteryVPN_bot\n\n`;
+            const status = isAdmin ? 'ADMIN' : (userStatus === 'premium' ? 'PREMIUM' : 'FREE');
+            const header = `⚡ DICSTERY VPN ⚡\n\n👤 Пользователь: ${firstName || username || 'User'}\n🔒 ID: ${telegramId}\n👑 Статус: ${status}\n💬 Бот: @DicsteryVPN_bot\n\n`;
             const fullText = header + configs;
             
             navigator.clipboard.writeText(fullText).then(() => {
                 alert('✅ Подписка скопирована!\nВставьте в Happ для активации');
-            });
-        }
-
-        function copyManualLink() {
-            const link = `https://t.me/DicsteryVPN_bot/VPN?start=${telegramId}`;
-            navigator.clipboard.writeText(link).then(() => {
-                alert('✅ Ссылка скопирована!');
             });
         }
 
@@ -714,7 +699,6 @@
         });
 
         document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
-        document.getElementById('copyManualBtn').addEventListener('click', copyManualLink);
 
         loadUserData();
     </script>
