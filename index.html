@@ -714,33 +714,60 @@
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
+        function saveUserData() {
+            if (!telegramId) return;
+            const userKey = `user_${telegramId}`;
+            const userData = {
+                telegram_id: telegramId,
+                username: username,
+                first_name: firstName,
+                last_name: lastName,
+                photo_url: photoUrl,
+                is_premium: isPremium,
+                registered: true,
+                registered_at: new Date().toISOString()
+            };
+            localStorage.setItem(userKey, JSON.stringify(userData));
+            console.log(`💾 Данные сохранены для пользователя ${telegramId}`);
+        }
+
+        function loadUserData() {
+            if (!telegramId) return null;
+            const userKey = `user_${telegramId}`;
+            const data = localStorage.getItem(userKey);
+            if (data) {
+                console.log(`📂 Данные загружены для пользователя ${telegramId}`);
+                return JSON.parse(data);
+            }
+            console.log(`❌ Данные не найдены для пользователя ${telegramId}`);
+            return null;
+        }
+
         function checkAuth() {
-            const authData = localStorage.getItem('dicstery_auth');
-            if (authData) {
-                try {
-                    const data = JSON.parse(authData);
-                    telegramId = data.telegram_id;
-                    username = data.username;
-                    firstName = data.first_name;
-                    lastName = data.last_name;
-                    photoUrl = data.photo_url;
-                    isRegistered = true;
-                    isAdmin = ADMIN_IDS.includes(telegramId);
-                    isPremium = data.is_premium || false;
-                    showMainContent();
-                } catch (e) {
-                    showNotRegistered();
-                }
-            } else if (tg && tg.initDataUnsafe?.user) {
+            if (tg && tg.initDataUnsafe?.user) {
                 const user = tg.initDataUnsafe.user;
                 telegramId = user.id;
                 username = user.username || '';
                 firstName = user.first_name || '';
                 lastName = user.last_name || '';
                 photoUrl = user.photo_url || '';
-                isRegistered = false;
-                showNotRegistered();
+                
+                console.log(`👤 Пользователь Telegram: ${telegramId} (${firstName})`);
+                
+                const userData = loadUserData();
+                
+                if (userData && userData.registered) {
+                    isRegistered = true;
+                    isAdmin = ADMIN_IDS.includes(telegramId);
+                    isPremium = userData.is_premium || false;
+                    console.log(`✅ Зарегистрированный пользователь, Premium: ${isPremium}`);
+                    showMainContent();
+                } else {
+                    console.log(`🆕 Новый пользователь, требуется регистрация`);
+                    showNotRegistered();
+                }
             } else {
+                console.log(`❌ Нет данных Telegram`);
                 showNotRegistered();
             }
         }
@@ -890,17 +917,13 @@
                 return;
             }
             
-            const token = 'user_' + telegramId + '_' + Date.now();
-            localStorage.setItem('dicstery_auth', JSON.stringify({
-                telegram_id: telegramId,
-                username: username,
-                first_name: firstName,
-                last_name: lastName,
-                photo_url: photoUrl,
-                is_premium: false
-            }));
+            isPremium = false;
+            saveUserData();
             
+            const token = 'user_' + telegramId + '_' + Date.now();
             const botLink = `https://t.me/${BOT_USERNAME}?start=register_${token}`;
+            
+            console.log(`📤 Открываем бота с токеном: ${token}`);
             window.location.href = botLink;
         });
 
