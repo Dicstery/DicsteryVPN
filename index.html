@@ -229,8 +229,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 18px;
             padding: 12px 16px;
-            display: flex;
-            align-items: center;
             transition: var(--transition);
             cursor: default;
         }
@@ -252,21 +250,15 @@
             box-shadow: 0 0 20px var(--vip-glow);
         }
 
-        .server-info {
+        .server-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            flex: 1;
-            min-width: 0;
+            margin-bottom: 8px;
         }
 
         .server-flag {
             font-size: 28px;
-        }
-
-        .server-details {
-            flex: 1;
-            min-width: 0;
         }
 
         .server-name {
@@ -286,8 +278,23 @@
             color: #000;
         }
 
+        .server-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 40px;
+        }
+
         .server-host {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .server-ping {
             font-size: 12px;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             color: var(--text-secondary);
         }
 
@@ -359,21 +366,11 @@
             font-weight: 600;
         }
 
-        .badge {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-admin {
-            background: #9b59b6;
-            color: white;
-        }
-
-        .badge-vip {
-            background: var(--vip-primary);
-            color: black;
+        .hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -454,6 +451,10 @@
                         <span class="label">📊 Трафик:</span>
                         <span class="value" id="trafficDetail">0 MB / 0 GB</span>
                     </div>
+                    <div class="info-line">
+                        <span class="label">⚡ Скорость:</span>
+                        <span class="value" id="speedText">-</span>
+                    </div>
                 </div>
                 <div class="progress-container">
                     <div class="progress-bar" id="trafficBar" style="width: 0%"></div>
@@ -464,8 +465,8 @@
                 <div class="card-title">
                     <span>🌍</span> Доступные сервера
                 </div>
-                <div class="server-list" id="serverList">
-                </div>
+                <div class="server-list" id="serverList"></div>
+                <div class="hint">Нажмите кнопку ниже, чтобы добавить все сервера в Happ</div>
             </div>
 
             <button class="btn" id="copySubscriptionBtn">
@@ -487,31 +488,41 @@
             username: '',
             first_name: '',
             is_admin: false,
-            status: 'inactive',
+            status: 'free',
             subscription_end: null,
-            subscription_type: 'none',
+            subscription_type: 'free',
             traffic_used: 0,
-            traffic_limit: 0,
+            traffic_limit: 100 * 1024 * 1024,
+            daily_traffic_used: 0,
+            speed_limit: 1024 * 1024,
             referral_count: 0,
             bonus_days: 0
         };
 
         let servers = [
-            {id: 1, name: 'Russia #1', location: 'RU', flag: '🇷🇺', host: '212.192.14.234', port: 24441, method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_vip: false},
-            {id: 2, name: 'Russia #2', location: 'RU', flag: '🇷🇺', host: '62.113.114.116', port: 42320, method: 'chacha20-ietf-poly1305', password: 'BShcek5ydlWbXEnhl2vlym', is_vip: false},
-            {id: 3, name: 'Russia #3', location: 'RU', flag: '🇷🇺', host: 'spb.scroogethebest.com', port: 443, method: 'chacha20-ietf-poly1305', password: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1', is_vip: false},
-            {id: 4, name: 'UK #1', location: 'GB', flag: '🇬🇧', host: 'series-a1.samanehha.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'W74XFALLLuw6m5IA', is_vip: false},
-            {id: 5, name: 'UK #2', location: 'GB', flag: '🇬🇧', host: 'admin.c2.havij.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'kaQH3hGdcP80XEDI', is_vip: false},
-            {id: 6, name: 'France', location: 'FR', flag: '🇫🇷', host: '95.111.250.4', port: 80, method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_vip: false},
-            {id: 7, name: 'USA', location: 'US', flag: '🇺🇸', host: '154.38.176.7', port: 80, method: 'aes-256-gcm', password: 'nKeE2ZFWVaE4DyjR', is_vip: false},
-            {id: 8, name: 'Netherlands', location: 'NL', flag: '🇳🇱', host: '82.38.31.62', port: 8080, method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_vip: false},
-            {id: 9, name: 'Sweden', location: 'SE', flag: '🇸🇪', host: '46.246.97.140', port: 53908, method: 'chacha20-ietf-poly1305', password: 'ZweuXavjovuhzt1AF0d6qx', is_vip: false},
-            {id: 10, name: 'Japan', location: 'JP', flag: '🇯🇵', host: '103.106.228.175', port: 8009, method: 'aes-256-gcm', password: 'XKFKI2rULjlP74', is_vip: false},
-            {id: 11, name: 'Italy VIP', location: 'IT', flag: '🇮🇹', host: '80.211.133.156', port: 443, method: 'aes-256-gcm', password: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532', is_vip: true},
-            {id: 12, name: 'Germany #2 VIP', location: 'DE', flag: '🇩🇪', host: '93.94.51.13', port: 25451, method: 'aes-256-gcm', password: 'a90f4742-2f30-47b5-9f17-b6ab04cc98e8', is_vip: true},
-            {id: 13, name: 'Germany #3 VIP', location: 'DE', flag: '🇩🇪', host: 'deu469.unboundworld.org', port: 8443, method: 'aes-256-gcm', password: 'cc9f7840-757a-430b-bddc-a73478bea434', is_vip: true},
-            {id: 14, name: 'Germany #4 VIP', location: 'DE', flag: '🇩🇪', host: '81.19.141.190', port: 51529, method: 'aes-256-gcm', password: 'ad2879c1-7f77-4a4c-ba50-c24dd5ceffa4', is_vip: true}
+            {id: 1, name: 'Russia #1', flag: '🇷🇺', host: '212.192.14.234', port: 24441, method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_vip: false, is_free: true, ping: 23},
+            {id: 2, name: 'Russia #2', flag: '🇷🇺', host: '62.113.114.116', port: 42320, method: 'chacha20-ietf-poly1305', password: 'BShcek5ydlWbXEnhl2vlym', is_vip: false, is_free: false, ping: 45},
+            {id: 3, name: 'Russia #3', flag: '🇷🇺', host: 'spb.scroogethebest.com', port: 443, method: 'chacha20-ietf-poly1305', password: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1', is_vip: false, is_free: false, ping: 18},
+            {id: 4, name: 'UK #1', flag: '🇬🇧', host: 'series-a1.samanehha.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'W74XFALLLuw6m5IA', is_vip: false, is_free: false, ping: 78},
+            {id: 5, name: 'UK #2', flag: '🇬🇧', host: 'admin.c2.havij.co', port: 443, method: 'chacha20-ietf-poly1305', password: 'kaQH3hGdcP80XEDI', is_vip: false, is_free: false, ping: 82},
+            {id: 6, name: 'France', flag: '🇫🇷', host: '95.111.250.4', port: 80, method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_vip: false, is_free: true, ping: 67},
+            {id: 7, name: 'USA', flag: '🇺🇸', host: '154.38.176.7', port: 80, method: 'aes-256-gcm', password: 'nKeE2ZFWVaE4DyjR', is_vip: false, is_free: false, ping: 145},
+            {id: 8, name: 'Netherlands', flag: '🇳🇱', host: '82.38.31.62', port: 8080, method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_vip: false, is_free: true, ping: 56},
+            {id: 9, name: 'Sweden', flag: '🇸🇪', host: '46.246.97.140', port: 53908, method: 'chacha20-ietf-poly1305', password: 'ZweuXavjovuhzt1AF0d6qx', is_vip: false, is_free: false, ping: 62},
+            {id: 10, name: 'Japan', flag: '🇯🇵', host: '103.106.228.175', port: 8009, method: 'aes-256-gcm', password: 'XKFKI2rULjlP74', is_vip: false, is_free: false, ping: 185},
+            {id: 11, name: 'Italy VIP', flag: '🇮🇹', host: '80.211.133.156', port: 443, method: 'aes-256-gcm', password: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532', is_vip: true, is_free: false, ping: 58},
+            {id: 12, name: 'Germany #2 VIP', flag: '🇩🇪', host: '93.94.51.13', port: 25451, method: 'aes-256-gcm', password: 'a90f4742-2f30-47b5-9f17-b6ab04cc98e8', is_vip: true, is_free: false, ping: 32},
+            {id: 13, name: 'Germany #3 VIP', flag: '🇩🇪', host: 'deu469.unboundworld.org', port: 8443, method: 'aes-256-gcm', password: 'cc9f7840-757a-430b-bddc-a73478bea434', is_vip: true, is_free: false, ping: 41},
+            {id: 14, name: 'Germany #4 VIP', flag: '🇩🇪', host: '81.19.141.190', port: 51529, method: 'aes-256-gcm', password: 'ad2879c1-7f77-4a4c-ba50-c24dd5ceffa4', is_vip: true, is_free: false, ping: 28}
         ];
+
+        function getSpeedText(status, is_admin, speed_limit) {
+            if (is_admin) return "🚀 1000 Мбит/с (Админ)";
+            if (status === 'vip') return "⚡ 100 Мбит/с (VIP)";
+            if (status === 'basic') return "⚡ 50 Мбит/с (Premium)";
+            if (status === 'trial') return "🔄 30 Мбит/с (Пробный)";
+            return "🐢 5 Мбит/с (Бесплатный)";
+        }
 
         function loadUserData() {
             document.getElementById('loading').style.display = 'block';
@@ -548,15 +559,12 @@
                     userData.status = 'admin';
                     userData.subscription_type = 'admin';
                     userData.subscription_end = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
-                    userData.traffic_used = Math.floor(Math.random() * 30) * 1024 * 1024 * 1024;
-                    userData.traffic_limit = 0;
+                    userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
+                    userData.traffic_limit = 1000000 * 1024 * 1024 * 1024;
+                    userData.speed_limit = 1000 * 1024 * 1024;
                 } else {
-                    userData.is_admin = false;
-                    userData.status = 'active';
-                    userData.subscription_type = 'basic';
-                    userData.subscription_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-                    userData.traffic_used = Math.floor(Math.random() * 10) * 1024 * 1024 * 1024;
-                    userData.traffic_limit = 50 * 1024 * 1024 * 1024;
+                    const randomTraffic = Math.floor(Math.random() * 30) * 1024 * 1024 * 1024;
+                    userData.traffic_used = randomTraffic;
                 }
                 
                 localStorage.setItem(`user_${token}`, JSON.stringify(userData));
@@ -573,7 +581,7 @@
             container.innerHTML = '';
             
             const isVip = userData.status === 'vip' || userData.is_admin;
-            const isActive = userData.status === 'active' || userData.status === 'vip' || userData.is_admin;
+            const isActive = userData.is_admin || userData.status !== 'free' || (userData.status === 'free' && userData.daily_traffic_used < userData.traffic_limit);
             
             if (!isActive) {
                 document.getElementById('expiredMessage').style.display = 'block';
@@ -582,24 +590,34 @@
                 return;
             }
             
-            const availableServers = servers.filter(s => !s.is_vip || isVip);
+            let availableServers;
+            if (userData.is_admin || userData.status === 'vip' || userData.status === 'basic' || userData.status === 'trial') {
+                availableServers = servers.filter(s => s.is_active !== false);
+            } else {
+                availableServers = servers.filter(s => s.is_free === true);
+            }
+            
+            availableServers.sort((a, b) => a.ping - b.ping);
             
             availableServers.forEach(server => {
                 const isVipServer = server.is_vip;
+                const pingColor = server.ping < 50 ? '#2ecc71' : server.ping < 100 ? '#f39c12' : '#e74c3c';
                 
                 const serverEl = document.createElement('div');
                 serverEl.className = `server-item ${isVipServer ? 'vip-server' : ''}`;
                 
                 serverEl.innerHTML = `
-                    <div class="server-info">
+                    <div class="server-header">
                         <span class="server-flag">${server.flag}</span>
-                        <div class="server-details">
-                            <div class="server-name">
-                                ${server.name}
-                                ${isVipServer ? '<span class="server-badge">VIP</span>' : ''}
-                            </div>
-                            <div class="server-host">${server.host}:${server.port}</div>
+                        <div class="server-name">
+                            ${server.name}
+                            ${isVipServer ? '<span class="server-badge">VIP</span>' : ''}
+                            ${server.is_free ? '<span style="font-size:11px;margin-left:4px;color:#2ecc71;">🆓</span>' : ''}
                         </div>
+                    </div>
+                    <div class="server-details">
+                        <span class="server-host">${server.host}:${server.port}</span>
+                        <span class="server-ping" style="color: ${pingColor}">${server.ping} ms</span>
                     </div>
                 `;
                 container.appendChild(serverEl);
@@ -607,7 +625,7 @@
         }
 
         function generateConfig(server) {
-            return `ss://${btoa(`${server.method}:${server.password}`)}@${server.host}:${server.port}#${server.name}`;
+            return `ss://${btoa(`${server.method}:${server.password}`)}@${server.host}:${server.port}#${server.flag} ${server.name}`;
         }
 
         function formatBytes(bytes) {
@@ -620,7 +638,7 @@
         }
 
         function formatDate(dateString) {
-            if (!dateString) return '-';
+            if (!dateString) return 'Бессрочно';
             const date = new Date(dateString);
             return date.toLocaleDateString('ru-RU', {
                 day: '2-digit',
@@ -631,20 +649,27 @@
 
         function copySubscription() {
             const isVip = userData.status === 'vip' || userData.is_admin;
-            const availableServers = servers.filter(s => !s.is_vip || isVip);
+            let availableServers;
+            
+            if (userData.is_admin || userData.status === 'vip' || userData.status === 'basic' || userData.status === 'trial') {
+                availableServers = servers.filter(s => s.is_active !== false);
+            } else {
+                availableServers = servers.filter(s => s.is_free === true);
+            }
             
             const configs = availableServers.map(s => generateConfig(s)).join('\n');
             
             const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : new Date();
-            const daysLeft = userData.is_admin ? 9999 : Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24)));
+            const daysLeft = userData.is_admin ? '∞' : Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24)));
             
             const usedGB = (userData.traffic_used / (1024 * 1024 * 1024)).toFixed(1);
             const limitGB = userData.traffic_limit === 0 ? '∞' : (userData.traffic_limit / (1024 * 1024 * 1024)).toFixed(1);
             
-            const status = userData.is_admin ? 'ADMIN' : (userData.status === 'vip' ? 'VIP' : 'Active');
+            const status = userData.is_admin ? 'ADMIN' : (userData.status === 'vip' ? 'VIP' : (userData.status === 'basic' ? 'Premium' : 'Free'));
+            const speedText = getSpeedText(userData.status, userData.is_admin, userData.speed_limit);
             
             const header = `⚡ DICSTERY VPN ⚡\n\n`;
-            const subInfo = `📅 Истекает: ${formatDate(userData.subscription_end)}\n📧 Дней осталось: ${daysLeft}\n🔒 ID: ${userData.telegram_id}\n💬 Продлить: @DicsteryVPN_bot\n📊 Трафик: ${usedGB}GB/${limitGB}GB\n👑 Статус: ${status}\n\n`;
+            const subInfo = `📅 Истекает: ${formatDate(userData.subscription_end)}\n📧 Дней осталось: ${daysLeft}\n🔒 ID: ${userData.telegram_id}\n💬 Продлить: @DicsteryVPN_bot\n📊 Трафик: ${usedGB}GB/${limitGB}GB\n⚡ Скорость: ${speedText}\n👑 Статус: ${status}\n\n`;
             
             const fullText = header + subInfo + configs;
             
@@ -660,14 +685,14 @@
         }
 
         function updateUI() {
-            document.getElementById('userId').innerText = userData.telegram_id;
+            document.getElementById('userId').innerText = userData.telegram_id || '—';
             document.getElementById('username').innerText = userData.username || userData.first_name || 'User';
-            document.getElementById('userIdDetail').innerText = userData.telegram_id;
+            document.getElementById('userIdDetail').innerText = userData.telegram_id || '—';
             
-            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : new Date();
+            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : null;
             document.getElementById('expireDate').innerText = formatDate(userData.subscription_end);
             
-            const daysLeft = userData.is_admin ? 9999 : Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24)));
+            const daysLeft = userData.is_admin ? '∞' : (expireDate ? Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24))) : '∞');
             document.getElementById('daysLeft').innerText = daysLeft;
             document.getElementById('daysLeftDetail').innerText = daysLeft;
             
@@ -680,6 +705,9 @@
             const usedMB = Math.floor(userData.traffic_used / (1024 * 1024));
             document.getElementById('trafficDetail').innerText = `${usedMB} MB / ${limitGB} GB`;
             
+            const speedText = getSpeedText(userData.status, userData.is_admin, userData.speed_limit);
+            document.getElementById('speedText').innerText = speedText;
+            
             const statusBadge = document.getElementById('statusBadge');
             if (userData.is_admin) {
                 statusBadge.innerText = 'ADMIN';
@@ -687,15 +715,18 @@
             } else if (userData.status === 'vip') {
                 statusBadge.innerText = 'VIP';
                 statusBadge.className = 'status-badge status-vip';
-            } else if (userData.status === 'active') {
-                statusBadge.innerText = 'ACTIVE';
+            } else if (userData.status === 'basic') {
+                statusBadge.innerText = 'PREMIUM';
+                statusBadge.className = 'status-badge status-active';
+            } else if (userData.status === 'trial') {
+                statusBadge.innerText = 'TRIAL';
                 statusBadge.className = 'status-badge status-active';
             } else {
-                statusBadge.innerText = 'EXPIRED';
-                statusBadge.className = 'status-badge status-expired';
+                statusBadge.innerText = 'FREE';
+                statusBadge.className = 'status-badge status-active';
             }
             
-            if (userData.traffic_limit > 0) {
+            if (userData.traffic_limit > 0 && !userData.is_admin) {
                 const percent = (userData.traffic_used / userData.traffic_limit) * 100;
                 document.getElementById('trafficBar').style.width = `${percent}%`;
             } else {
