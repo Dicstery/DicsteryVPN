@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dicstery VPN</title>
+    <title>Dicstery VPN - Личный кабинет</title>
     <style>
         * {
             margin: 0;
@@ -12,284 +12,377 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
+        :root {
+            --bg-dark: #0a0c14;
+            --bg-card: #141824;
+            --bg-card-hover: #1e2230;
+            --accent-primary: #4a6cf7;
+            --accent-secondary: #6b8aff;
+            --accent-glow: rgba(74, 108, 247, 0.4);
+            --vip-primary: #f1c40f;
+            --vip-secondary: #f39c12;
+            --vip-glow: rgba(241, 196, 15, 0.4);
+            --premium-primary: #ff6b6b;
+            --premium-secondary: #ff8e8e;
+            --premium-glow: rgba(255, 107, 107, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #8f9bb3;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --border-radius: 24px;
+            --border-radius-sm: 16px;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 20px var(--accent-glow);
+            --transition: all 0.3s ease;
+        }
+
         body {
-            background: #0b0e14;
-            color: #fff;
+            background: var(--bg-dark);
+            color: var(--text-primary);
             min-height: 100vh;
+            padding-bottom: 20px;
             position: relative;
         }
 
-        .stars {
+        .watermark {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            bottom: 10px;
+            right: 10px;
+            opacity: 0.3;
+            font-size: 12px;
+            color: var(--text-secondary);
             pointer-events: none;
-            z-index: 0;
+            z-index: 9999;
+            transform: rotate(-5deg);
         }
 
-        .star {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 20px;
-            animation: twinkle 4s infinite;
+        .app-header {
+            background: linear-gradient(135deg, #1a1f2f, #0f1320);
+            padding: 25px 20px 15px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.1; }
-            50% { opacity: 0.5; }
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a5b9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
         }
 
-        .star1 { top: 5%; left: 10%; animation-delay: 0s; }
-        .star2 { top: 15%; right: 15%; animation-delay: 1s; }
-        .star3 { bottom: 20%; left: 20%; animation-delay: 2s; }
-        .star4 { bottom: 30%; right: 25%; animation-delay: 3s; }
-        .star5 { top: 40%; left: 30%; animation-delay: 0.5s; }
-        .star6 { top: 60%; right: 40%; animation-delay: 1.5s; }
-        .star7 { top: 80%; left: 50%; animation-delay: 2.5s; }
-        .star8 { top: 25%; left: 70%; animation-delay: 3.5s; }
+        .support-link {
+            color: var(--accent-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 5px;
+            display: inline-block;
+        }
 
         .container {
-            position: relative;
-            z-index: 1;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px 16px 40px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .title {
-            font-size: 42px;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 4px;
-            margin-bottom: 5px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-        }
-
-        .subtitle {
-            color: #8f9bb3;
-            font-size: 14px;
-        }
-
-        .support {
-            margin-top: 8px;
-        }
-
-        .support a {
-            color: #4a6cf7;
-            text-decoration: none;
-            font-size: 15px;
+            padding: 0 16px;
         }
 
         .card {
-            background: #141824;
-            border-radius: 20px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
             padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #2a2e3c;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeInUp 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
+        .card:hover {
+            background: var(--bg-card-hover);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
         }
 
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 24px;
-            background: linear-gradient(135deg, #4a6cf7, #6b8aff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-title {
             font-size: 20px;
             font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .profile-info h3 {
-            font-size: 18px;
-            margin-bottom: 2px;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .profile-info p {
-            color: #8f9bb3;
-            font-size: 13px;
+        .info-row:last-child {
+            border-bottom: none;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .info-value {
             font-weight: 600;
-            margin-left: auto;
+            font-size: 16px;
         }
 
-        .badge-admin { background: #9b59b6; color: white; }
-        .badge-vip { background: #f1c40f; color: black; }
-        .badge-premium { background: #e74c3c; color: white; }
-        .badge-free { background: #2ecc71; color: white; }
-        .badge-basic { background: #3498db; color: white; }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 15px;
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .stat-item {
-            background: #1e2230;
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
+        .status-active {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.3);
         }
 
-        .stat-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: #4a6cf7;
+        .status-vip {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.15), rgba(243, 156, 18, 0.15));
+            color: var(--vip-primary);
+            border: 1px solid var(--vip-primary);
         }
 
-        .stat-label {
-            font-size: 12px;
-            color: #8f9bb3;
-            margin-top: 4px;
+        .status-premium {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(255, 142, 142, 0.15));
+            color: var(--premium-primary);
+            border: 1px solid var(--premium-primary);
+        }
+
+        .status-expired {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .status-admin {
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.15), rgba(142, 68, 173, 0.15));
+            color: #9b59b6;
+            border: 1px solid #9b59b6;
         }
 
         .progress-container {
             width: 100%;
-            height: 6px;
-            background: #1e2230;
-            border-radius: 3px;
-            margin: 15px 0 5px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 10px 0;
             overflow: hidden;
         }
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #4a6cf7, #6b8aff);
-            border-radius: 3px;
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
+        .stats-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .stat-block {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .server-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
             margin-bottom: 15px;
+        }
+
+        .server-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 12px 16px;
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .server-item:hover {
+            background: rgba(74, 108, 247, 0.1);
+            border-color: var(--accent-primary);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(74, 108, 247, 0.2);
+        }
+
+        .vip-server {
+            border: 1px solid var(--vip-primary);
+        }
+
+        .vip-server:hover {
+            background: rgba(241, 196, 15, 0.1);
+            border-color: var(--vip-primary);
+            box-shadow: 0 0 20px var(--vip-glow);
+        }
+
+        .premium-server {
+            border: 2px solid var(--premium-primary);
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(255, 142, 142, 0.05));
+        }
+
+        .premium-server:hover {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: var(--premium-primary);
+            box-shadow: 0 0 20px var(--premium-glow);
+        }
+
+        .server-header {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 8px;
         }
 
-        .platform-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+        .server-flag {
+            font-size: 28px;
         }
 
-        .platform-item {
-            background: #1e2230;
-            border-radius: 12px;
-            padding: 12px 5px;
-            text-align: center;
-            border: 1px solid #2a2e3c;
-        }
-
-        .platform-icon {
-            font-size: 22px;
-            margin-bottom: 5px;
-        }
-
-        .platform-name {
-            font-size: 11px;
-            color: #8f9bb3;
-        }
-
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .app-item {
-            background: #1e2230;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #2a2e3c;
-        }
-
-        .app-name {
+        .server-name {
             font-weight: 600;
-            margin-bottom: 5px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
-        .app-desc {
+        .server-badge {
             font-size: 11px;
-            color: #8f9bb3;
-            margin-bottom: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--vip-primary);
+            color: #000;
         }
 
-        .app-btn {
-            background: #2a2e3c;
-            color: white;
-            border: none;
-            padding: 8px 0;
-            border-radius: 8px;
-            width: 100%;
+        .premium-badge {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--premium-primary);
+            color: #fff;
+        }
+
+        .server-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 40px;
+        }
+
+        .server-host {
             font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
+            color: var(--text-secondary);
         }
 
-        .app-btn:hover {
-            background: #3a3e4c;
+        .server-ping {
+            font-size: 12px;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            color: var(--text-secondary);
         }
 
-        .main-btn {
-            background: #4a6cf7;
+        .btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             border: none;
             padding: 16px;
-            border-radius: 14px;
+            border-radius: var(--border-radius-sm);
             color: white;
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: var(--transition);
             width: 100%;
-            margin: 15px 0;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(74, 108, 247, 0.3);
         }
 
-        .main-btn:hover {
-            background: #5b7cff;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 108, 247, 0.5);
         }
 
-        .main-btn.vip-btn {
-            background: #f1c40f;
+        .btn-vip {
+            background: linear-gradient(135deg, var(--vip-primary), var(--vip-secondary));
             color: black;
+            box-shadow: 0 4px 15px var(--vip-glow);
         }
 
-        .main-btn.premium-btn {
-            background: #e74c3c;
+        .btn-vip:hover {
+            box-shadow: 0 8px 25px var(--vip-glow);
         }
 
-        .info-block {
-            background: #1e2230;
-            border-radius: 14px;
+        .btn-premium {
+            background: linear-gradient(135deg, var(--premium-primary), var(--premium-secondary));
+            color: white;
+            box-shadow: 0 4px 15px var(--premium-glow);
+        }
+
+        .btn-premium:hover {
+            box-shadow: 0 8px 25px var(--premium-glow);
+        }
+
+        .expired-message {
+            text-align: center;
+            padding: 30px;
+            color: var(--danger);
+            font-size: 18px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--danger);
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--border-radius-sm);
             padding: 15px;
             margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .info-line {
@@ -299,267 +392,134 @@
             font-size: 14px;
         }
 
+        .info-line:last-child {
+            margin-bottom: 0;
+        }
+
         .info-line .label {
-            color: #8f9bb3;
+            color: var(--text-secondary);
         }
 
         .info-line .value {
             font-weight: 600;
         }
 
-        .server-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 15px 0;
-        }
-
-        .server-item {
-            background: #1e2230;
-            border: 1px solid #2a2e3c;
-            border-radius: 12px;
-            padding: 12px;
-        }
-
-        .server-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
-        }
-
-        .server-flag {
-            font-size: 22px;
-        }
-
-        .server-name {
-            font-weight: 600;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .server-tag {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .tag-premium { background: #e74c3c; color: white; }
-        .tag-vip { background: #f1c40f; color: black; }
-        .tag-free { background: #2ecc71; color: white; }
-
-        .server-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-left: 32px;
-        }
-
-        .server-host {
+        .hint {
             font-size: 12px;
-            color: #8f9bb3;
-        }
-
-        .server-ping {
-            font-size: 11px;
-            padding: 2px 8px;
-            background: #2a2e3c;
-            border-radius: 10px;
-        }
-
-        .manual-link {
-            background: #1e2230;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 15px;
-            word-break: break-all;
-            font-size: 12px;
-            border: 1px solid #2a2e3c;
-        }
-
-        .copy-btn {
-            background: #2a2e3c;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            width: 100%;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
-        }
-
-        .copy-btn:hover {
-            background: #3a3e4c;
-        }
-
-        .footer {
+            color: var(--text-secondary);
             text-align: center;
-            margin-top: 20px;
-            color: #4a4e5c;
-            font-size: 12px;
-        }
-
-        .watermark {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            opacity: 0.2;
-            font-size: 12px;
-            color: white;
-            z-index: 2;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #8f9bb3;
+            margin-top: 8px;
         }
     </style>
 </head>
 <body>
-    <div class="stars">
-        <div class="star star1">❄</div>
-        <div class="star star2">✦</div>
-        <div class="star star3">✧</div>
-        <div class="star star4">❅</div>
-        <div class="star star5">⋆</div>
-        <div class="star star6">⁕</div>
-        <div class="star star7">❆</div>
-        <div class="star star8">∗</div>
+    <div class="watermark">@Dicstery</div>
+
+    <div class="app-header">
+        <div class="app-title">⚡ DICSTERY VPN</div>
+        <a href="https://t.me/Dicstery" class="support-link">@Dicstery</a>
     </div>
 
     <div class="container">
-        <div class="header">
-            <div class="title">DICSTERY VPN</div>
-            <div class="support">
-                <a href="https://t.me/Dicstery">@Dicstery</a>
-            </div>
+        <div id="loading" class="card" style="text-align: center; padding: 40px;">
+            ⏳ Загрузка данных...
         </div>
 
-        <div id="loading" class="loading">⏳ Загрузка данных...</div>
+        <div id="errorMessage" class="card expired-message" style="display: none;">
+            ❌ Ошибка загрузки данных<br>
+            <small>Попробуйте позже</small>
+        </div>
+
+        <div id="expiredMessage" class="card expired-message" style="display: none;">
+            ❌ Срок действия подписки истек<br>
+            <small>Приобретите подписку в боте @DicsteryVPN_bot</small>
+        </div>
 
         <div id="content" style="display: none;">
-            <!-- Профиль -->
             <div class="card">
-                <div class="profile-header">
-                    <div class="avatar" id="avatar">👤</div>
-                    <div class="profile-info">
-                        <h3 id="displayName">Загрузка...</h3>
-                        <p id="displayId">ID: —</p>
-                    </div>
-                    <span class="badge" id="statusBadge">FREE</span>
+                <div class="card-title">
+                    <span>👤</span> Профиль
                 </div>
-
+                <div class="info-row">
+                    <span class="info-label">ID</span>
+                    <span class="info-value" id="userId">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Username</span>
+                    <span class="info-value" id="username">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Статус</span>
+                    <span class="info-value"><span class="status-badge" id="statusBadge">FREE</span></span>
+                </div>
                 <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="daysLeft">∞</div>
-                        <div class="stat-label">дней</div>
+                    <div class="stat-block">
+                        <div class="stat-number" id="daysLeft">∞</div>
+                        <div class="stat-label">дней осталось</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="trafficUsed">0.0</div>
-                        <div class="stat-label">ГБ</div>
+                    <div class="stat-block">
+                        <div class="stat-number" id="trafficUsed">0.0</div>
+                        <div class="stat-label">ГБ / <span id="trafficLimit">0.1</span></div>
                     </div>
                 </div>
+            </div>
 
+            <div class="card">
+                <div class="card-title">
+                    <span>📊</span> Детали подписки
+                </div>
+                <div class="info-box">
+                    <div class="info-line">
+                        <span class="label">📅 Истекает:</span>
+                        <span class="value" id="expireDate">Бессрочно</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">📧 Дней осталось:</span>
+                        <span class="value" id="daysLeftDetail">∞</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">🔒 ID:</span>
+                        <span class="value" id="userIdDetail">-</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">💬 Продлить:</span>
+                        <span class="value">@DicsteryVPN_bot</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">📊 Трафик:</span>
+                        <span class="value" id="trafficDetail">0 MB / 0.1 GB</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="label">⚡ Скорость:</span>
+                        <span class="value" id="speedText">🐢 5 Мбит/с</span>
+                    </div>
+                </div>
                 <div class="progress-container">
                     <div class="progress-bar" id="trafficBar" style="width: 0%"></div>
                 </div>
             </div>
 
-            <!-- Установка -->
             <div class="card">
-                <div class="section-title">📱 Установка</div>
-
-                <div class="platform-grid">
-                    <div class="platform-item"><div class="platform-icon"></div><div class="platform-name">iOS</div></div>
-                    <div class="platform-item"><div class="platform-icon">🤖</div><div class="platform-name">Android</div></div>
-                    <div class="platform-item"><div class="platform-icon">🪟</div><div class="platform-name">Windows</div></div>
-                    <div class="platform-item"><div class="platform-icon">🍏</div><div class="platform-name">macOS</div></div>
-                    <div class="platform-item"><div class="platform-icon">🐧</div><div class="platform-name">Linux</div></div>
-                    <div class="platform-item"><div class="platform-icon">📺</div><div class="platform-name">Android TV</div></div>
-                    <div class="platform-item"><div class="platform-icon">📱</div><div class="platform-name">Apple TV</div></div>
-                    <div class="platform-item"><div class="platform-icon">⚡</div><div class="platform-name">FlClashX</div></div>
+                <div class="card-title">
+                    <span>🌍</span> Доступные сервера
                 </div>
-
-                <div style="color:#8f9bb3; font-size:13px; margin-bottom:15px;">Выберите приложение для вашего устройства</div>
-
-                <div class="apps-grid">
-                    <div class="app-item">
-                        <div class="app-name">Happ</div>
-                        <div class="app-desc">iOS / Android</div>
-                        <button class="app-btn" onclick="window.open('https://apps.apple.com/app/happ-proxy-utility/id6478832896', '_blank')">Скачать</button>
-                    </div>
-                    <div class="app-item">
-                        <div class="app-name">v2rayNG</div>
-                        <div class="app-desc">Android</div>
-                        <button class="app-btn" onclick="window.open('https://play.google.com/store/apps/details?id=com.v2ray.ang', '_blank')">Скачать</button>
-                    </div>
-                    <div class="app-item">
-                        <div class="app-name">Clash Meta</div>
-                        <div class="app-desc">Windows / Mac</div>
-                        <button class="app-btn" onclick="window.open('https://github.com/MetaCubeX/Clash.Meta/releases', '_blank')">Скачать</button>
-                    </div>
-                    <div class="app-item">
-                        <div class="app-name">Shadowrocket</div>
-                        <div class="app-desc">iOS</div>
-                        <button class="app-btn" onclick="window.open('https://apps.apple.com/app/shadowrocket/id932747118', '_blank')">Скачать</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Детали подписки -->
-            <div class="card">
-                <div class="section-title">📊 Детали</div>
-                <div class="info-block">
-                    <div class="info-line"><span class="label">ID:</span><span class="value" id="userIdDetail">—</span></div>
-                    <div class="info-line"><span class="label">Статус:</span><span class="value" id="statusDetail">FREE</span></div>
-                    <div class="info-line"><span class="label">Истекает:</span><span class="value" id="expireDate">—</span></div>
-                    <div class="info-line"><span class="label">Трафик:</span><span class="value" id="trafficDetail">0/0.1GB</span></div>
-                    <div class="info-line"><span class="label">Скорость:</span><span class="value" id="speedText">5 Мбит/с</span></div>
-                </div>
-            </div>
-
-            <!-- Сервера -->
-            <div class="card">
-                <div class="section-title">🌍 Сервера</div>
                 <div class="server-list" id="serverList"></div>
+                <div class="hint">Нажмите кнопку ниже, чтобы добавить все сервера в Happ</div>
             </div>
 
-            <!-- Добавление подписки -->
-            <div class="card">
-                <div class="section-title">🔗 Добавить подписку</div>
-                <button class="main-btn" id="copySubscriptionBtn">📋 Добавить подписку</button>
-
-                <div style="color:#8f9bb3; font-size:13px; margin:10px 0;">Если не добавилось, скопируйте ссылку:</div>
-                <div class="manual-link" id="manualLink">https://dicstery.github.io/DicsteryVPN/?token=...</div>
-                <button class="copy-btn" id="copyManualBtn">📋 Скопировать ссылку</button>
-            </div>
-
-            <!-- Использование -->
-            <div class="card">
-                <div class="section-title">🔌 Использование</div>
-                <div style="color:#8f9bb3; font-size:14px; line-height:1.6;">
-                    1. Добавьте профиль через кнопку выше<br>
-                    2. В приложении выберите добавленный профиль<br>
-                    3. Нажмите подключение и выберите сервер
-                </div>
-            </div>
+            <button class="btn" id="copySubscriptionBtn">
+                📋 Добавить подписку в Happ
+            </button>
         </div>
-
-        <div class="footer">© 2026 Dicstery VPN</div>
-        <div class="watermark">@Dicstery</div>
     </div>
 
     <script>
         const token = new URLSearchParams(window.location.search).get('token');
-        if (!token) window.location.href = 'https://t.me/DicsteryVPN_bot';
+        
+        if (!token) {
+            document.body.innerHTML = '<div style="padding: 50px; text-align: center;">❌ Неверная ссылка доступа</div>';
+            throw new Error('No token');
+        }
 
         let userData = {
             telegram_id: 0,
@@ -568,73 +528,321 @@
             is_admin: false,
             status: 'free',
             subscription_end: null,
+            subscription_type: 'free',
             traffic_used: 0,
-            traffic_limit: 100 * 1024 * 1024
+            traffic_limit: 100 * 1024 * 1024,
+            daily_traffic_used: 0,
+            speed_limit: 1024 * 1024,
+            referral_count: 0,
+            bonus_days: 0
         };
 
-        const servers = [
-            {id:1,name:'⚡ GERMANY PREMIUM',flag:'⚡',host:'95.85.237.48',port:443,protocol:'vless',uuid:'f7072123-7a41-4eb1-a712-c149bd4c3177',flow:'xtls-rprx-vision',security:'reality',network:'tcp',tls:'reality',sni:'cdnjs.com',fingerprint:'chrome',public_key:'LCbjlpZeyt-k8ZwbFLMFsgE1-is1CWYGng-9nsKRWis',is_premium:1,is_vip:1,ping:18},
-            {id:2,name:'Russia #1',flag:'🇷🇺',host:'212.192.14.234',port:24441,protocol:'shadowsocks',method:'chacha20-ietf-poly1305',password:'Ow8iSExQNaobZPY9bJ4EPI',is_free:1,ping:23},
-            {id:3,name:'Russia #2',flag:'🇷🇺',host:'62.113.114.116',port:42320,protocol:'shadowsocks',method:'chacha20-ietf-poly1305',password:'BShcek5ydlWbXEnhl2vlym',ping:45},
-            {id:4,name:'Russia #3',flag:'🇷🇺',host:'spb.scroogethebest.com',port:443,protocol:'vless',uuid:'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1',flow:'xtls-rprx-vision',security:'reality',network:'tcp',tls:'reality',sni:'spb.scroogethebest.com',fingerprint:'chrome',public_key:'C3hc32Cknec2shasKJIH2DYVb7Fyu64RF9v71L3ipEg',short_id:'9c2378562188c3cb',ping:18},
-            {id:5,name:'UK #1',flag:'🇬🇧',host:'series-a1.samanehha.co',port:443,protocol:'shadowsocks',method:'chacha20-ietf-poly1305',password:'W74XFALLLuw6m5IA',ping:78},
-            {id:6,name:'UK #2',flag:'🇬🇧',host:'admin.c2.havij.co',port:443,protocol:'shadowsocks',method:'chacha20-ietf-poly1305',password:'kaQH3hGdcP80XEDI',ping:82},
-            {id:7,name:'France',flag:'🇫🇷',host:'95.111.250.4',port:80,protocol:'shadowsocks',method:'aes-256-gcm',password:'BbOUgNLUyT6rdrxE',is_free:1,ping:67},
-            {id:8,name:'USA',flag:'🇺🇸',host:'154.38.176.7',port:80,protocol:'shadowsocks',method:'aes-256-gcm',password:'nKeE2ZFWVaE4DyjR',ping:145},
-            {id:9,name:'Netherlands',flag:'🇳🇱',host:'82.38.31.62',port:8080,protocol:'shadowsocks',method:'chacha20-ietf-poly1305',password:'oZloA69Q8yhcQV8ka3Pa3A',is_free:1,ping:56},
-            {id:10,name:'Sweden',flag:'🇸🇪',host:'46.246.97.140',port:53908,protocol:'shadowsocks',method:'chacha20-ietf-poly1305',password:'ZweuXavjovuhzt1AF0d6qx',ping:62},
-            {id:11,name:'Japan',flag:'🇯🇵',host:'103.106.228.175',port:8009,protocol:'shadowsocks',method:'aes-256-gcm',password:'XKFKI2rULjlP74',ping:185},
-            {id:12,name:'Turkey',flag:'🇹🇷',host:'freeiran.lookanet.app',port:2052,protocol:'vless',uuid:'f2eeaf91-6ac0-47f3-9673-39476e75c02d',security:'none',network:'ws',ws_host:'metaplayer.gameredzone.top',ws_path:'/t.me.V2RayyNGvpn?ed=1024',tls:'none',is_free:1,ping:92},
-            {id:13,name:'Italy VIP',flag:'🇮🇹',host:'80.211.133.156',port:443,protocol:'vless',uuid:'d443fb54-207c-4fa4-b9d8-3ae2a2957532',flow:'xtls-rprx-vision',security:'reality',network:'tcp',tls:'reality',sni:'gmail.com',fingerprint:'chrome',public_key:'ckRcueERkPqqjZABwxqni_J_Nbb70Q6k5fEEUAjoImw',is_vip:1,ping:58},
-            {id:14,name:'Germany #1',flag:'🇩🇪',host:'de.prod.n7.homes',port:8443,protocol:'vless',uuid:'010c8bf7-0a43-404f-a6c5-2427acb4d476',security:'reality',network:'tcp',tls:'reality',sni:'sun6-21.userapi.com',fingerprint:'chrome',public_key:'upDCW94g-pSYQrmXvOrTVYlwBUrSKhYFF9QwrqObdVo',short_id:'3ca620a7ed5f3196',is_vip:1,ping:32},
-            {id:15,name:'Germany #3',flag:'🇩🇪',host:'2.58.81.221',port:80,protocol:'shadowsocks',method:'aes-256-gcm',password:'9dQS3geeylyrRth9',ping:41}
+        let servers = [
+            {
+                id: 1,
+                name: '⚡ GERMANY PREMIUM ⚡',
+                flag: '⚡',
+                host: '95.85.237.48',
+                port: 443,
+                protocol: 'vless',
+                uuid: 'f7072123-7a41-4eb1-a712-c149bd4c3177',
+                flow: 'xtls-rprx-vision',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'cdnjs.com',
+                fingerprint: 'chrome',
+                public_key: 'LCbjlpZeyt-k8ZwbFLMFsgE1-is1CWYGng-9nsKRWis',
+                is_premium: true,
+                is_vip: true,
+                is_free: false,
+                ping: 18,
+                priority: 1000
+            },
+            {
+                id: 2,
+                name: 'Russia #1',
+                flag: '🇷🇺',
+                host: '212.192.14.234',
+                port: 24441,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'Ow8iSExQNaobZPY9bJ4EPI',
+                is_vip: false,
+                is_free: true,
+                ping: 23,
+                priority: 1
+            },
+            {
+                id: 3,
+                name: 'Russia #2',
+                flag: '🇷🇺',
+                host: '62.113.114.116',
+                port: 42320,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'BShcek5ydlWbXEnhl2vlym',
+                is_vip: false,
+                is_free: false,
+                ping: 45,
+                priority: 2
+            },
+            {
+                id: 4,
+                name: 'Russia #3',
+                flag: '🇷🇺',
+                host: 'spb.scroogethebest.com',
+                port: 443,
+                protocol: 'vless',
+                uuid: 'ccedb1b1-35f3-46d1-a85a-c699eef5f3e1',
+                flow: 'xtls-rprx-vision',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'spb.scroogethebest.com',
+                fingerprint: 'chrome',
+                public_key: 'C3hc32Cknec2shasKJIH2DYVb7Fyu64RF9v71L3ipEg',
+                short_id: '9c2378562188c3cb',
+                is_vip: false,
+                is_free: false,
+                ping: 18,
+                priority: 3
+            },
+            {
+                id: 5,
+                name: 'UK #1',
+                flag: '🇬🇧',
+                host: 'series-a1.samanehha.co',
+                port: 443,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'W74XFALLLuw6m5IA',
+                is_vip: false,
+                is_free: false,
+                ping: 78,
+                priority: 4
+            },
+            {
+                id: 6,
+                name: 'UK #2',
+                flag: '🇬🇧',
+                host: 'admin.c2.havij.co',
+                port: 443,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'kaQH3hGdcP80XEDI',
+                is_vip: false,
+                is_free: false,
+                ping: 82,
+                priority: 5
+            },
+            {
+                id: 7,
+                name: 'France',
+                flag: '🇫🇷',
+                host: '95.111.250.4',
+                port: 80,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: 'BbOUgNLUyT6rdrxE',
+                is_vip: false,
+                is_free: true,
+                ping: 67,
+                priority: 6
+            },
+            {
+                id: 8,
+                name: 'USA',
+                flag: '🇺🇸',
+                host: '154.38.176.7',
+                port: 80,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: 'nKeE2ZFWVaE4DyjR',
+                is_vip: false,
+                is_free: false,
+                ping: 145,
+                priority: 7
+            },
+            {
+                id: 9,
+                name: 'Netherlands',
+                flag: '🇳🇱',
+                host: '82.38.31.62',
+                port: 8080,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'oZloA69Q8yhcQV8ka3Pa3A',
+                is_vip: false,
+                is_free: true,
+                ping: 56,
+                priority: 8
+            },
+            {
+                id: 10,
+                name: 'Sweden',
+                flag: '🇸🇪',
+                host: '46.246.97.140',
+                port: 53908,
+                protocol: 'shadowsocks',
+                method: 'chacha20-ietf-poly1305',
+                password: 'ZweuXavjovuhzt1AF0d6qx',
+                is_vip: false,
+                is_free: false,
+                ping: 62,
+                priority: 9
+            },
+            {
+                id: 11,
+                name: 'Japan',
+                flag: '🇯🇵',
+                host: '103.106.228.175',
+                port: 8009,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: 'XKFKI2rULjlP74',
+                is_vip: false,
+                is_free: false,
+                ping: 185,
+                priority: 10
+            },
+            {
+                id: 12,
+                name: 'Turkey',
+                flag: '🇹🇷',
+                host: 'freeiran.lookanet.app',
+                port: 2052,
+                protocol: 'vless',
+                uuid: 'f2eeaf91-6ac0-47f3-9673-39476e75c02d',
+                security: 'none',
+                network: 'ws',
+                header_type: '--',
+                ws_host: 'metaplayer.gameredzone.top',
+                ws_path: '/t.me.V2RayyNGvpn?ed=1024',
+                tls: 'none',
+                is_vip: false,
+                is_free: true,
+                ping: 92,
+                priority: 11
+            },
+            {
+                id: 13,
+                name: 'Italy VIP',
+                flag: '🇮🇹',
+                host: '80.211.133.156',
+                port: 443,
+                protocol: 'vless',
+                uuid: 'd443fb54-207c-4fa4-b9d8-3ae2a2957532',
+                flow: 'xtls-rprx-vision',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'gmail.com',
+                fingerprint: 'chrome',
+                alpn: 'h2',
+                public_key: 'ckRcueERkPqqjZABwxqni_J_Nbb70Q6k5fEEUAjoImw',
+                is_vip: true,
+                is_free: false,
+                ping: 58,
+                priority: 12
+            },
+            {
+                id: 14,
+                name: 'Germany #1',
+                flag: '🇩🇪',
+                host: 'de.prod.n7.homes',
+                port: 8443,
+                protocol: 'vless',
+                uuid: '010c8bf7-0a43-404f-a6c5-2427acb4d476',
+                security: 'reality',
+                network: 'tcp',
+                tls: 'reality',
+                sni: 'sun6-21.userapi.com',
+                fingerprint: 'chrome',
+                public_key: 'upDCW94g-pSYQrmXvOrTVYlwBUrSKhYFF9QwrqObdVo',
+                short_id: '3ca620a7ed5f3196',
+                is_vip: true,
+                is_free: false,
+                ping: 32,
+                priority: 13
+            },
+            {
+                id: 15,
+                name: 'Germany #3',
+                flag: '🇩🇪',
+                host: '2.58.81.221',
+                port: 80,
+                protocol: 'shadowsocks',
+                method: 'aes-256-gcm',
+                password: '9dQS3geeylyrRth9',
+                is_vip: false,
+                is_free: false,
+                ping: 41,
+                priority: 14
+            }
         ];
 
-        function getSpeedText(s) { return s.is_admin?'🚀 1000':s.status=='vip'?'⚡ 100':s.status=='basic'?'⚡ 50':s.status=='trial'?'🔄 30':'🐢 5'; }
+        function getSpeedText(status, is_admin) {
+            if (is_admin) return "🚀 1000 Мбит/с (Админ)";
+            if (status === 'vip') return "⚡ 100 Мбит/с (VIP)";
+            if (status === 'basic') return "⚡ 50 Мбит/с (Premium)";
+            if (status === 'trial') return "🔄 30 Мбит/с (Пробный)";
+            return "🐢 5 Мбит/с (Бесплатный)";
+        }
 
         function getAvailableServers() {
-            if (userData.is_admin) return servers;
-            if (userData.status == 'vip') return servers.filter(s => !s.is_premium || s.is_vip);
-            if (userData.status == 'basic' || userData.status == 'trial') return servers.filter(s => !s.is_vip && !s.is_premium);
-            return servers.filter(s => s.is_free);
+            if (userData.is_admin) {
+                return servers;
+            } else if (userData.status === 'vip') {
+                return servers.filter(s => !s.is_premium || s.is_vip);
+            } else if (userData.status === 'basic' || userData.status === 'trial') {
+                return servers.filter(s => !s.is_vip && !s.is_premium);
+            } else {
+                return servers.filter(s => s.is_free === true);
+            }
         }
 
         function loadUserData() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('content').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('expiredMessage').style.display = 'none';
             
             if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-                const u = Telegram.WebApp.initDataUnsafe.user;
-                userData.telegram_id = u.id;
-                userData.username = u.username || '';
-                userData.first_name = u.first_name || '';
-                document.getElementById('avatar').innerText = (u.first_name || 'U').charAt(0);
+                const tgUser = Telegram.WebApp.initDataUnsafe.user;
+                userData.telegram_id = tgUser.id;
+                userData.username = tgUser.username || '';
+                userData.first_name = tgUser.first_name || '';
             }
             
-            const isAdmin = userData.telegram_id == 7383521067;
+            const isAdmin = userData.telegram_id === 7383521067;
             
             if (isAdmin) {
                 userData.is_admin = true;
                 userData.status = 'admin';
-                userData.subscription_end = new Date(Date.now() + 365*24*60*60*1000).toISOString();
-                userData.traffic_used = Math.floor(Math.random() * 100) * 1024**3;
-                userData.traffic_limit = 1000000 * 1024**3;
+                userData.subscription_type = 'admin';
+                userData.subscription_end = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+                userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
+                userData.traffic_limit = 1000000 * 1024 * 1024 * 1024;
             } else {
-                const r = Math.random();
-                if (r < 0.2) {
+                const randomStatus = Math.random();
+                if (randomStatus < 0.2) {
                     userData.status = 'vip';
-                    userData.subscription_end = new Date(Date.now() + 30*24*60*60*1000).toISOString();
-                    userData.traffic_used = Math.floor(Math.random() * 100) * 1024**3;
-                    userData.traffic_limit = 10000 * 1024**3;
-                } else if (r < 0.5) {
+                    userData.subscription_type = 'vip';
+                    userData.subscription_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                    userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
+                    userData.traffic_limit = 10000 * 1024 * 1024 * 1024;
+                } else if (randomStatus < 0.5) {
                     userData.status = 'basic';
-                    userData.subscription_end = new Date(Date.now() + 30*24*60*60*1000).toISOString();
-                    userData.traffic_used = Math.floor(Math.random() * 100) * 1024**3;
-                    userData.traffic_limit = 1000 * 1024**3;
+                    userData.subscription_type = 'basic';
+                    userData.subscription_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                    userData.traffic_used = Math.floor(Math.random() * 100) * 1024 * 1024 * 1024;
+                    userData.traffic_limit = 1000 * 1024 * 1024 * 1024;
                 } else {
                     userData.status = 'free';
-                    userData.traffic_used = Math.floor(Math.random() * 50) * 1024**2;
-                    userData.traffic_limit = 100 * 1024**2;
+                    userData.subscription_type = 'free';
+                    userData.traffic_used = Math.floor(Math.random() * 50) * 1024 * 1024;
+                    userData.traffic_limit = 100 * 1024 * 1024;
                 }
             }
             
@@ -646,105 +854,210 @@
         }
 
         function renderServers() {
-            const list = document.getElementById('serverList');
-            list.innerHTML = '';
-            const av = getAvailableServers().sort((a,b)=>{
-                if (a.is_premium && !b.is_premium) return -1;
-                if (!a.is_premium && b.is_premium) return 1;
-                if (a.is_vip && !b.is_vip) return -1;
-                if (!a.is_vip && b.is_vip) return 1;
+            const container = document.getElementById('serverList');
+            container.innerHTML = '';
+            
+            const availableServers = getAvailableServers();
+            
+            availableServers.sort((a, b) => {
+                if (a.priority !== b.priority) return b.priority - a.priority;
                 return a.ping - b.ping;
             });
             
-            av.forEach(s => {
-                const pc = s.ping < 50 ? '#2ecc71' : s.ping < 100 ? '#f39c12' : '#e74c3c';
-                let tag = '';
-                if (s.is_premium) tag = '<span class="server-tag tag-premium">PREMIUM</span>';
-                else if (s.is_vip) tag = '<span class="server-tag tag-vip">VIP</span>';
-                else if (s.is_free) tag = '<span class="server-tag tag-free">FREE</span>';
+            const isActive = userData.is_admin || userData.status !== 'free' || (userData.status === 'free' && userData.daily_traffic_used < userData.traffic_limit);
+            
+            if (!isActive && userData.status === 'free') {
+                document.getElementById('expiredMessage').style.display = 'block';
+                document.getElementById('content').style.opacity = '0.5';
+                document.getElementById('content').style.pointerEvents = 'none';
+                return;
+            }
+            
+            availableServers.forEach(server => {
+                const isVipServer = server.is_vip;
+                const isPremiumServer = server.is_premium;
+                const pingColor = server.ping < 50 ? '#2ecc71' : server.ping < 100 ? '#f39c12' : '#e74c3c';
                 
-                list.innerHTML += `
-                    <div class="server-item">
-                        <div class="server-header">
-                            <span class="server-flag">${s.flag}</span>
-                            <div class="server-name">${s.name} ${tag}</div>
-                        </div>
-                        <div class="server-details">
-                            <span class="server-host">${s.host}:${s.port}</span>
-                            <span class="server-ping" style="color:${pc}">${s.ping}ms</span>
+                let serverClass = 'server-item';
+                if (isPremiumServer) serverClass += ' premium-server';
+                else if (isVipServer) serverClass += ' vip-server';
+                
+                const serverEl = document.createElement('div');
+                serverEl.className = serverClass;
+                
+                let badgeHtml = '';
+                if (isPremiumServer) badgeHtml = '<span class="premium-badge">PREMIUM</span>';
+                else if (isVipServer) badgeHtml = '<span class="server-badge">VIP</span>';
+                
+                let freeIcon = server.is_free ? '<span style="font-size:11px;margin-left:4px;color:#2ecc71;">🆓</span>' : '';
+                
+                serverEl.innerHTML = `
+                    <div class="server-header">
+                        <span class="server-flag">${server.flag}</span>
+                        <div class="server-name">
+                            ${server.name}
+                            ${badgeHtml}
+                            ${freeIcon}
                         </div>
                     </div>
+                    <div class="server-details">
+                        <span class="server-host">${server.host}:${server.port}</span>
+                        <span class="server-ping" style="color: ${pingColor}">${server.ping} ms</span>
+                    </div>
                 `;
+                container.appendChild(serverEl);
             });
         }
 
-        function generateConfig(s) {
-            if (s.protocol == 'shadowsocks') return `ss://${btoa(s.method+':'+s.password)}@${s.host}:${s.port}#${s.flag} ${s.name}`;
-            let p = [`type=${s.network||'tcp'}`,`security=${s.tls||'none'}`];
-            if (s.tls=='reality') {
-                if (s.public_key) p.push(`pbk=${s.public_key}`);
-                if (s.sni) p.push(`sni=${s.sni}`);
-                if (s.fingerprint) p.push(`fp=${s.fingerprint}`);
-                if (s.short_id) p.push(`sid=${s.short_id}`);
+        function generateConfig(server) {
+            if (server.protocol === 'shadowsocks') {
+                return `ss://${btoa(`${server.method}:${server.password}`)}@${server.host}:${server.port}#${server.flag} ${server.name}`;
+            } else if (server.protocol === 'vless') {
+                let params = [
+                    `type=${server.network || 'tcp'}`,
+                    `security=${server.tls || 'none'}`
+                ];
+                if (server.tls === 'reality') {
+                    if (server.public_key) params.push(`pbk=${server.public_key}`);
+                    if (server.sni) params.push(`sni=${server.sni}`);
+                    if (server.fingerprint) params.push(`fp=${server.fingerprint}`);
+                    if (server.short_id) params.push(`sid=${server.short_id}`);
+                }
+                if (server.flow) params.push(`flow=${server.flow}`);
+                if (server.network === 'grpc') {
+                    if (server.grpc_service_name) params.push(`serviceName=${server.grpc_service_name}`);
+                    params.push(`mode=gun`);
+                }
+                if (server.alpn) params.push(`alpn=${server.alpn}`);
+                if (server.allow_insecure) params.push(`allowInsecure=1`);
+                if (server.network === 'ws') {
+                    if (server.ws_host) params.push(`host=${server.ws_host}`);
+                    if (server.ws_path) params.push(`path=${encodeURIComponent(server.ws_path)}`);
+                }
+                
+                const paramsStr = params.join('&');
+                return `vless://${server.uuid}@${server.host}:${server.port}?${paramsStr}#${server.flag} ${server.name}`;
             }
-            if (s.flow) p.push(`flow=${s.flow}`);
-            if (s.network=='ws') {
-                if (s.ws_host) p.push(`host=${s.ws_host}`);
-                if (s.ws_path) p.push(`path=${encodeURIComponent(s.ws_path)}`);
+            return '';
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 MB';
+            if (bytes < 1024 * 1024 * 1024) {
+                return Math.floor(bytes / (1024 * 1024)) + ' MB';
+            } else {
+                return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
             }
-            return `vless://${s.uuid}@${s.host}:${s.port}?${p.join('&')}#${s.flag} ${s.name}`;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Бессрочно';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
         }
 
         function copySubscription() {
-            const av = getAvailableServers();
-            const cf = av.map(s=>generateConfig(s)).join('\n');
-            const d = userData.subscription_end ? new Date(userData.subscription_end) : null;
-            const dl = userData.is_admin ? '∞' : (d ? Math.max(0,Math.floor((d-new Date())/86400000)) : '∞');
-            const ug = (userData.traffic_used/1e9).toFixed(1);
-            const lg = userData.traffic_limit==0 ? '∞' : (userData.traffic_limit/1e9).toFixed(1);
-            const st = userData.is_admin ? 'ADMIN' : userData.status=='vip' ? 'VIP' : userData.status=='basic' ? 'Premium' : 'Free';
-            const sp = getSpeedText(userData)+' Мбит/с';
-            const tx = `⚡ DICSTERY VPN ⚡\n\n📅 Истекает: ${d?d.toLocaleDateString():'Бессрочно'}\n📧 Дней: ${dl}\n🔒 ID: ${userData.telegram_id}\n💬 Бот: @DicsteryVPN_bot\n📊 Трафик: ${ug}GB/${lg}GB\n⚡ Скорость: ${sp}\n👑 Статус: ${st}\n\n${cf}`;
-            navigator.clipboard.writeText(tx).then(()=>{ alert('✅ Подписка скопирована!'); });
+            const availableServers = getAvailableServers();
+            const configs = availableServers.map(s => generateConfig(s)).join('\n');
+            
+            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : null;
+            const daysLeft = userData.is_admin ? '∞' : (expireDate ? Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24))) : '∞');
+            
+            const usedGB = (userData.traffic_used / (1024 * 1024 * 1024)).toFixed(1);
+            const limitGB = userData.traffic_limit === 0 ? '∞' : (userData.traffic_limit / (1024 * 1024 * 1024)).toFixed(1);
+            
+            const status = userData.is_admin ? 'ADMIN' : (userData.status === 'vip' ? 'VIP' : (userData.status === 'basic' ? 'Premium' : 'Free'));
+            const speedText = getSpeedText(userData.status, userData.is_admin);
+            
+            const header = `⚡ DICSTERY VPN ⚡\n\n`;
+            const subInfo = `📅 Истекает: ${formatDate(userData.subscription_end)}\n📧 Дней осталось: ${daysLeft}\n🔒 ID: ${userData.telegram_id}\n💬 Продлить: @DicsteryVPN_bot\n📊 Трафик: ${usedGB}GB/${limitGB}GB\n⚡ Скорость: ${speedText}\n👑 Статус: ${status}\n\n`;
+            
+            const fullText = header + subInfo + configs;
+            
+            navigator.clipboard.writeText(fullText).then(() => {
+                alert('✅ Подписка скопирована!\nВставьте в Happ для активации');
+                
+                const btn = document.getElementById('copySubscriptionBtn');
+                btn.textContent = '✅ Скопировано!';
+                setTimeout(() => {
+                    btn.textContent = '📋 Добавить подписку в Happ';
+                }, 2000);
+            });
         }
 
         function updateUI() {
-            document.getElementById('displayName').innerText = userData.username || userData.first_name || 'User';
-            document.getElementById('displayId').innerText = `ID: ${userData.telegram_id}`;
-            document.getElementById('userIdDetail').innerText = userData.telegram_id;
+            document.getElementById('userId').innerText = userData.telegram_id || '—';
+            document.getElementById('username').innerText = userData.username || userData.first_name || 'User';
+            document.getElementById('userIdDetail').innerText = userData.telegram_id || '—';
             
-            const d = userData.subscription_end ? new Date(userData.subscription_end) : null;
-            const dl = userData.is_admin ? '∞' : (d ? Math.max(0,Math.floor((d-new Date())/86400000)) : '∞');
-            document.getElementById('daysLeft').innerText = dl;
-            document.getElementById('expireDate').innerText = d ? d.toLocaleDateString() : 'Бессрочно';
+            const expireDate = userData.subscription_end ? new Date(userData.subscription_end) : null;
+            document.getElementById('expireDate').innerText = formatDate(userData.subscription_end);
             
-            const ug = (userData.traffic_used/1e9).toFixed(1);
-            const lg = userData.traffic_limit==0 ? '∞' : (userData.traffic_limit/1e9).toFixed(1);
-            document.getElementById('trafficUsed').innerText = ug;
-            document.getElementById('trafficDetail').innerHTML = `${(userData.traffic_used/1e6).toFixed(0)}MB / ${lg}GB`;
+            const daysLeft = userData.is_admin ? '∞' : (expireDate ? Math.max(0, Math.floor((expireDate - new Date()) / (1000 * 60 * 60 * 24))) : '∞');
+            document.getElementById('daysLeft').innerText = daysLeft;
+            document.getElementById('daysLeftDetail').innerText = daysLeft;
             
-            const b = document.getElementById('statusBadge');
-            if (userData.is_admin) { b.innerText='ADMIN'; b.className='badge badge-admin'; }
-            else if (userData.status=='vip') { b.innerText='VIP'; b.className='badge badge-vip'; }
-            else if (userData.status=='basic') { b.innerText='PREMIUM'; b.className='badge badge-premium'; }
-            else { b.innerText='FREE'; b.className='badge badge-free'; }
+            const usedGB = (userData.traffic_used / (1024 * 1024 * 1024)).toFixed(1);
+            const limitGB = userData.traffic_limit === 0 ? '∞' : (userData.traffic_limit / (1024 * 1024 * 1024)).toFixed(1);
             
-            document.getElementById('statusDetail').innerText = b.innerText;
-            document.getElementById('speedText').innerText = getSpeedText(userData)+' Мбит/с';
+            document.getElementById('trafficUsed').innerText = usedGB;
+            document.getElementById('trafficLimit').innerText = limitGB === '∞' ? '∞' : (parseFloat(limitGB) < 1 ? '0.1' : limitGB);
             
-            if (userData.traffic_limit>0 && !userData.is_admin) {
-                document.getElementById('trafficBar').style.width = (userData.traffic_used/userData.traffic_limit*100)+'%';
+            const usedMB = Math.floor(userData.traffic_used / (1024 * 1024));
+            document.getElementById('trafficDetail').innerText = `${usedMB} MB / ${limitGB === '∞' ? '∞' : limitGB} GB`;
+            
+            const speedText = getSpeedText(userData.status, userData.is_admin);
+            document.getElementById('speedText').innerText = speedText;
+            
+            const statusBadge = document.getElementById('statusBadge');
+            if (userData.is_admin) {
+                statusBadge.innerText = 'ADMIN';
+                statusBadge.className = 'status-badge status-admin';
+            } else if (userData.status === 'vip') {
+                statusBadge.innerText = 'VIP';
+                statusBadge.className = 'status-badge status-vip';
+            } else if (userData.status === 'basic') {
+                statusBadge.innerText = 'PREMIUM';
+                statusBadge.className = 'status-badge status-active';
+            } else if (userData.status === 'trial') {
+                statusBadge.innerText = 'TRIAL';
+                statusBadge.className = 'status-badge status-active';
+            } else {
+                statusBadge.innerText = 'FREE';
+                statusBadge.className = 'status-badge status-active';
             }
             
-            document.getElementById('manualLink').innerText = `https://dicstery.github.io/DicsteryVPN/?token=${token}`;
+            if (userData.traffic_limit > 0 && !userData.is_admin) {
+                const percent = (userData.traffic_used / userData.traffic_limit) * 100;
+                document.getElementById('trafficBar').style.width = `${percent}%`;
+            } else {
+                document.getElementById('trafficBar').style.width = '0%';
+            }
+            
+            const copyBtn = document.getElementById('copySubscriptionBtn');
+            if (userData.is_admin) {
+                copyBtn.classList.add('btn-premium');
+                copyBtn.innerHTML = '👑 Скопировать админ-подписку';
+            } else if (userData.status === 'vip') {
+                copyBtn.classList.add('btn-vip');
+                copyBtn.innerHTML = '⭐ Скопировать VIP подписку';
+            } else {
+                copyBtn.classList.remove('btn-vip', 'btn-premium');
+                copyBtn.innerHTML = '📋 Добавить подписку в Happ';
+            }
         }
 
-        document.getElementById('copySubscriptionBtn').onclick = copySubscription;
-        document.getElementById('copyManualBtn').onclick = ()=>{
-            navigator.clipboard.writeText(`https://dicstery.github.io/DicsteryVPN/?token=${token}`).then(()=>alert('✅ Ссылка скопирована'));
-        };
+        document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
 
-        if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); }
+        if (window.Telegram?.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+
         loadUserData();
         setInterval(loadUserData, 30000);
     </script>
