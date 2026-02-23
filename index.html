@@ -432,13 +432,6 @@
             text-align: center;
             color: #a5b9ff;
         }
-
-        .premium-note {
-            color: #f1c40f;
-            font-size: 12px;
-            margin-top: 5px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -713,6 +706,8 @@
                 isAdmin = ADMIN_IDS.includes(telegramId);
                 isPremium = false;
                 
+                const token = 'user_' + telegramId + '_' + Date.now();
+                
                 localStorage.setItem('dicstery_auth', JSON.stringify({
                     telegram_id: telegramId,
                     username: username,
@@ -722,7 +717,7 @@
                     is_premium: isPremium
                 }));
                 
-                const botLink = `https://t.me/${BOT_USERNAME}?start=register_${Date.now()}`;
+                const botLink = `https://t.me/${BOT_USERNAME}?start=register_${token}`;
                 window.location.href = botLink;
             } else {
                 showLogin();
@@ -839,7 +834,7 @@
         }
 
         document.getElementById('loginBtn').addEventListener('click', function() {
-            const botLink = `https://t.me/${BOT_USERNAME}?start=register_${Date.now()}`;
+            const botLink = `https://t.me/${BOT_USERNAME}?start=register_${'user_' + telegramId + '_' + Date.now()}`;
             window.location.href = botLink;
         });
 
