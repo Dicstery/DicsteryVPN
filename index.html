@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dicstery VPN</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
@@ -275,6 +276,25 @@
             box-shadow: 0 15px 35px rgba(74, 108, 247, 0.7);
         }
 
+        .close-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px;
+            border-radius: 40px;
+            width: 100%;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .close-btn:hover {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+        }
+
         .manual-section {
             background: rgba(30, 34, 48, 0.5);
             backdrop-filter: blur(10px);
@@ -506,10 +526,18 @@
                 <div class="manual-link" id="manualLink">https://dicstery.github.io/DicsteryVPN/?token=...</div>
                 <button class="copy-btn" id="copyManualBtn">📋 СКОПИРОВАТЬ ССЫЛКУ ВРУЧНУЮ</button>
             </div>
+
+            <button class="close-btn" onclick="Telegram.WebApp.close()">✕ ЗАКРЫТЬ ПРИЛОЖЕНИЕ</button>
         </div>
     </div>
 
     <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
         const token = new URLSearchParams(window.location.search).get('token');
         
         if (!token) {
@@ -539,15 +567,12 @@
             {id: 10, name: '🇫🇮 Финляндия #1', flag: '🇫🇮', host: 'fin-q9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-q9.plugvpn.ru', fingerprint: 'chrome', public_key: 'qbnV1snO8ix66vt0VfKbyKloBnfZXUMCdZtA8-SwdBc', short_id: 'c8d761c11162e733', is_premium: true},
             {id: 11, name: '🇫🇮 Финляндия #2', flag: '🇫🇮', host: 'fin-a7.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-a7.plugvpn.ru', fingerprint: 'chrome', public_key: '0TZaSq_Gz1-D25c6HeJD8qAgSkeoR7pRIbvI57QJ1XY', short_id: '985dfc082ead551b', is_premium: true},
             {id: 12, name: '🇩🇪 Германия #1', flag: '🇩🇪', host: 'deu-h9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'deu-h9.plugvpn.ru', fingerprint: 'chrome', public_key: 'H80wZ3PsnPMixNbjeVq8p_g6UJaLCasHCtTaUlzWOGk', short_id: 'c32214ffa4d6ced6', is_premium: true},
-            {id: 13, name: '⬇️⬇️ ОБХОД БЕЛЫХ СПИСКОВ ⬇️⬇️', flag: '⬇️', host: '', port: 0, protocol: 'separator'},
-            {id: 14, name: '🇷🇺 WebShift #1', flag: '🇷🇺', host: '158.160.171.167', port: 443, protocol: 'vless', uuid: '53fa2131-611e-413f-8b1a-3aed45529a52', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: '84.img.avito.st', fingerprint: 'chrome', public_key: 'w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F', short_id: '331a54c7ab4b', is_premium: true},
-            {id: 15, name: '🇷🇺 WebShift #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
+            {id: 13, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '158.160.171.167', port: 443, protocol: 'vless', uuid: '53fa2131-611e-413f-8b1a-3aed45529a52', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: '84.img.avito.st', fingerprint: 'chrome', public_key: 'w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F', short_id: '331a54c7ab4b', is_premium: true},
+            {id: 14, name: '🇷🇺 Россия #3', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
         function getServersByStatus() {
-            if (userData.is_admin) {
-                return servers.filter(s => s.protocol !== 'separator');
-            } else if (userData.status === 'premium') {
+            if (userData.is_admin || userData.status === 'premium') {
                 return servers;
             } else {
                 return servers.filter(s => s.is_free === true);
@@ -559,11 +584,6 @@
             let configs = [];
             
             for (let s of availableServers) {
-                if (s.protocol === 'separator') {
-                    configs.push(`\n${s.name}\n`);
-                    continue;
-                }
-                
                 if (s.protocol === 'shadowsocks') {
                     let str = `${s.method}:${s.password}`;
                     let base64 = btoa(str);
@@ -597,8 +617,8 @@
             document.getElementById('loading').style.display = 'block';
             document.getElementById('content').style.display = 'none';
             
-            if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-                const tgUser = Telegram.WebApp.initDataUnsafe.user;
+            if (tg && tg.initDataUnsafe?.user) {
+                const tgUser = tg.initDataUnsafe.user;
                 userData.telegram_id = tgUser.id;
                 userData.username = tgUser.username || '';
                 userData.first_name = tgUser.first_name || '';
@@ -693,11 +713,6 @@
 
         document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
         document.getElementById('copyManualBtn').addEventListener('click', copyManualLink);
-
-        if (window.Telegram?.WebApp) {
-            Telegram.WebApp.ready();
-            Telegram.WebApp.expand();
-        }
 
         loadUserData();
     </script>
