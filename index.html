@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DicsteryVPN</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -42,6 +45,19 @@
             0%, 100% { opacity: 0.2; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.2); }
         }
+
+        .star1 { top: 5%; left: 5%; width: 2px; height: 2px; animation-delay: 0s; }
+        .star2 { top: 15%; right: 10%; width: 3px; height: 3px; animation-delay: 0.5s; }
+        .star3 { bottom: 10%; left: 15%; width: 1px; height: 1px; animation-delay: 1s; }
+        .star4 { bottom: 20%; right: 20%; width: 2px; height: 2px; animation-delay: 1.5s; }
+        .star5 { top: 30%; left: 30%; width: 3px; height: 3px; animation-delay: 2s; }
+        .star6 { top: 60%; right: 40%; width: 2px; height: 2px; animation-delay: 2.5s; }
+        .star7 { top: 70%; left: 60%; width: 1px; height: 1px; animation-delay: 3s; }
+        .star8 { top: 40%; right: 70%; width: 3px; height: 3px; animation-delay: 3.5s; }
+        .star9 { bottom: 30%; left: 45%; width: 2px; height: 2px; animation-delay: 4s; }
+        .star10 { bottom: 5%; right: 5%; width: 1px; height: 1px; animation-delay: 4.5s; }
+        .star11 { top: 80%; left: 80%; width: 2px; height: 2px; animation-delay: 5s; }
+        .star12 { top: 10%; left: 80%; width: 3px; height: 3px; animation-delay: 5.5s; }
 
         .container {
             position: relative;
@@ -448,16 +464,6 @@
             font-size: 16px;
         }
 
-        .registered-info {
-            background: rgba(74, 108, 247, 0.1);
-            border: 1px solid #4a6cf7;
-            border-radius: 20px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: center;
-            color: #a5b9ff;
-        }
-
         .not-registered {
             text-align: center;
             padding: 30px;
@@ -512,10 +518,6 @@
                     </div>
                 </div>
                 <div class="status-badge" id="statusBadge">FREE</div>
-            </div>
-
-            <div class="registered-info" id="registeredInfo">
-                ✅ Вы зарегистрированы в системе
             </div>
 
             <div class="platform-nav">
@@ -693,7 +695,6 @@
         createStars();
 
         const tg = window.Telegram?.WebApp;
-        console.log('Telegram WebApp:', tg);
         
         let telegramId = null;
         let username = '';
@@ -740,7 +741,6 @@
                 registered_at: new Date().toISOString()
             };
             localStorage.setItem(userKey, JSON.stringify(userData));
-            console.log(`💾 Данные сохранены для пользователя ${telegramId}`);
         }
 
         function loadUserData() {
@@ -748,23 +748,17 @@
             const userKey = `user_${telegramId}`;
             const data = localStorage.getItem(userKey);
             if (data) {
-                console.log(`📂 Данные загружены для пользователя ${telegramId}`);
                 return JSON.parse(data);
             }
-            console.log(`❌ Данные не найдены для пользователя ${telegramId}`);
             return null;
         }
 
         function checkAuth() {
-            console.log('🔍 Проверка авторизации...');
-            
             if (tg) {
-                console.log('Telegram WebApp доступен');
                 tg.ready();
                 tg.expand();
                 
                 const user = tg.initDataUnsafe?.user;
-                console.log('Данные пользователя из Telegram:', user);
                 
                 if (user) {
                     telegramId = user.id;
@@ -773,26 +767,20 @@
                     lastName = user.last_name || '';
                     photoUrl = user.photo_url || '';
                     
-                    console.log(`👤 Пользователь Telegram: ${telegramId} (${firstName})`);
-                    
                     const userData = loadUserData();
                     
                     if (userData && userData.registered) {
                         isRegistered = true;
                         isAdmin = ADMIN_IDS.includes(telegramId);
                         isPremium = userData.is_premium || false;
-                        console.log(`✅ Зарегистрированный пользователь, Premium: ${isPremium}`);
                         showMainContent();
                     } else {
-                        console.log(`🆕 Новый пользователь, требуется регистрация`);
                         showNotRegistered();
                     }
                 } else {
-                    console.log('❌ Нет данных пользователя в Telegram');
                     showNotRegistered();
                 }
             } else {
-                console.log('❌ Telegram WebApp не доступен');
                 showNotRegistered();
             }
         }
@@ -948,7 +936,6 @@
             const token = 'user_' + telegramId + '_' + Date.now();
             const botLink = `https://t.me/${BOT_USERNAME}?start=register_${token}`;
             
-            console.log(`📤 Открываем бота с токеном: ${token}`);
             window.location.href = botLink;
         });
 
