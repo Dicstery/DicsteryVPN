@@ -372,6 +372,16 @@
             color: #8f9bb3;
             font-size: 16px;
         }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -393,6 +403,7 @@
                     <div class="user-info">
                         <h3 id="displayName">Загрузка...</h3>
                         <p id="displayId">ID: —</p>
+                        <p id="displayUsername" style="font-size: 11px; color: #8f9bb3;"></p>
                     </div>
                 </div>
                 <div class="status-badge" id="statusBadge">FREE</div>
@@ -573,6 +584,7 @@
         createStars();
 
         const tg = window.Telegram?.WebApp;
+        const BOT_TOKEN = '8342577111:AAE-laMYkf0ol0MGnZmdUx2R2tJnio9dQsI';
         const BOT_USERNAME = 'DicsteryVPN_bot';
         const ADMIN_IDS = [7383521067];
         
@@ -610,8 +622,12 @@
 
         async function fetchUserData(userId) {
             try {
+                console.log('Fetching user data for ID:', userId);
+                
                 const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChat?chat_id=${userId}`);
                 const data = await response.json();
+                
+                console.log('Telegram API response:', data);
                 
                 if (data.ok) {
                     const user = data.result;
@@ -622,6 +638,10 @@
                     document.getElementById('displayName').innerText = firstName + (lastName ? ' ' + lastName : '');
                     document.getElementById('displayId').innerText = `ID: ${userId}`;
                     
+                    if (username) {
+                        document.getElementById('displayUsername').innerText = `@${username}`;
+                    }
+                    
                     let initials = '';
                     if (firstName) initials += firstName.charAt(0);
                     if (lastName) initials += lastName.charAt(0);
@@ -629,10 +649,16 @@
                     
                     document.getElementById('avatarText').innerText = initials;
                     
-                    fetchUserPhoto(userId);
+                    await fetchUserPhoto(userId);
+                } else {
+                    console.error('Failed to fetch user data:', data);
+                    document.getElementById('displayName').innerText = 'Пользователь';
+                    document.getElementById('displayId').innerText = `ID: ${userId}`;
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+                document.getElementById('displayName').innerText = 'Пользователь';
+                document.getElementById('displayId').innerText = `ID: ${userId}`;
             }
         }
 
@@ -641,11 +667,15 @@
                 const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUserProfilePhotos?user_id=${userId}&limit=1`);
                 const data = await response.json();
                 
-                if (data.ok && data.result.photos.length > 0) {
+                console.log('Photo API response:', data);
+                
+                if (data.ok && data.result && data.result.photos && data.result.photos.length > 0) {
                     const fileId = data.result.photos[0][0].file_id;
                     
                     const fileResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`);
                     const fileData = await fileResponse.json();
+                    
+                    console.log('File API response:', fileData);
                     
                     if (fileData.ok) {
                         const photoUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${fileData.result.file_path}`;
@@ -659,18 +689,33 @@
             }
         }
 
+        async function checkUserStatus(userId) {
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChat?chat_id=${userId}`);
+                const data = await response.json();
+                
+                if (data.ok) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('content').style.display = 'block';
+                    
+                    await fetchUserData(userId);
+                    renderServers();
+                }
+            } catch (error) {
+                console.error('Error checking user status:', error);
+                document.getElementById('loading').innerHTML = '❌ Ошибка загрузки. Пожалуйста, попробуйте позже.';
+            }
+        }
+
         function checkAuth() {
             const userId = getUserIdFromUrl();
+            console.log('User ID from URL:', userId);
             
             if (userId) {
                 telegramId = parseInt(userId);
                 isAdmin = ADMIN_IDS.includes(telegramId);
                 
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-                
-                fetchUserData(telegramId);
-                renderServers();
+                checkUserStatus(telegramId);
             } else {
                 document.getElementById('loading').innerHTML = '❌ Ошибка: ID пользователя не найден';
             }
