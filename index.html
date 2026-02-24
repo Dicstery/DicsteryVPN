@@ -46,19 +46,6 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        .star1 { top: 5%; left: 5%; width: 2px; height: 2px; animation-delay: 0s; }
-        .star2 { top: 15%; right: 10%; width: 3px; height: 3px; animation-delay: 0.5s; }
-        .star3 { bottom: 10%; left: 15%; width: 1px; height: 1px; animation-delay: 1s; }
-        .star4 { bottom: 20%; right: 20%; width: 2px; height: 2px; animation-delay: 1.5s; }
-        .star5 { top: 30%; left: 30%; width: 3px; height: 3px; animation-delay: 2s; }
-        .star6 { top: 60%; right: 40%; width: 2px; height: 2px; animation-delay: 2.5s; }
-        .star7 { top: 70%; left: 60%; width: 1px; height: 1px; animation-delay: 3s; }
-        .star8 { top: 40%; right: 70%; width: 3px; height: 3px; animation-delay: 3.5s; }
-        .star9 { bottom: 30%; left: 45%; width: 2px; height: 2px; animation-delay: 4s; }
-        .star10 { bottom: 5%; right: 5%; width: 1px; height: 1px; animation-delay: 4.5s; }
-        .star11 { top: 80%; left: 80%; width: 2px; height: 2px; animation-delay: 5s; }
-        .star12 { top: 10%; left: 80%; width: 3px; height: 3px; animation-delay: 5.5s; }
-
         .container {
             position: relative;
             z-index: 1;
@@ -469,14 +456,14 @@
             padding: 30px;
         }
 
-        .debug-info {
-            background: rgba(0,0,0,0.5);
-            color: #ff6b6b;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            margin: 10px 0;
-            display: none;
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
         }
     </style>
 </head>
@@ -707,6 +694,7 @@
 
         const BOT_USERNAME = 'DicsteryVPN_bot';
         const ADMIN_IDS = [7383521067];
+        const API_BASE_URL = 'http://localhost:25775'; // Замените на ваш домен
 
         const servers = [
             {id: 1, name: '🇷🇺 Россия', flag: '🇷🇺', host: '212.192.14.234', port: 24441, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_free: true},
@@ -727,61 +715,57 @@
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
-        function saveUserData() {
-            if (!telegramId) return;
-            const userKey = `user_${telegramId}`;
-            const userData = {
-                telegram_id: telegramId,
-                username: username,
-                first_name: firstName,
-                last_name: lastName,
-                photo_url: photoUrl,
-                is_premium: isPremium,
-                registered: true,
-                registered_at: new Date().toISOString()
-            };
-            localStorage.setItem(userKey, JSON.stringify(userData));
-        }
-
-        function loadUserData() {
-            if (!telegramId) return null;
-            const userKey = `user_${telegramId}`;
-            const data = localStorage.getItem(userKey);
-            if (data) {
-                return JSON.parse(data);
-            }
-            return null;
-        }
-
-        function checkAuth() {
-            if (tg) {
-                tg.ready();
-                tg.expand();
+        async function checkUserStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/user/status?telegram_id=${telegramId}`);
+                const data = await response.json();
                 
-                const user = tg.initDataUnsafe?.user;
-                
-                if (user) {
-                    telegramId = user.id;
-                    username = user.username || '';
-                    firstName = user.first_name || '';
-                    lastName = user.last_name || '';
-                    photoUrl = user.photo_url || '';
+                if (data.status) {
+                    isRegistered = true;
+                    isAdmin = data.is_admin || false;
+                    isPremium = data.status === 'premium' || data.status === 'admin';
                     
-                    const userData = loadUserData();
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('notRegisteredScreen').style.display = 'none';
+                    document.getElementById('content').style.display = 'block';
                     
-                    if (userData && userData.registered) {
-                        isRegistered = true;
-                        isAdmin = ADMIN_IDS.includes(telegramId);
-                        isPremium = userData.is_premium || false;
-                        showMainContent();
-                    } else {
-                        showNotRegistered();
-                    }
+                    loadUserDisplay();
+                    renderServers();
                 } else {
                     showNotRegistered();
                 }
-            } else {
+            } catch (error) {
+                console.error('Error checking user status:', error);
                 showNotRegistered();
+            }
+        }
+
+        async function registerUser() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/user/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: telegramId,
+                        username: username,
+                        first_name: firstName,
+                        last_name: lastName
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'ok' || result.status === 'exists') {
+                    const botLink = `https://t.me/${BOT_USERNAME}?start=register_${telegramId}`;
+                    window.location.href = botLink;
+                } else {
+                    alert('❌ Ошибка регистрации. Попробуйте снова.');
+                }
+            } catch (error) {
+                console.error('Error registering user:', error);
+                alert('❌ Ошибка регистрации. Попробуйте снова.');
             }
         }
 
@@ -789,14 +773,6 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('notRegisteredScreen').style.display = 'block';
             document.getElementById('content').style.display = 'none';
-        }
-
-        function showMainContent() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('notRegisteredScreen').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
-            loadUserDisplay();
-            renderServers();
         }
 
         function loadUserDisplay() {
@@ -924,20 +900,30 @@
             });
         }
 
-        document.getElementById('confirmRegistrationBtn').addEventListener('click', function() {
-            if (!telegramId) {
-                alert('❌ Не удалось получить данные пользователя');
-                return;
+        function checkAuth() {
+            if (tg) {
+                tg.ready();
+                tg.expand();
+                
+                const user = tg.initDataUnsafe?.user;
+                
+                if (user) {
+                    telegramId = user.id;
+                    username = user.username || '';
+                    firstName = user.first_name || '';
+                    lastName = user.last_name || '';
+                    photoUrl = user.photo_url || '';
+                    
+                    checkUserStatus();
+                } else {
+                    showNotRegistered();
+                }
+            } else {
+                showNotRegistered();
             }
-            
-            isPremium = false;
-            saveUserData();
-            
-            const token = 'user_' + telegramId + '_' + Date.now();
-            const botLink = `https://t.me/${BOT_USERNAME}?start=register_${token}`;
-            
-            window.location.href = botLink;
-        });
+        }
+
+        document.getElementById('confirmRegistrationBtn').addEventListener('click', registerUser);
 
         document.querySelectorAll('.platform-btn').forEach(btn => {
             btn.addEventListener('click', function() {
