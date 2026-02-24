@@ -419,6 +419,32 @@
             color: #8f9bb3;
             font-size: 16px;
         }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
     </style>
 </head>
 <body>
@@ -658,26 +684,47 @@
 
         function showNotification(text, type = 'success') {
             const notification = document.createElement('div');
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.left = '50%';
-            notification.style.transform = 'translateX(-50%)';
-            notification.style.backgroundColor = type === 'success' ? '#2ecc71' : '#e74c3c';
-            notification.style.color = 'white';
-            notification.style.padding = '12px 24px';
-            notification.style.borderRadius = '50px';
-            notification.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
-            notification.style.zIndex = '10000';
-            notification.style.fontWeight = '600';
-            notification.style.animation = 'slideDown 0.3s ease';
+            notification.className = `notification ${type}`;
             notification.innerText = text;
-            
             document.body.appendChild(notification);
             
             setTimeout(() => {
                 notification.style.animation = 'slideUp 0.3s ease';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
+        }
+
+        function checkForBotResponse() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const syncResult = urlParams.get('sync');
+            const messageId = urlParams.get('mid');
+            
+            if (syncResult && messageId) {
+                try {
+                    const data = JSON.parse(decodeURIComponent(syncResult));
+                    
+                    const syncData = localStorage.getItem(`sync_${messageId}`);
+                    if (syncData) {
+                        const parsed = JSON.parse(syncData);
+                        parsed.processed = true;
+                        parsed.status = data.status;
+                        parsed.is_admin = data.is_admin;
+                        localStorage.setItem(`sync_${messageId}`, JSON.stringify(parsed));
+                        
+                        isPremium = data.status === 'premium' || data.status === 'admin';
+                        isAdmin = data.is_admin || false;
+                        updateStatusBadge();
+                        renderServers();
+                        showNotification('✅ Данные успешно синхронизированы с ботом!');
+                    }
+                    
+                    const cleanUrl = window.location.pathname + window.location.hash;
+                    window.history.replaceState({}, document.title, cleanUrl);
+                    
+                } catch (e) {
+                    console.error('Error parsing sync result:', e);
+                }
+            }
         }
 
         async function fetchUserStatus() {
@@ -697,7 +744,7 @@
                     updateStatusBadge();
                     
                     if (oldIsPremium !== isPremium || oldIsAdmin !== isAdmin) {
-                        showNotification('✅ Статус подписки обновлен!');
+                        showNotification('✅ Статус подписки обновлен из БД');
                     }
                     
                     renderServers();
@@ -738,40 +785,60 @@
                 const botLink = `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(message)}`;
                 
                 const messageId = Date.now();
-                localStorage.setItem(`sync_${messageId}`, JSON.stringify({
+                const syncData = {
                     telegramId: telegramId,
                     timestamp: Date.now(),
-                    processed: false
-                }));
+                    processed: false,
+                    status: null,
+                    is_admin: false
+                };
+                
+                localStorage.setItem(`sync_${messageId}`, JSON.stringify(syncData));
                 
                 window.location.href = botLink;
                 
-                setTimeout(async () => {
-                    await fetchUserStatus();
+                let attempts = 0;
+                const maxAttempts = 15;
+                const checkInterval = 1000;
+                
+                const checkSync = setInterval(async () => {
+                    attempts++;
                     
-                    const syncData = localStorage.getItem(`sync_${messageId}`);
-                    if (syncData) {
-                        const data = JSON.parse(syncData);
+                    const currentSync = localStorage.getItem(`sync_${messageId}`);
+                    if (currentSync) {
+                        const data = JSON.parse(currentSync);
+                        
                         if (data.processed) {
+                            clearInterval(checkSync);
                             showNotification('✅ Данные успешно синхронизированы!');
+                            localStorage.removeItem(`sync_${messageId}`);
+                            btn.innerText = originalText;
+                            btn.classList.remove('syncing');
+                            btn.disabled = false;
                             
-                            if (data.status) {
-                                isPremium = data.status === 'premium' || data.status === 'admin';
-                                isAdmin = data.is_admin || false;
-                                updateStatusBadge();
-                                renderServers();
-                            }
-                        } else {
-                            showNotification('⚠️ Синхронизация не завершена, но статус обновлен из БД');
+                        } else if (attempts >= maxAttempts) {
+                            clearInterval(checkSync);
+                            await fetchUserStatus();
+                            showNotification('⚠️ Синхронизация через бота не завершена, статус обновлен из БД', 'warning');
+                            localStorage.removeItem(`sync_${messageId}`);
+                            btn.innerText = originalText;
+                            btn.classList.remove('syncing');
+                            btn.disabled = false;
                         }
-                        localStorage.removeItem(`sync_${messageId}`);
+                    } else {
+                        if (attempts >= maxAttempts) {
+                            clearInterval(checkSync);
+                            await fetchUserStatus();
+                            btn.innerText = originalText;
+                            btn.classList.remove('syncing');
+                            btn.disabled = false;
+                        }
                     }
-                }, 3000);
+                }, checkInterval);
                 
             } catch (error) {
                 console.error('Ошибка синхронизации:', error);
                 showNotification('❌ Ошибка синхронизации', 'error');
-            } finally {
                 btn.innerText = originalText;
                 btn.classList.remove('syncing');
                 btn.disabled = false;
@@ -793,7 +860,6 @@
                         lastName = userData.last_name;
                         username = userData.username;
                         photoUrl = userData.photo_url;
-                        console.log('📸 Данные загружены из localStorage');
                     } else {
                         firstName = user.first_name || '';
                         lastName = user.last_name || '';
@@ -807,7 +873,6 @@
                             username: username,
                             photo_url: photoUrl
                         }));
-                        console.log('💾 Данные сохранены в localStorage');
                     }
                     
                     document.getElementById('displayName').innerText = firstName + (lastName ? ' ' + lastName : '');
@@ -828,9 +893,6 @@
                         document.getElementById('avatarImg').src = photoUrl;
                         document.getElementById('avatarImg').style.display = 'block';
                         document.getElementById('avatarText').style.display = 'none';
-                        console.log('✅ Фото отображается');
-                    } else {
-                        console.log('ℹ️ Фото нет, показываем инициалы');
                     }
                     
                     document.getElementById('loading').style.display = 'none';
@@ -845,6 +907,7 @@
         }
 
         function checkAuth() {
+            checkForBotResponse();
             const loaded = loadUserFromTelegram();
             
             if (!loaded) {
