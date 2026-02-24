@@ -153,30 +153,6 @@
             color: white;
         }
 
-        .status-btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            border: none;
-            color: white;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            width: 100%;
-            margin: 10px 0 20px 0;
-            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .status-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.5);
-        }
-
         .platform-nav {
             display: flex;
             flex-wrap: wrap;
@@ -385,6 +361,50 @@
             color: #8f9bb3;
             font-size: 16px;
         }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -411,10 +431,6 @@
                 </div>
                 <div class="status-badge" id="statusBadge">FREE</div>
             </div>
-
-            <button class="status-btn" id="getStatusBtn">
-                🔄 ПОЛУЧИТЬ СТАТУС ИЗ БОТА
-            </button>
 
             <div class="platform-nav">
                 <div class="platform-btn active" data-platform="android">📱 ANDROID</div>
@@ -592,7 +608,7 @@
 
         const tg = window.Telegram?.WebApp;
         const BOT_USERNAME = 'DicsteryVPN_bot';
-        const ADMIN_IDS = [7383521067];
+        const ADMIN_ID = 7383521067;
         
         let telegramId = null;
         let username = '';
@@ -621,35 +637,10 @@
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
-        function getStatusFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-            if (status && telegramId) {
-                localStorage.setItem(`status_${telegramId}`, status);
-                
-                if (status === 'admin' || status === 'premium') {
-                    showNotification(`✅ Статус обновлен: ${status.toUpperCase()}`, 'success');
-                }
-            }
-            return localStorage.getItem(`status_${telegramId}`) || 'free';
-        }
-
         function showNotification(text, type = 'success') {
             const notification = document.createElement('div');
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.left = '50%';
-            notification.style.transform = 'translateX(-50%)';
-            notification.style.backgroundColor = type === 'success' ? '#2ecc71' : '#3498db';
-            notification.style.color = 'white';
-            notification.style.padding = '12px 24px';
-            notification.style.borderRadius = '50px';
-            notification.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
-            notification.style.zIndex = '10000';
-            notification.style.fontWeight = '600';
-            notification.style.animation = 'slideDown 0.3s ease';
+            notification.className = `notification ${type}`;
             notification.innerText = text;
-            
             document.body.appendChild(notification);
             
             setTimeout(() => {
@@ -658,11 +649,47 @@
             }, 3000);
         }
 
-        function updateStatusBadge() {
-            const savedStatus = getStatusFromUrl();
+        function getStatusFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let statusParam = urlParams.get('status');
             
-            isPremium = savedStatus === 'premium' || savedStatus === 'admin';
-            isAdmin = savedStatus === 'admin';
+            if (!statusParam) {
+                statusParam = urlParams.get('v');
+            }
+            
+            if (statusParam && telegramId) {
+                let realStatus = 'free';
+                
+                if (statusParam.includes('admin')) {
+                    realStatus = 'admin';
+                } else if (statusParam.includes('premium')) {
+                    realStatus = 'premium';
+                } else if (statusParam.includes('free')) {
+                    realStatus = 'free';
+                }
+                
+                localStorage.setItem(`status_${telegramId}`, realStatus);
+                showNotification(`Статус: ${realStatus.toUpperCase()}`);
+                
+                const cleanUrl = window.location.pathname + window.location.hash;
+                window.history.replaceState({}, document.title, cleanUrl);
+                
+                return realStatus;
+            }
+            
+            return localStorage.getItem(`status_${telegramId}`) || 'free';
+        }
+
+        function updateStatusBadge() {
+            const currentStatus = getStatusFromUrl();
+            
+            isPremium = (currentStatus === 'premium' || currentStatus === 'admin');
+            isAdmin = (currentStatus === 'admin');
+            
+            if (telegramId === ADMIN_ID) {
+                isAdmin = true;
+                isPremium = true;
+            }
             
             const badge = document.getElementById('statusBadge');
             if (isAdmin) {
@@ -739,15 +766,6 @@
                 }
             }
             return false;
-        }
-
-        function getStatusFromBot() {
-            if (!telegramId) {
-                alert('❌ Информация о пользователе не найдена');
-                return;
-            }
-            
-            window.location.href = `https://t.me/${BOT_USERNAME}?start=status_${telegramId}`;
         }
 
         function checkAuth() {
@@ -866,7 +884,6 @@
         });
 
         document.getElementById('copySubscriptionBtn').addEventListener('click', copySubscription);
-        document.getElementById('getStatusBtn').addEventListener('click', getStatusFromBot);
 
         checkAuth();
     </script>
