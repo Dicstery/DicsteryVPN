@@ -360,40 +360,6 @@
             box-shadow: 0 15px 35px rgba(243, 156, 18, 0.5);
         }
 
-        .update-btn.syncing {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-            cursor: wait;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translate(-50%, -100%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-            to {
-                transform: translate(-50%, -100%);
-                opacity: 0;
-            }
-        }
-
         .close-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -418,32 +384,6 @@
             padding: 40px;
             color: #8f9bb3;
             font-size: 16px;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            z-index: 10000;
-            animation: slideDown 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .notification.success {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-
-        .notification.warning {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
         }
     </style>
 </head>
@@ -473,7 +413,7 @@
             </div>
 
             <button class="update-btn" id="updateInfoBtn">
-                🔄 СИНХРОНИЗИРОВАТЬ ДАННЫЕ
+                🔄 ОБНОВИТЬ ИНФОРМАЦИЮ В БОТЕ
             </button>
 
             <div class="platform-nav">
@@ -682,51 +622,6 @@
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
-        function showNotification(text, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerText = text;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideUp 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        function checkForBotResponse() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const syncResult = urlParams.get('sync');
-            const messageId = urlParams.get('mid');
-            
-            if (syncResult && messageId) {
-                try {
-                    const data = JSON.parse(decodeURIComponent(syncResult));
-                    
-                    const syncData = localStorage.getItem(`sync_${messageId}`);
-                    if (syncData) {
-                        const parsed = JSON.parse(syncData);
-                        parsed.processed = true;
-                        parsed.status = data.status;
-                        parsed.is_admin = data.is_admin;
-                        localStorage.setItem(`sync_${messageId}`, JSON.stringify(parsed));
-                        
-                        isPremium = data.status === 'premium' || data.status === 'admin';
-                        isAdmin = data.is_admin || false;
-                        updateStatusBadge();
-                        renderServers();
-                        showNotification('✅ Данные успешно синхронизированы с ботом!');
-                    }
-                    
-                    const cleanUrl = window.location.pathname + window.location.hash;
-                    window.history.replaceState({}, document.title, cleanUrl);
-                    
-                } catch (e) {
-                    console.error('Error parsing sync result:', e);
-                }
-            }
-        }
-
         async function fetchUserStatus() {
             if (!telegramId) return;
             
@@ -735,113 +630,25 @@
                 const data = await response.json();
                 
                 if (data.status) {
-                    const oldIsPremium = isPremium;
-                    const oldIsAdmin = isAdmin;
-                    
                     isAdmin = data.is_admin || false;
                     isPremium = data.status === 'premium' || data.status === 'admin';
                     
-                    updateStatusBadge();
-                    
-                    if (oldIsPremium !== isPremium || oldIsAdmin !== isAdmin) {
-                        showNotification('✅ Статус подписки обновлен из БД');
+                    const badge = document.getElementById('statusBadge');
+                    if (isAdmin) {
+                        badge.innerText = 'ADMIN';
+                        badge.className = 'status-badge badge-admin';
+                    } else if (isPremium) {
+                        badge.innerText = 'PREMIUM';
+                        badge.className = 'status-badge badge-premium';
+                    } else {
+                        badge.innerText = 'FREE';
+                        badge.className = 'status-badge badge-free';
                     }
                     
                     renderServers();
                 }
             } catch (error) {
                 console.error('Error fetching status:', error);
-            }
-        }
-
-        function updateStatusBadge() {
-            const badge = document.getElementById('statusBadge');
-            if (isAdmin) {
-                badge.innerText = 'ADMIN';
-                badge.className = 'status-badge badge-admin';
-            } else if (isPremium) {
-                badge.innerText = 'PREMIUM';
-                badge.className = 'status-badge badge-premium';
-            } else {
-                badge.innerText = 'FREE';
-                badge.className = 'status-badge badge-free';
-            }
-        }
-
-        async function updateInfo() {
-            if (!telegramId) {
-                alert('❌ Информация о пользователе не найдена');
-                return;
-            }
-            
-            const btn = document.getElementById('updateInfoBtn');
-            const originalText = btn.innerText;
-            btn.innerText = '⏳ СИНХРОНИЗАЦИЯ...';
-            btn.classList.add('syncing');
-            btn.disabled = true;
-            
-            try {
-                const message = `update ${telegramId}|${firstName}|${lastName}|${username}`;
-                const botLink = `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(message)}`;
-                
-                const messageId = Date.now();
-                const syncData = {
-                    telegramId: telegramId,
-                    timestamp: Date.now(),
-                    processed: false,
-                    status: null,
-                    is_admin: false
-                };
-                
-                localStorage.setItem(`sync_${messageId}`, JSON.stringify(syncData));
-                
-                window.location.href = botLink;
-                
-                let attempts = 0;
-                const maxAttempts = 15;
-                const checkInterval = 1000;
-                
-                const checkSync = setInterval(async () => {
-                    attempts++;
-                    
-                    const currentSync = localStorage.getItem(`sync_${messageId}`);
-                    if (currentSync) {
-                        const data = JSON.parse(currentSync);
-                        
-                        if (data.processed) {
-                            clearInterval(checkSync);
-                            showNotification('✅ Данные успешно синхронизированы!');
-                            localStorage.removeItem(`sync_${messageId}`);
-                            btn.innerText = originalText;
-                            btn.classList.remove('syncing');
-                            btn.disabled = false;
-                            
-                        } else if (attempts >= maxAttempts) {
-                            clearInterval(checkSync);
-                            await fetchUserStatus();
-                            showNotification('⚠️ Синхронизация через бота не завершена, статус обновлен из БД', 'warning');
-                            localStorage.removeItem(`sync_${messageId}`);
-                            btn.innerText = originalText;
-                            btn.classList.remove('syncing');
-                            btn.disabled = false;
-                        }
-                    } else {
-                        if (attempts >= maxAttempts) {
-                            clearInterval(checkSync);
-                            await fetchUserStatus();
-                            btn.innerText = originalText;
-                            btn.classList.remove('syncing');
-                            btn.disabled = false;
-                        }
-                    }
-                }, checkInterval);
-                
-            } catch (error) {
-                console.error('Ошибка синхронизации:', error);
-                showNotification('❌ Ошибка синхронизации', 'error');
-                btn.innerText = originalText;
-                btn.classList.remove('syncing');
-                btn.disabled = false;
             }
         }
 
@@ -906,8 +713,18 @@
             return false;
         }
 
+        function updateInfo() {
+            if (!telegramId) return;
+            
+            const message = `update ${telegramId}|${firstName}|${lastName}|${username}`;
+            window.location.href = `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(message)}`;
+            
+            setTimeout(() => {
+                fetchUserStatus();
+            }, 2000);
+        }
+
         function checkAuth() {
-            checkForBotResponse();
             const loaded = loadUserFromTelegram();
             
             if (!loaded) {
@@ -1000,7 +817,7 @@
             }
             
             navigator.clipboard.writeText(fullText).then(() => {
-                showNotification('✅ Подписка скопирована!');
+                alert('✅ Подписка скопирована!\nТеперь откройте Happ и вставьте её.');
             });
         }
 
