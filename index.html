@@ -46,19 +46,6 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        .star1 { top: 5%; left: 5%; width: 2px; height: 2px; animation-delay: 0s; }
-        .star2 { top: 15%; right: 10%; width: 3px; height: 3px; animation-delay: 0.5s; }
-        .star3 { bottom: 10%; left: 15%; width: 1px; height: 1px; animation-delay: 1s; }
-        .star4 { bottom: 20%; right: 20%; width: 2px; height: 2px; animation-delay: 1.5s; }
-        .star5 { top: 30%; left: 30%; width: 3px; height: 3px; animation-delay: 2s; }
-        .star6 { top: 60%; right: 40%; width: 2px; height: 2px; animation-delay: 2.5s; }
-        .star7 { top: 70%; left: 60%; width: 1px; height: 1px; animation-delay: 3s; }
-        .star8 { top: 40%; right: 70%; width: 3px; height: 3px; animation-delay: 3.5s; }
-        .star9 { bottom: 30%; left: 45%; width: 2px; height: 2px; animation-delay: 4s; }
-        .star10 { bottom: 5%; right: 5%; width: 1px; height: 1px; animation-delay: 4.5s; }
-        .star11 { top: 80%; left: 80%; width: 2px; height: 2px; animation-delay: 5s; }
-        .star12 { top: 10%; left: 80%; width: 3px; height: 3px; animation-delay: 5.5s; }
-
         .container {
             position: relative;
             z-index: 1;
@@ -207,8 +194,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-weight: 600;
+            font-size: 20px;
             box-shadow: 0 5px 15px rgba(74, 108, 247, 0.4);
+            text-transform: uppercase;
             overflow: hidden;
         }
 
@@ -515,7 +504,8 @@
             <div class="profile-header">
                 <div class="profile-left">
                     <div class="avatar" id="avatar">
-                        <span id="avatarIcon">👤</span>
+                        <img id="avatarImg" class="avatar-img" src="" style="display: none;">
+                        <span id="avatarText">👤</span>
                     </div>
                     <div class="user-info">
                         <h3 id="displayName">Загрузка...</h3>
@@ -707,11 +697,13 @@
         const tg = window.Telegram?.WebApp;
         const BOT_USERNAME = 'DicsteryVPN_bot';
         const ADMIN_IDS = [7383521067];
+        const API_BASE_URL = 'http://localhost:25775';
         
         let telegramId = null;
         let username = '';
         let firstName = '';
         let lastName = '';
+        let photoUrl = '';
         let isAdmin = false;
         let isPremium = false;
 
@@ -734,16 +726,65 @@
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
+        async function fetchUserStatus() {
+            if (!telegramId) return;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/user/status?telegram_id=${telegramId}`);
+                const data = await response.json();
+                
+                if (data.status) {
+                    isAdmin = data.is_admin || false;
+                    isPremium = data.status === 'premium' || data.status === 'admin';
+                    
+                    const badge = document.getElementById('statusBadge');
+                    if (isAdmin) {
+                        badge.innerText = 'ADMIN';
+                        badge.className = 'status-badge badge-admin';
+                    } else if (isPremium) {
+                        badge.innerText = 'PREMIUM';
+                        badge.className = 'status-badge badge-premium';
+                    } else {
+                        badge.innerText = 'FREE';
+                        badge.className = 'status-badge badge-free';
+                    }
+                    
+                    renderServers();
+                }
+            } catch (error) {
+                console.error('Error fetching status:', error);
+            }
+        }
+
         function loadUserFromTelegram() {
             if (tg) {
                 const user = tg.initDataUnsafe?.user;
                 
                 if (user) {
                     telegramId = user.id;
-                    firstName = user.first_name || '';
-                    lastName = user.last_name || '';
-                    username = user.username || '';
-                    isAdmin = ADMIN_IDS.includes(telegramId);
+                    
+                    const saved = localStorage.getItem(`user_${telegramId}`);
+                    
+                    if (saved) {
+                        const userData = JSON.parse(saved);
+                        firstName = userData.first_name;
+                        lastName = userData.last_name;
+                        username = userData.username;
+                        photoUrl = userData.photo_url;
+                    } else {
+                        firstName = user.first_name || '';
+                        lastName = user.last_name || '';
+                        username = user.username || '';
+                        photoUrl = user.photo_url || '';
+                        
+                        localStorage.setItem(`user_${telegramId}`, JSON.stringify({
+                            id: telegramId,
+                            first_name: firstName,
+                            last_name: lastName,
+                            username: username,
+                            photo_url: photoUrl
+                        }));
+                    }
                     
                     document.getElementById('displayName').innerText = firstName + (lastName ? ' ' + lastName : '');
                     document.getElementById('displayId').innerText = `ID: ${telegramId}`;
@@ -752,10 +793,23 @@
                         document.getElementById('displayUsername').innerText = `@${username}`;
                     }
                     
+                    let initials = '';
+                    if (firstName) initials += firstName.charAt(0);
+                    if (lastName) initials += lastName.charAt(0);
+                    if (!initials) initials = (username || 'U').charAt(0).toUpperCase();
+                    
+                    document.getElementById('avatarText').innerText = initials;
+                    
+                    if (photoUrl) {
+                        document.getElementById('avatarImg').src = photoUrl;
+                        document.getElementById('avatarImg').style.display = 'block';
+                        document.getElementById('avatarText').style.display = 'none';
+                    }
+                    
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('content').style.display = 'block';
                     
-                    renderServers();
+                    fetchUserStatus();
                     
                     return true;
                 }
