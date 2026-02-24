@@ -565,7 +565,6 @@
         const tg = window.Telegram?.WebApp;
         const BOT_USERNAME = 'DicsteryVPN_bot';
         const ADMIN_IDS = [7383521067];
-        const API_BASE_URL = 'http://localhost:25775';
         
         let telegramId = null;
         let username = '';
@@ -594,38 +593,39 @@
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
-        async function fetchUserStatus() {
-            if (!telegramId) return;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/user/status?telegram_id=${telegramId}`);
-                const data = await response.json();
-                
-                if (data.status) {
-                    isAdmin = data.is_admin || false;
-                    isPremium = data.status === 'premium' || data.status === 'admin';
-                    
-                    const badge = document.getElementById('statusBadge');
-                    if (isAdmin) {
-                        badge.innerText = 'ADMIN';
-                        badge.className = 'status-badge badge-admin';
-                    } else if (isPremium) {
-                        badge.innerText = 'PREMIUM';
-                        badge.className = 'status-badge badge-premium';
-                    } else {
-                        badge.innerText = 'FREE';
-                        badge.className = 'status-badge badge-free';
-                    }
-                    
-                    renderServers();
-                }
-            } catch (error) {
-                console.error('Error fetching status:', error);
+        function getStatusFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            if (status && telegramId) {
+                localStorage.setItem(`status_${telegramId}`, status);
             }
+            return localStorage.getItem(`status_${telegramId}`) || 'free';
+        }
+
+        function updateStatusBadge() {
+            const savedStatus = getStatusFromUrl();
+            
+            isPremium = savedStatus === 'premium' || savedStatus === 'admin';
+            isAdmin = savedStatus === 'admin';
+            
+            const badge = document.getElementById('statusBadge');
+            if (isAdmin) {
+                badge.innerText = 'ADMIN';
+                badge.className = 'status-badge badge-admin';
+            } else if (isPremium) {
+                badge.innerText = 'PREMIUM';
+                badge.className = 'status-badge badge-premium';
+            } else {
+                badge.innerText = 'FREE';
+                badge.className = 'status-badge badge-free';
+            }
+            
+            renderServers();
         }
 
         function loadUserFromTelegram() {
             if (tg) {
+                tg.ready();
                 const user = tg.initDataUnsafe?.user;
                 
                 if (user) {
@@ -677,7 +677,7 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('content').style.display = 'block';
                     
-                    fetchUserStatus();
+                    updateStatusBadge();
                     
                     return true;
                 }
@@ -689,7 +689,7 @@
             const loaded = loadUserFromTelegram();
             
             if (!loaded) {
-                document.getElementById('loading').innerHTML = '❌ Не удалось загрузить данные пользователя';
+                document.getElementById('loading').innerHTML = '❌ Запустите приложение через Telegram';
             }
         }
 
