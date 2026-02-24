@@ -77,95 +77,6 @@
             letter-spacing: 2px;
         }
 
-        .glass-card {
-            background: rgba(10, 15, 25, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 30px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px rgba(74, 108, 247, 0.2);
-            border-color: rgba(74, 108, 247, 0.3);
-        }
-
-        .welcome-card {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #fff, #a5b9ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .welcome-text {
-            color: #8f9bb3;
-            font-size: 16px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .register-btn {
-            background: linear-gradient(135deg, #4a6cf7, #6b8aff);
-            border: none;
-            color: white;
-            padding: 18px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 18px;
-            cursor: pointer;
-            width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-            box-shadow: 0 10px 30px rgba(74, 108, 247, 0.5);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .register-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(74, 108, 247, 0.7);
-        }
-
-        .confirm-btn {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            color: white;
-            padding: 18px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 18px;
-            cursor: pointer;
-            width: 100%;
-            max-width: 300px;
-            margin: 30px auto;
-            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.5);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .confirm-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(46, 204, 113, 0.7);
-        }
-
         .profile-header {
             display: flex;
             align-items: center;
@@ -449,6 +360,40 @@
             box-shadow: 0 15px 35px rgba(243, 156, 18, 0.5);
         }
 
+        .update-btn.syncing {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: wait;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+        }
+
         .close-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -473,21 +418,6 @@
             padding: 40px;
             color: #8f9bb3;
             font-size: 16px;
-        }
-
-        .not-registered {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .error-message {
-            background: rgba(231, 76, 60, 0.2);
-            border: 1px solid #e74c3c;
-            color: #e74c3c;
-            padding: 15px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: center;
         }
     </style>
 </head>
@@ -517,7 +447,7 @@
             </div>
 
             <button class="update-btn" id="updateInfoBtn">
-                🔄 ОБНОВИТЬ ИНФОРМАЦИЮ В БОТЕ
+                🔄 СИНХРОНИЗИРОВАТЬ ДАННЫЕ
             </button>
 
             <div class="platform-nav">
@@ -726,6 +656,30 @@
             {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
         ];
 
+        function showNotification(text, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.backgroundColor = type === 'success' ? '#2ecc71' : '#e74c3c';
+            notification.style.color = 'white';
+            notification.style.padding = '12px 24px';
+            notification.style.borderRadius = '50px';
+            notification.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
+            notification.style.zIndex = '10000';
+            notification.style.fontWeight = '600';
+            notification.style.animation = 'slideDown 0.3s ease';
+            notification.innerText = text;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
         async function fetchUserStatus() {
             if (!telegramId) return;
             
@@ -734,25 +688,93 @@
                 const data = await response.json();
                 
                 if (data.status) {
+                    const oldIsPremium = isPremium;
+                    const oldIsAdmin = isAdmin;
+                    
                     isAdmin = data.is_admin || false;
                     isPremium = data.status === 'premium' || data.status === 'admin';
                     
-                    const badge = document.getElementById('statusBadge');
-                    if (isAdmin) {
-                        badge.innerText = 'ADMIN';
-                        badge.className = 'status-badge badge-admin';
-                    } else if (isPremium) {
-                        badge.innerText = 'PREMIUM';
-                        badge.className = 'status-badge badge-premium';
-                    } else {
-                        badge.innerText = 'FREE';
-                        badge.className = 'status-badge badge-free';
+                    updateStatusBadge();
+                    
+                    if (oldIsPremium !== isPremium || oldIsAdmin !== isAdmin) {
+                        showNotification('✅ Статус подписки обновлен!');
                     }
                     
                     renderServers();
                 }
             } catch (error) {
                 console.error('Error fetching status:', error);
+            }
+        }
+
+        function updateStatusBadge() {
+            const badge = document.getElementById('statusBadge');
+            if (isAdmin) {
+                badge.innerText = 'ADMIN';
+                badge.className = 'status-badge badge-admin';
+            } else if (isPremium) {
+                badge.innerText = 'PREMIUM';
+                badge.className = 'status-badge badge-premium';
+            } else {
+                badge.innerText = 'FREE';
+                badge.className = 'status-badge badge-free';
+            }
+        }
+
+        async function updateInfo() {
+            if (!telegramId) {
+                alert('❌ Информация о пользователе не найдена');
+                return;
+            }
+            
+            const btn = document.getElementById('updateInfoBtn');
+            const originalText = btn.innerText;
+            btn.innerText = '⏳ СИНХРОНИЗАЦИЯ...';
+            btn.classList.add('syncing');
+            btn.disabled = true;
+            
+            try {
+                const message = `update ${telegramId}|${firstName}|${lastName}|${username}`;
+                const botLink = `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(message)}`;
+                
+                const messageId = Date.now();
+                localStorage.setItem(`sync_${messageId}`, JSON.stringify({
+                    telegramId: telegramId,
+                    timestamp: Date.now(),
+                    processed: false
+                }));
+                
+                window.location.href = botLink;
+                
+                setTimeout(async () => {
+                    await fetchUserStatus();
+                    
+                    const syncData = localStorage.getItem(`sync_${messageId}`);
+                    if (syncData) {
+                        const data = JSON.parse(syncData);
+                        if (data.processed) {
+                            showNotification('✅ Данные успешно синхронизированы!');
+                            
+                            if (data.status) {
+                                isPremium = data.status === 'premium' || data.status === 'admin';
+                                isAdmin = data.is_admin || false;
+                                updateStatusBadge();
+                                renderServers();
+                            }
+                        } else {
+                            showNotification('⚠️ Синхронизация не завершена, но статус обновлен из БД');
+                        }
+                        localStorage.removeItem(`sync_${messageId}`);
+                    }
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Ошибка синхронизации:', error);
+                showNotification('❌ Ошибка синхронизации', 'error');
+            } finally {
+                btn.innerText = originalText;
+                btn.classList.remove('syncing');
+                btn.disabled = false;
             }
         }
 
@@ -771,6 +793,7 @@
                         lastName = userData.last_name;
                         username = userData.username;
                         photoUrl = userData.photo_url;
+                        console.log('📸 Данные загружены из localStorage');
                     } else {
                         firstName = user.first_name || '';
                         lastName = user.last_name || '';
@@ -784,6 +807,7 @@
                             username: username,
                             photo_url: photoUrl
                         }));
+                        console.log('💾 Данные сохранены в localStorage');
                     }
                     
                     document.getElementById('displayName').innerText = firstName + (lastName ? ' ' + lastName : '');
@@ -804,6 +828,9 @@
                         document.getElementById('avatarImg').src = photoUrl;
                         document.getElementById('avatarImg').style.display = 'block';
                         document.getElementById('avatarText').style.display = 'none';
+                        console.log('✅ Фото отображается');
+                    } else {
+                        console.log('ℹ️ Фото нет, показываем инициалы');
                     }
                     
                     document.getElementById('loading').style.display = 'none';
@@ -815,16 +842,6 @@
                 }
             }
             return false;
-        }
-
-        function updateInfo() {
-            if (!telegramId) {
-                alert('❌ Информация о пользователе не найдена');
-                return;
-            }
-            
-            const message = `update ${telegramId}|${firstName}|${lastName}|${username}`;
-            window.location.href = `https://t.me/${BOT_USERNAME}?start=${encodeURIComponent(message)}`;
         }
 
         function checkAuth() {
@@ -920,7 +937,7 @@
             }
             
             navigator.clipboard.writeText(fullText).then(() => {
-                alert('✅ Подписка скопирована!\nТеперь откройте Happ и вставьте её.');
+                showNotification('✅ Подписка скопирована!');
             });
         }
 
