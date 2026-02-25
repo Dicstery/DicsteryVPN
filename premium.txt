@@ -3,5 +3,7 @@ profile-update-interval: 3
 support-url: https://t.me/Dicstery
 profile-web-page-url: https://dicstery.github.io/DicsteryVPN/
 subscription-userinfo: upload=0; download=0; total=107374182400; expire=1893456000
+sub-info-text: PREMIUM навсегда! 100GB
+sub-info-color: gold
 
 vless://a509e469-a55f-4dcc-86f4-8098ea07369a@nld-b3.plugvpn.ru:443?type=tcp&security=reality&pbk=fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU&sni=nld-b3.plugvpn.ru&fp=chrome&sid=6117f326d85222ea&flow=xtls-rprx-vision#🇳🇱 Нидерланды #1
