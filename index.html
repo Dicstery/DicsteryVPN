@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DocsteryVPN</title>
+    <title>DicsteryVPN</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -412,7 +412,7 @@
     <div class="watermark">@Dicstery</div>
 
     <div class="container">
-        <div class="header-title">DocsteryVPN</div>
+        <div class="header-title">DicsteryVPN</div>
 
         <div id="loading" class="loading">⏳ ЗАГРУЗКА...</div>
 
@@ -821,72 +821,25 @@
             });
         }
 
-        function generateConfig(server) {
-            if (server.protocol === 'separator') {
-                return `\n${server.name}\n`;
-            }
-            if (server.protocol === 'shadowsocks') {
-                let str = `${server.method}:${server.password}`;
-                let base64 = btoa(str);
-                return `ss://${base64}@${server.host}:${server.port}#${server.name}`;
-            } else if (server.protocol === 'vless') {
-                let params = [`type=${server.network || 'tcp'}`, `security=${server.tls || 'none'}`];
-                if (server.tls === 'reality') {
-                    if (server.public_key) params.push(`pbk=${server.public_key}`);
-                    if (server.sni) params.push(`sni=${server.sni}`);
-                    if (server.fingerprint) params.push(`fp=${server.fingerprint}`);
-                    if (server.short_id) params.push(`sid=${server.short_id}`);
-                }
-                if (server.flow) params.push(`flow=${server.flow}`);
-                if (server.network === 'grpc') {
-                    if (server.grpc_service_name) params.push(`serviceName=${server.grpc_service_name}`);
-                    params.push(`mode=gun`);
-                }
-                if (server.network === 'ws') {
-                    if (server.ws_host) params.push(`host=${server.ws_host}`);
-                    if (server.ws_path) params.push(`path=${encodeURIComponent(server.ws_path)}`);
-                }
-                let paramsStr = params.join('&');
-                return `vless://${server.uuid}@${server.host}:${server.port}?${paramsStr}#${server.name}`;
-            }
-            return '';
-        }
-
-        function generateSubscriptionText() {
-            const availableServers = getAvailableServers();
-            
-            let result = '';
-            result += 'profile-title: DocsteryVPN\n';
-            result += 'profile-update-interval: 3\n';
-            
-            const now = Math.floor(Date.now() / 1000);
-            if (isAdmin || isPremium) {
-                result += `subscription-userinfo: upload=0; download=0; total=107374182400; expire=${now + 31536000}\n`;
-                result += 'sub-info-text: Premium VPN без ограничений! ТГК: @Dicstery_channel\n';
-                result += 'sub-info-color: gold\n';
-            } else {
-                result += `subscription-userinfo: upload=0; download=0; total=1073741824; expire=${now + 604800}\n`;
-                result += 'sub-info-text: Лучший бесплатный VPN! ТГК: @Dicstery_channel\n';
-                result += 'sub-info-color: green\n';
-            }
-            result += 'support-url: https://t.me/Dicstery\n';
-            result += 'profile-web-page-url: https://dicstery.github.io/DicsteryVPN/\n\n';
-            
-            const configs = availableServers.map(s => generateConfig(s)).join('\n');
-            result += configs;
-            
-            return result;
-        }
-
         function copySubscription() {
-            const fullText = generateSubscriptionText();
+            if (!telegramId) {
+                showNotification('❌ Ошибка: пользователь не найден', 'error');
+                return;
+            }
+            
+            const FREE_LINK = "https://dicstery.github.io/DicsteryVPN/free.txt";
+            const PREMIUM_LINK = "https://dicstery.github.io/DicsteryVPN/premium.txt";
+            
+            const linkToCopy = (isAdmin || isPremium) ? PREMIUM_LINK : FREE_LINK;
             
             if (tg) {
                 tg.HapticFeedback.impactOccurred('medium');
             }
             
-            navigator.clipboard.writeText(fullText).then(() => {
-                showNotification('✅ Подписка скопирована!');
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                showNotification('✅ Ссылка на подписку скопирована!');
+            }).catch(() => {
+                showNotification('❌ Ошибка копирования', 'error');
             });
         }
 

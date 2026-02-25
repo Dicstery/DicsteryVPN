@@ -1,3 +1,10 @@
+profile-title: ⭐ DicsteryVPN PREMIUM
+profile-update-interval: 3
+support-url: https://t.me/Dicstery
+profile-web-page-url: https://dicstery.github.io/DicsteryVPN/
+subscription-userinfo: upload=0; download=0; total=107374182400; expire=1893456000
+announce: 0J/RgNC10LzQuNGD0Lwg0L/QvtC00L/QuNGB0LrQsCDQvdCw0LLRgdC10LPQtNCwISDQotCz0Lo6IEBEaWNzdGVyeV9jaGFubmVs
+
 vless://a509e469-a55f-4dcc-86f4-8098ea07369a@nld-b3.plugvpn.ru:443?type=tcp&security=reality&pbk=fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU&sni=nld-b3.plugvpn.ru&fp=chrome&sid=6117f326d85222ea&flow=xtls-rprx-vision#🇳🇱 Нидерланды #1
 vless://a509e469-a55f-4dcc-86f4-8098ea07369a@nld-x8.plugvpn.ru:443?type=tcp&security=reality&pbk=5H0Z3DWs6UEdCx-uw3Jvv3dyFCsgoFjMNdlapdbwQXk&sni=nld-x8.plugvpn.ru&fp=chrome&sid=7c050e5f16cb21de&flow=xtls-rprx-vision#🇳🇱 Нидерланды #2
 vless://a509e469-a55f-4dcc-86f4-8098ea07369a@pol-m6.plugvpn.ru:443?type=tcp&security=reality&pbk=7zfV0yJHG46hnUm-89N5D8t4ZCN2_9yD8rs8uCCPgk0&sni=pol-m6.plugvpn.ru&fp=chrome&sid=c2c516d6fcfec79b&flow=xtls-rprx-vision#🇵🇱 Польша #1

@@ -1,3 +1,10 @@
+profile-title: 🆓 DicsteryVPN FREE
+profile-update-interval: 3
+support-url: https://t.me/Dicstery
+profile-web-page-url: https://dicstery.github.io/DicsteryVPN/
+subscription-userinfo: upload=0; download=0; total=1073741824; expire=1790951622
+announce: 0JvRg9GH0YjQuNC5INCx0LXRgdC/0LvQsNGC0L3Ri9C5IFZQTiEg0JrQsNC90LDQuzogQERpY3N0ZXJ5X2NoYW5uZWw=
+
 vless://95796d3c-955c-435f-8222-481862515@151.236.114.162:6443?type=tcp&security=reality&pbk=pGFgy_rrpU51v3IFm-dYHOJskMD&sni=max.ru&fp=chrome&sid=f3e8b2b1#🇷🇺 Россия LTE
 vless://eb071647-72a6-46be-8e89-ff3d228d5@185.254.98.164:443?type=tcp&security=reality&pbk=ca5sfJNcjkh3oNt51hRexXbGWgIT&sni=de.cdn.stun.su&fp=chrome&sid=4daa022e84f8edf2&flow=xtls-rprx-vision#🇩🇪 Германия
 vless://eb071647-72a6-46be-8e89-ff3d228d5@193.46.81.207:443?type=tcp&security=reality&pbk=hRexXbGWglTAqCprGSU-YKCJBA&sni=de.cdn.stun.su&fp=chrome&sid=4daa022e84f8edf2&flow=xtls-rprx-vision#🇩🇪 Германия #2
