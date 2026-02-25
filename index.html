@@ -823,7 +823,7 @@
 
         function generateConfig(server) {
             if (server.protocol === 'separator') {
-                return `\n${server.name}\n`;
+                return `${server.name}`;
             }
             if (server.protocol === 'shadowsocks') {
                 let str = `${server.method}:${server.password}`;
@@ -863,15 +863,14 @@
             
             const displayName = firstName || 'User';
             
-            const subscription = `profile-title: DocsteryVPN • ${displayName} • ID: ${telegramId}
-profile-update-interval: 3
-subscription-userinfo: upload=0; download=0; total=${trafficLimit}; expire=${expireTime}
-support-url: https://t.me/Dicstery
-profile-web-page-url: https://dicstery.github.io/DicsteryVPN/
-sub-info-text: ${userStatus} подписка • ТГК: @Dicstery_channel
-sub-info-color: ${isAdmin ? 'purple' : (isPremium ? 'gold' : 'green')}
-
-${serverLinks}`;
+            let subscription = `profile-title: DocsteryVPN • ${displayName} • ID: ${telegramId}\n`;
+            subscription += `profile-update-interval: 3\n`;
+            subscription += `subscription-userinfo: upload=0; download=0; total=${trafficLimit}; expire=${expireTime}\n`;
+            subscription += `support-url: https://t.me/Dicstery\n`;
+            subscription += `profile-web-page-url: https://dicstery.github.io/DicsteryVPN/\n`;
+            subscription += `sub-info-text: ${userStatus} подписка • ТГК: @Dicstery_channel\n`;
+            subscription += `sub-info-color: ${isAdmin ? 'purple' : (isPremium ? 'gold' : 'green')}\n\n`;
+            subscription += serverLinks;
             
             return subscription;
         }
