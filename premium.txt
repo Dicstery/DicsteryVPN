@@ -3,7 +3,9 @@ profile-update-interval: 3
 support-url: https://t.me/Dicstery
 profile-web-page-url: https://dicstery.github.io/DicsteryVPN/
 subscription-userinfo: upload=0; download=0; total=107374182400; expire=1893456000
-announce: 0J/RgNC10LzQuNGD0Lwg0L/QvtC00L/QuNGB0LrQsCDQvdCw0LLRgdC10LPQtNCwISDQotCz0Lo6IEBEaWNzdGVyeV9jaGFubmVs
+announce: 0J/RgNC10LzQuNGD0Lwg0L/QvtC00L/QuNGB0LrQsCDRgdC+INCy0YHQtdC80Lgg0YHQtdGA0LLQtdGA0LDQvNC4ISDQkdC10LfQu9C40LzQuNGC0L3Ri9C5INGC0YDQsNGE0LjQuiwg0LzQsNC60YHQuNC80LDQu9GM0L3QsNGPINGB0LrQvtGA0L7RgdGC0YwuINCf0L7QtNC70Y7Rh9C40YHRjyDRh9C10YDQtdC3INCx0L7RgtCwIEBEaWNzdGVyeS5jaGFubmVs
+sub-info-text: PREMIUM навсегда! 100GB, все серверы
+sub-info-color: gold
 
 vless://a509e469-a55f-4dcc-86f4-8098ea07369a@nld-b3.plugvpn.ru:443?type=tcp&security=reality&pbk=fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU&sni=nld-b3.plugvpn.ru&fp=chrome&sid=6117f326d85222ea&flow=xtls-rprx-vision#🇳🇱 Нидерланды #1
 vless://a509e469-a55f-4dcc-86f4-8098ea07369a@nld-x8.plugvpn.ru:443?type=tcp&security=reality&pbk=5H0Z3DWs6UEdCx-uw3Jvv3dyFCsgoFjMNdlapdbwQXk&sni=nld-x8.plugvpn.ru&fp=chrome&sid=7c050e5f16cb21de&flow=xtls-rprx-vision#🇳🇱 Нидерланды #2
