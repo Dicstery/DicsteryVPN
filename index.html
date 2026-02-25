@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DicsteryVPN</title>
+    <title>DocsteryVPN</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -412,7 +412,7 @@
     <div class="watermark">@Dicstery</div>
 
     <div class="container">
-        <div class="header-title">DicsteryVPN</div>
+        <div class="header-title">DocsteryVPN</div>
 
         <div id="loading" class="loading">⏳ ЗАГРУЗКА...</div>
 
@@ -454,7 +454,7 @@
                             <span class="step-number">2</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Откройте Happ, нажмите "+" и выберите "Вставить из буфера обмена".
+                            <span class="step-number">3</span> Откройте Happ, нажмите "+" и выберите "Добавить по ссылке".
                         </div>
                         <div class="instruction-step">
                             <span class="step-number">4</span> Вставьте скопированный текст и нажмите "Добавить".
@@ -473,7 +473,7 @@
                             <span class="step-number">2</span> Нажмите кнопку "СКОПИРОВАТЬ ПОДПИСКУ" ниже.
                         </div>
                         <div class="instruction-step">
-                            <span class="step-number">3</span> Откройте Happ, нажмите "+" и выберите "Вставить из буфера обмена".
+                            <span class="step-number">3</span> Откройте Happ, нажмите "+" и выберите "Добавить по ссылке".
                         </div>
                         <div class="instruction-step">
                             <span class="step-number">4</span> Вставьте скопированный текст и нажмите "Добавить".
@@ -580,7 +580,7 @@
             <div class="server-list" id="serverList"></div>
 
             <button class="main-btn" id="copySubscriptionBtn">
-                📋 СКОПИРОВАТЬ ССЫЛКИ
+                📋 СКОПИРОВАТЬ ПОДПИСКУ
             </button>
 
             <button class="close-btn" onclick="Telegram.WebApp.close()">✕ ЗАКРЫТЬ ПРИЛОЖЕНИЕ</button>
@@ -619,22 +619,29 @@
         let isPremium = false;
 
         const servers = [
-            {id: 1, name: '🇷🇺 Россия', flag: '🇷🇺', host: '212.192.14.234', port: 24441, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'Ow8iSExQNaobZPY9bJ4EPI', is_free: true},
-            {id: 2, name: '🇫🇷 Франция', flag: '🇫🇷', host: '95.111.250.4', port: 80, protocol: 'shadowsocks', method: 'aes-256-gcm', password: 'BbOUgNLUyT6rdrxE', is_free: true},
-            {id: 3, name: '🇳🇱 Нидерланды', flag: '🇳🇱', host: '82.38.31.62', port: 8080, protocol: 'shadowsocks', method: 'chacha20-ietf-poly1305', password: 'oZloA69Q8yhcQV8ka3Pa3A', is_free: true},
-            {id: 4, name: '🇹🇷 Турция', flag: '🇹🇷', host: 'freeiran.lookanet.app', port: 2052, protocol: 'vless', uuid: 'f2eeaf91-6ac0-47f3-9673-39476e75c02d', security: 'none', network: 'ws', ws_host: 'metaplayer.gameredzone.top', ws_path: '/t.me.V2RayyNGvpn?ed=1024', tls: 'none', is_free: true},
-            {id: 5, name: '🇳🇱 Нидерланды #1', flag: '🇳🇱', host: 'nld-b3.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-b3.plugvpn.ru', fingerprint: 'chrome', public_key: 'fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU', short_id: '6117f326d85222ea', is_premium: true},
-            {id: 6, name: '🇳🇱 Нидерланды #2', flag: '🇳🇱', host: 'nld-x8.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-x8.plugvpn.ru', fingerprint: 'chrome', public_key: '5H0Z3DWs6UEdCx-uw3Jvv3dyFCsgoFjMNdlapdbwQXk', short_id: '7c050e5f16cb21de', is_premium: true},
-            {id: 7, name: '🇵🇱 Польша #1', flag: '🇵🇱', host: 'pol-m6.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'pol-m6.plugvpn.ru', fingerprint: 'chrome', public_key: '7zfV0yJHG46hnUm-89N5D8t4ZCN2_9yD8rs8uCCPgk0', short_id: 'c2c516d6fcfec79b', is_premium: true},
-            {id: 8, name: '🇵🇱 Польша #2', flag: '🇵🇱', host: 'pol-x1.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'pol-x1.plugvpn.ru', is_premium: true},
-            {id: 9, name: '🇺🇸 США #1', flag: '🇺🇸', host: 'usa-n5.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'usa-n5.plugvpn.ru', fingerprint: 'chrome', public_key: 'vTaqMH16V9S6jiOE74vCBXxplfbCrKByasYloyeeE0k', short_id: '61522fca4fc18140', is_premium: true},
-            {id: 10, name: '🇺🇸 США #2', flag: '🇺🇸', host: 'usa-f2.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'usa-f2.plugvpn.ru', is_premium: true},
-            {id: 11, name: '🇫🇮 Финляндия #1', flag: '🇫🇮', host: 'fin-q9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-q9.plugvpn.ru', fingerprint: 'chrome', public_key: 'qbnV1snO8ix66vt0VfKbyKloBnfZXUMCdZtA8-SwdBc', short_id: 'c8d761c11162e733', is_premium: true},
-            {id: 12, name: '🇫🇮 Финляндия #2', flag: '🇫🇮', host: 'fin-a7.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-a7.plugvpn.ru', fingerprint: 'chrome', public_key: '0TZaSq_Gz1-D25c6HeJD8qAgSkeoR7pRIbvI57QJ1XY', short_id: '985dfc082ead551b', is_premium: true},
-            {id: 13, name: '🇩🇪 Германия #1', flag: '🇩🇪', host: 'deu-h9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'deu-h9.plugvpn.ru', fingerprint: 'chrome', public_key: 'H80wZ3PsnPMixNbjeVq8p_g6UJaLCasHCtTaUlzWOGk', short_id: 'c32214ffa4d6ced6', is_premium: true},
-            {id: 14, name: '⬇️⬇️ ОБХОД БЕЛЫХ СПИСКОВ ⬇️⬇️', flag: '⬇️', host: '', port: 0, protocol: 'separator', is_premium: true},
-            {id: 15, name: '🇷🇺 Россия #1', flag: '🇷🇺', host: '158.160.171.167', port: 443, protocol: 'vless', uuid: '53fa2131-611e-413f-8b1a-3aed45529a52', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: '84.img.avito.st', fingerprint: 'chrome', public_key: 'w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F', short_id: '331a54c7ab4b', is_premium: true},
-            {id: 16, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true}
+            {id: 1, name: '🇷🇺 Россия LTE', flag: '🇷🇺', host: '151.236.114.162', port: 6443, protocol: 'vless', uuid: '95796d3c-955c-435f-8222-481862515', flow: '', security: 'reality', network: 'tcp', tls: 'reality', sni: 'max.ru', fingerprint: 'chrome', public_key: 'pGFgy_rrpU51v3IFm-dYHOJskMD', short_id: 'f3e8b2b1', is_free: true},
+            {id: 2, name: '🇩🇪 Германия', flag: '🇩🇪', host: '185.254.98.164', port: 443, protocol: 'vless', uuid: 'eb071647-72a6-46be-8e89-ff3d228d5', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'de.cdn.stun.su', fingerprint: 'chrome', public_key: 'ca5sfJNcjkh3oNt51hRexXbGWgIT', short_id: '4daa022e84f8edf2', is_free: true},
+            {id: 3, name: '🇩🇪 Германия #2', flag: '🇩🇪', host: '193.46.81.207', port: 443, protocol: 'vless', uuid: 'eb071647-72a6-46be-8e89-ff3d228d5', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'de.cdn.stun.su', fingerprint: 'chrome', public_key: 'hRexXbGWglTAqCprGSU-YKCJBA', short_id: '4daa022e84f8edf2', is_free: true},
+            {id: 4, name: '🇳🇱 Нидерланды', flag: '🇳🇱', host: '194.85.249.173', port: 433, protocol: 'vless', uuid: 'e81a36d5-b3c3-48e0-bf08-d8938a247', flow: '', security: 'reality', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'path', tls: 'reality', sni: 'www.google.com', fingerprint: 'chrome', public_key: 'LSqEbA7EfGiohFgxMYtFJq61jSd9', short_id: 'd239de8e', is_free: true},
+            {id: 5, name: '🇺🇸 USA', flag: '🇺🇸', host: '45.145.40.26', port: 443, protocol: 'vless', uuid: 'eb071647-72a6-46be-8e89-ff3d228d5', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'de.cdn.stun.su', fingerprint: 'chrome', public_key: 'ca5sfJNcjkh3oNt51hRexXbGWgIT', short_id: '4daa022e84f8edf2', is_free: true},
+            {id: 6, name: '🇳🇱 Нидерланды #1', flag: '🇳🇱', host: 'nld-b3.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-b3.plugvpn.ru', fingerprint: 'chrome', public_key: 'fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU', short_id: '6117f326d85222ea', is_premium: true},
+            {id: 7, name: '🇳🇱 Нидерланды #2', flag: '🇳🇱', host: 'nld-x8.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'nld-x8.plugvpn.ru', fingerprint: 'chrome', public_key: '5H0Z3DWs6UEdCx-uw3Jvv3dyFCsgoFjMNdlapdbwQXk', short_id: '7c050e5f16cb21de', is_premium: true},
+            {id: 8, name: '🇵🇱 Польша #1', flag: '🇵🇱', host: 'pol-m6.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'pol-m6.plugvpn.ru', fingerprint: 'chrome', public_key: '7zfV0yJHG46hnUm-89N5D8t4ZCN2_9yD8rs8uCCPgk0', short_id: 'c2c516d6fcfec79b', is_premium: true},
+            {id: 9, name: '🇵🇱 Польша #2', flag: '🇵🇱', host: 'pol-x1.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'pol-x1.plugvpn.ru', is_premium: true},
+            {id: 10, name: '🇺🇸 США #1', flag: '🇺🇸', host: 'usa-n5.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'usa-n5.plugvpn.ru', fingerprint: 'chrome', public_key: 'vTaqMH16V9S6jiOE74vCBXxplfbCrKByasYloyeeE0k', short_id: '61522fca4fc18140', is_premium: true},
+            {id: 11, name: '🇺🇸 США #2', flag: '🇺🇸', host: 'usa-f2.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', security: 'none', network: 'grpc', grpc_mode: 'gun', grpc_service_name: 'usa-f2.plugvpn.ru', is_premium: true},
+            {id: 12, name: '🇫🇮 Финляндия #1', flag: '🇫🇮', host: 'fin-q9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-q9.plugvpn.ru', fingerprint: 'chrome', public_key: 'qbnV1snO8ix66vt0VfKbyKloBnfZXUMCdZtA8-SwdBc', short_id: 'c8d761c11162e733', is_premium: true},
+            {id: 13, name: '🇫🇮 Финляндия #2', flag: '🇫🇮', host: 'fin-a7.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'fin-a7.plugvpn.ru', fingerprint: 'chrome', public_key: '0TZaSq_Gz1-D25c6HeJD8qAgSkeoR7pRIbvI57QJ1XY', short_id: '985dfc082ead551b', is_premium: true},
+            {id: 14, name: '🇩🇪 Германия', flag: '🇩🇪', host: 'deu-h9.plugvpn.ru', port: 443, protocol: 'vless', uuid: 'a509e469-a55f-4dcc-86f4-8098ea07369a', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'deu-h9.plugvpn.ru', fingerprint: 'chrome', public_key: 'H80wZ3PsnPMixNbjeVq8p_g6UJaLCasHCtTaUlzWOGk', short_id: 'c32214ffa4d6ced6', is_premium: true},
+            {id: 15, name: '🇭🇺 Венгрия', flag: '🇭🇺', host: '87.229.97.154', port: 443, protocol: 'vless', uuid: 'd65cc14c-f53f-4fe2-b262-9785660131', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yahoo.com', fingerprint: 'ios', public_key: 'e2RLf57Li_-MDZGE9ss1BWPgP54', short_id: 'c39cc7310a', is_premium: true},
+            {id: 16, name: '🇭🇺 Венгрия #2', flag: '🇭🇺', host: '87.229.97.154', port: 443, protocol: 'vless', uuid: 'd65cc14c-f53f-4fe2-b262-9785660131', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yahoo.com', fingerprint: 'ios', public_key: 's1BWPgP54mqRb5PfXhW2jcVVg', short_id: 'c39cc7310a', is_premium: true},
+            {id: 17, name: '🇷🇴 Румыния', flag: '🇷🇴', host: '93.114.98.171', port: 443, protocol: 'vless', uuid: '990e5a63-71e4-4dca-b110-ea8f9bf9f5', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'www.amd.com', fingerprint: 'chrome', public_key: '9hLM71IkMgoCAzQJ2WBv5TXl_4', short_id: '1c', is_premium: true},
+            {id: 18, name: '🇷🇴 Румыния #2', flag: '🇷🇴', host: '93.114.98.171', port: 443, protocol: 'vless', uuid: '990e5a63-71e4-4dca-b110-ea8f9bf9f5', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'www.amd.com', fingerprint: 'chrome', public_key: '9hLM711kMgoCAzQJ2WBv5TX1_4', short_id: '1c', is_premium: true},
+            {id: 19, name: '⬇️⬇️ ОБХОД БЕЛЫХ СПИСКОВ ⬇️⬇️', flag: '⬇️', host: '', port: 0, protocol: 'separator', is_premium: true},
+            {id: 20, name: '🇷🇺 Россия #1', flag: '🇷🇺', host: '158.160.171.167', port: 443, protocol: 'vless', uuid: '53fa2131-611e-413f-8b1a-3aed45529a52', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: '84.img.avito.st', fingerprint: 'chrome', public_key: 'w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F', short_id: '331a54c7ab4b', is_premium: true},
+            {id: 21, name: '🇷🇺 Россия #2', flag: '🇷🇺', host: '130.193.59.133', port: 443, protocol: 'vless', uuid: 'c915a857-a088-4292-b182-25cb30507275', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'random', public_key: 'CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM', short_id: 'f32140952ba18e18', is_premium: true},
+            {id: 22, name: '🇷🇺 Россия LTE #1', flag: '🇷🇺', host: '89.208.222.100', port: 443, protocol: 'vless', uuid: '08b12515-81f2-4bf9-9584-1f78102db0c', flow: '', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'chrome', public_key: 'MUI-gtWSuT2CmCJcVod647eMHl', short_id: 'eb', is_premium: true},
+            {id: 23, name: '🇷🇺 Россия LTE #2', flag: '🇷🇺', host: '89.208.222.100', port: 443, protocol: 'vless', uuid: '12515-81f2-4bf9-9584-1f78102db072', flow: '', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'chrome', public_key: '/od647eMHq4l_Q-Q13IZT5hUpRM', short_id: 'eb', is_premium: true}
         ];
 
         function showNotification(text, type = 'success') {
@@ -778,7 +785,7 @@
 
         function getAvailableServers() {
             if (isAdmin || isPremium) {
-                return servers;
+                return servers.filter(s => s.is_premium === true);
             } else {
                 return servers.filter(s => s.is_free === true);
             }
@@ -847,8 +854,28 @@
 
         function generateSubscriptionText() {
             const availableServers = getAvailableServers();
+            
+            let result = '';
+            result += 'profile-title: DocsteryVPN\n';
+            result += 'profile-update-interval: 3\n';
+            
+            const now = Math.floor(Date.now() / 1000);
+            if (isAdmin || isPremium) {
+                result += `subscription-userinfo: upload=0; download=0; total=107374182400; expire=${now + 31536000}\n`;
+                result += 'sub-info-text: Premium VPN без ограничений! ТГК: @Dicstery_channel\n';
+                result += 'sub-info-color: gold\n';
+            } else {
+                result += `subscription-userinfo: upload=0; download=0; total=1073741824; expire=${now + 604800}\n`;
+                result += 'sub-info-text: Лучший бесплатный VPN! ТГК: @Dicstery_channel\n';
+                result += 'sub-info-color: green\n';
+            }
+            result += 'support-url: https://t.me/Dicstery\n';
+            result += 'profile-web-page-url: https://dicstery.github.io/DicsteryVPN/\n\n';
+            
             const configs = availableServers.map(s => generateConfig(s)).join('\n');
-            return configs;
+            result += configs;
+            
+            return result;
         }
 
         function copySubscription() {
@@ -859,7 +886,7 @@
             }
             
             navigator.clipboard.writeText(fullText).then(() => {
-                showNotification('✅ Ссылки скопированы!');
+                showNotification('✅ Подписка скопирована!');
             });
         }
 
