@@ -852,41 +852,41 @@
             return '';
         }
 
-        function generateSubscriptionText() {
+        function generateHappSubscription() {
             const availableServers = getAvailableServers();
+            const serverLinks = availableServers.map(s => generateConfig(s)).join('\n');
             
-            let result = '';
-            result += 'profile-title: DocsteryVPN\n';
-            result += 'profile-update-interval: 3\n';
-            
+            const userStatus = isAdmin ? 'ADMIN' : (isPremium ? 'PREMIUM' : 'FREE');
             const now = Math.floor(Date.now() / 1000);
-            if (isAdmin || isPremium) {
-                result += `subscription-userinfo: upload=0; download=0; total=107374182400; expire=${now + 31536000}\n`;
-                result += 'sub-info-text: Premium VPN без ограничений! ТГК: @Dicstery_channel\n';
-                result += 'sub-info-color: gold\n';
-            } else {
-                result += `subscription-userinfo: upload=0; download=0; total=1073741824; expire=${now + 604800}\n`;
-                result += 'sub-info-text: Лучший бесплатный VPN! ТГК: @Dicstery_channel\n';
-                result += 'sub-info-color: green\n';
-            }
-            result += 'support-url: https://t.me/Dicstery\n';
-            result += 'profile-web-page-url: https://dicstery.github.io/DicsteryVPN/\n\n';
+            const expireTime = (isAdmin || isPremium) ? now + 31536000 : now + 2592000;
+            const trafficLimit = (isAdmin || isPremium) ? 107374182400 : 1073741824;
             
-            const configs = availableServers.map(s => generateConfig(s)).join('\n');
-            result += configs;
+            const displayName = firstName || 'User';
             
-            return result;
+            const subscription = `profile-title: DocsteryVPN • ${displayName} • ID: ${telegramId}
+profile-update-interval: 3
+subscription-userinfo: upload=0; download=0; total=${trafficLimit}; expire=${expireTime}
+support-url: https://t.me/Dicstery
+profile-web-page-url: https://dicstery.github.io/DicsteryVPN/
+sub-info-text: ${userStatus} подписка • ТГК: @Dicstery_channel
+sub-info-color: ${isAdmin ? 'purple' : (isPremium ? 'gold' : 'green')}
+
+${serverLinks}`;
+            
+            return subscription;
         }
 
         function copySubscription() {
-            const fullText = generateSubscriptionText();
+            const subscriptionText = generateHappSubscription();
             
             if (tg) {
                 tg.HapticFeedback.impactOccurred('medium');
             }
             
-            navigator.clipboard.writeText(fullText).then(() => {
-                showNotification('✅ Подписка скопирована!');
+            navigator.clipboard.writeText(subscriptionText).then(() => {
+                showNotification('✅ Уникальная подписка скопирована!');
+            }).catch(() => {
+                showNotification('❌ Ошибка копирования', 'error');
             });
         }
 
