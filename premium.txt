@@ -3,7 +3,25 @@ profile-update-interval: 3
 support-url: https://t.me/Dicstery
 profile-web-page-url: https://dicstery.github.io/DicsteryVPN/
 subscription-userinfo: upload=0; download=0; total=107374182400; expire=1893456000
-sub-info-text: PREMIUM навсегда! 100GB
+announce: 0J/RgNC10LzQuNGD0Lwg0L/QvtC00L/QuNGB0LrQsCDRgdC+INCy0YHQtdC80Lgg0YHQtdGA0LLQtdGA0LDQvNC4ISDQkdC10LfQu9C40LzQuNGC0L3Ri9C5INGC0YDQsNGE0LjQuiwg0LzQsNC60YHQuNC80LDQu9GM0L3QsNGPINGB0LrQvtGA0L7RgdGC0YwuINCf0L7QtNC70Y7Rh9C40YHRjyDRh9C10YDQtdC3INCx0L7RgtCwIEBEaWNzdGVyeS5jaGFubmVs
+sub-info-text: PREMIUM навсегда! 100GB, все серверы
 sub-info-color: gold
 
 vless://a509e469-a55f-4dcc-86f4-8098ea07369a@nld-b3.plugvpn.ru:443?type=tcp&security=reality&pbk=fM4982W7kcxIJoCQ_P5z6Q_xiFujj7aqOLy-L2qXtkU&sni=nld-b3.plugvpn.ru&fp=chrome&sid=6117f326d85222ea&flow=xtls-rprx-vision#🇳🇱 Нидерланды #1
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@nld-x8.plugvpn.ru:443?type=tcp&security=reality&pbk=5H0Z3DWs6UEdCx-uw3Jvv3dyFCsgoFjMNdlapdbwQXk&sni=nld-x8.plugvpn.ru&fp=chrome&sid=7c050e5f16cb21de&flow=xtls-rprx-vision#🇳🇱 Нидерланды #2
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@pol-m6.plugvpn.ru:443?type=tcp&security=reality&pbk=7zfV0yJHG46hnUm-89N5D8t4ZCN2_9yD8rs8uCCPgk0&sni=pol-m6.plugvpn.ru&fp=chrome&sid=c2c516d6fcfec79b&flow=xtls-rprx-vision#🇵🇱 Польша #1
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@pol-x1.plugvpn.ru:443?type=grpc&security=none&serviceName=pol-x1.plugvpn.ru&mode=gun#🇵🇱 Польша #2
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@usa-n5.plugvpn.ru:443?type=tcp&security=reality&pbk=vTaqMH16V9S6jiOE74vCBXxplfbCrKByasYloyeeE0k&sni=usa-n5.plugvpn.ru&fp=chrome&sid=61522fca4fc18140&flow=xtls-rprx-vision#🇺🇸 США #1
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@usa-f2.plugvpn.ru:443?type=grpc&security=none&serviceName=usa-f2.plugvpn.ru&mode=gun#🇺🇸 США #2
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@fin-q9.plugvpn.ru:443?type=tcp&security=reality&pbk=qbnV1snO8ix66vt0VfKbyKloBnfZXUMCdZtA8-SwdBc&sni=fin-q9.plugvpn.ru&fp=chrome&sid=c8d761c11162e733&flow=xtls-rprx-vision#🇫🇮 Финляндия #1
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@fin-a7.plugvpn.ru:443?type=tcp&security=reality&pbk=0TZaSq_Gz1-D25c6HeJD8qAgSkeoR7pRIbvI57QJ1XY&sni=fin-a7.plugvpn.ru&fp=chrome&sid=985dfc082ead551b&flow=xtls-rprx-vision#🇫🇮 Финляндия #2
+vless://a509e469-a55f-4dcc-86f4-8098ea07369a@deu-h9.plugvpn.ru:443?type=tcp&security=reality&pbk=H80wZ3PsnPMixNbjeVq8p_g6UJaLCasHCtTaUlzWOGk&sni=deu-h9.plugvpn.ru&fp=chrome&sid=c32214ffa4d6ced6&flow=xtls-rprx-vision#🇩🇪 Германия
+vless://d65cc14c-f53f-4fe2-b262-9785660131@87.229.97.154:443?type=tcp&security=reality&pbk=e2RLf57Li_-MDZGE9ss1BWPgP54&sni=yahoo.com&fp=ios&sid=c39cc7310a&flow=xtls-rprx-vision#🇭🇺 Венгрия
+vless://d65cc14c-f53f-4fe2-b262-9785660131@87.229.97.154:443?type=tcp&security=reality&pbk=s1BWPgP54mqRb5PfXhW2jcVVg&sni=yahoo.com&fp=ios&sid=c39cc7310a&flow=xtls-rprx-vision#🇭🇺 Венгрия #2
+vless://990e5a63-71e4-4dca-b110-ea8f9bf9f5@93.114.98.171:443?type=tcp&security=reality&pbk=9hLM71IkMgoCAzQJ2WBv5TXl_4&sni=www.amd.com&fp=chrome&sid=1c&flow=xtls-rprx-vision#🇷🇴 Румыния
+vless://990e5a63-71e4-4dca-b110-ea8f9bf9f5@93.114.98.171:443?type=tcp&security=reality&pbk=9hLM711kMgoCAzQJ2WBv5TX1_4&sni=www.amd.com&fp=chrome&sid=1c&flow=xtls-rprx-vision#🇷🇴 Румыния #2
+⬇️⬇️ ОБХОД БЕЛЫХ СПИСКОВ ⬇️⬇️
+vless://53fa2131-611e-413f-8b1a-3aed45529a52@158.160.171.167:443?type=tcp&security=reality&pbk=w8WItGLAGvOi6tsvnTQ80309byZo0Wo_Gs3fr8F&sni=84.img.avito.st&fp=chrome&sid=331a54c7ab4b&flow=xtls-rprx-vision#🇷🇺 Россия #1
+vless://c915a857-a088-4292-b182-25cb30507275@130.193.59.133:443?type=tcp&security=reality&pbk=CjW0KhIrr5z5oc9Oy6-w2ZEanz-zMBktVn5EOX9oTM&sni=yandex.ru&fp=random&sid=f32140952ba18e18&flow=xtls-rprx-vision#🇷🇺 Россия #2
+vless://08b12515-81f2-4bf9-9584-1f78102db0c@89.208.222.100:443?type=tcp&security=reality&pbk=MUI-gtWSuT2CmCJcVod647eMHl&sni=yandex.ru&fp=chrome&sid=eb&flow=#🇷🇺 Россия LTE #1
+vless://12515-81f2-4bf9-9584-1f78102db072@89.208.222.100:443?type=tcp&security=reality&pbk=/od647eMHq4l_Q-Q13IZT5hUpRM&sni=yandex.ru&fp=chrome&sid=eb&flow=#🇷🇺 Россия LTE #2
