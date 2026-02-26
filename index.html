@@ -384,10 +384,6 @@
             background: linear-gradient(135deg, #3498db, #2980b9);
         }
 
-        .notification.error {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-
         @keyframes slideDown {
             from {
                 transform: translate(-50%, -100%);
@@ -592,6 +588,36 @@
     </div>
 
     <script>
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                star.style.animationDuration = Math.random() * 3 + 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        createStars();
+
+        const tg = window.Telegram?.WebApp;
+        const BOT_USERNAME = 'DicsteryVPN_bot';
+        const ADMIN_ID = 7383521067;
+        
+        let telegramId = null;
+        let username = '';
+        let firstName = '';
+        let lastName = '';
+        let photoUrl = '';
+        let isAdmin = false;
+        let isPremium = false;
+
         const servers = [
             {id: 1, name: '🇷🇺 Россия LTE', flag: '🇷🇺', host: '151.236.114.162', port: 6443, protocol: 'vless', uuid: '95796d3c-955c-435f-8222-481862515', flow: '', security: 'reality', network: 'tcp', tls: 'reality', sni: 'max.ru', fingerprint: 'chrome', public_key: 'pGFgy_rrpU51v3IFm-dYHOJskMD', short_id: 'f3e8b2b1', is_free: true},
             {id: 2, name: '🇩🇪 Германия', flag: '🇩🇪', host: '185.254.98.164', port: 443, protocol: 'vless', uuid: 'eb071647-72a6-46be-8e89-ff3d228d5', flow: 'xtls-rprx-vision', security: 'reality', network: 'tcp', tls: 'reality', sni: 'de.cdn.stun.su', fingerprint: 'chrome', public_key: 'ca5sfJNcjkh3oNt51hRexXbGWgIT', short_id: '4daa022e84f8edf2', is_free: true},
@@ -617,33 +643,6 @@
             {id: 22, name: '🇷🇺 Россия LTE #1', flag: '🇷🇺', host: '89.208.222.100', port: 443, protocol: 'vless', uuid: '08b12515-81f2-4bf9-9584-1f78102db0c', flow: '', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'chrome', public_key: 'MUI-gtWSuT2CmCJcVod647eMHl', short_id: 'eb', is_premium: true},
             {id: 23, name: '🇷🇺 Россия LTE #2', flag: '🇷🇺', host: '89.208.222.100', port: 443, protocol: 'vless', uuid: '12515-81f2-4bf9-9584-1f78102db072', flow: '', security: 'reality', network: 'tcp', tls: 'reality', sni: 'yandex.ru', fingerprint: 'chrome', public_key: '/od647eMHq4l_Q-Q13IZT5hUpRM', short_id: 'eb', is_premium: true}
         ];
-
-        const tg = window.Telegram?.WebApp;
-        let telegramId = null;
-        let username = '';
-        let firstName = '';
-        let lastName = '';
-        let photoUrl = '';
-        let isAdmin = false;
-        let isPremium = false;
-
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 3 + 1;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 5 + 's';
-                star.style.animationDuration = Math.random() * 3 + 2 + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-
-        createStars();
 
         function showNotification(text, type = 'success') {
             const notification = document.createElement('div');
@@ -677,6 +676,7 @@
                 }
                 
                 localStorage.setItem(`status_${telegramId}`, realStatus);
+                showNotification(`Статус: ${realStatus.toUpperCase()}`);
                 
                 const cleanUrl = window.location.pathname + window.location.hash;
                 window.history.replaceState({}, document.title, cleanUrl);
@@ -692,6 +692,11 @@
             
             isPremium = (currentStatus === 'premium' || currentStatus === 'admin');
             isAdmin = (currentStatus === 'admin');
+            
+            if (telegramId === ADMIN_ID) {
+                isAdmin = true;
+                isPremium = true;
+            }
             
             const badge = document.getElementById('statusBadge');
             if (isAdmin) {
@@ -822,23 +827,17 @@
                 return;
             }
             
-            const currentStatus = getStatusFromUrl();
+            const FREE_LINK = "https://dicstery.github.io/DicsteryVPN/free.txt";
+            const PREMIUM_LINK = "https://dicstery.github.io/DicsteryVPN/premium.txt";
             
-            let apiUrl;
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                apiUrl = `http://localhost:25775/api/subscription/${telegramId}`;
-            } else {
-                apiUrl = `https://ваш-сервер.com/api/subscription/${telegramId}`;
-            }
-            
-            const happLink = `happ://add/${encodeURIComponent(apiUrl)}`;
+            const linkToCopy = (isAdmin || isPremium) ? PREMIUM_LINK : FREE_LINK;
             
             if (tg) {
                 tg.HapticFeedback.impactOccurred('medium');
             }
             
-            navigator.clipboard.writeText(happLink).then(() => {
-                showNotification('✅ Ссылка для Happ скопирована!');
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                showNotification('✅ Ссылка на подписку скопирована!');
             }).catch(() => {
                 showNotification('❌ Ошибка копирования', 'error');
             });
