@@ -412,6 +412,18 @@
     </style>
 </head>
 <body>
+    <script>
+        (function() {
+            const currentUrl = new URL(window.location.href);
+            const forcedVersion = '20250227';
+            
+            if (!currentUrl.searchParams.has('v') || currentUrl.searchParams.get('v') !== forcedVersion) {
+                currentUrl.searchParams.set('v', forcedVersion);
+                window.location.replace(currentUrl.toString());
+            }
+        })();
+    </script>
+    
     <div class="stars" id="stars"></div>
     <div class="watermark">@Dicstery</div>
 
@@ -841,7 +853,7 @@
             }
             
             navigator.clipboard.writeText(linkToCopy).then(() => {
-                showNotification('✅ Ссылка скопирована!');
+                showNotification('✅ Ссылка скопирована');
             }).catch(() => {
                 showNotification('❌ Ошибка копирования', 'error');
             });
