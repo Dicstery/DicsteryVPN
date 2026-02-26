@@ -831,14 +831,14 @@
     const PREMIUM_LINK = "https://dicstery.github.io/DicsteryVPN/premium.txt";
     
     const linkToCopy = (isAdmin || isPremium) ? PREMIUM_LINK : FREE_LINK;
-    const happLink = `happ://add/${encodeURIComponent(linkToCopy)}`;
+    const happLink = `happ://add/${linkToCopy}`;
     
     if (tg) {
         tg.HapticFeedback.impactOccurred('medium');
     }
     
     navigator.clipboard.writeText(happLink).then(() => {
-        showNotification('✅ Ссылка для Happ скопирована успешно!');
+        showNotification('✅ Ссылка для Happ скопирована!');
     }).catch(() => {
         showNotification('❌ Ошибка копирования', 'error');
     });
