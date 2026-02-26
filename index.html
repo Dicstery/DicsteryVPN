@@ -838,26 +838,26 @@
         }
 
         function copySubscription() {
-            if (!telegramId) {
-                showNotification('❌ Ошибка: пользователь не найден', 'error');
-                return;
-            }
-            
-            const FREE_LINK = "https://dicstery.github.io/DicsteryVPN/free.txt";
-            const PREMIUM_LINK = "https://dicstery.github.io/DicsteryVPN/premium.txt";
-            
-            const linkToCopy = (isAdmin || isPremium) ? PREMIUM_LINK : FREE_LINK;
-            
-            if (tg) {
-                tg.HapticFeedback.impactOccurred('medium');
-            }
-            
-            navigator.clipboard.writeText(linkToCopy).then(() => {
-                showNotification('✅ Ссылка скопирована');
-            }).catch(() => {
-                showNotification('❌ Ошибка копирования', 'error');
-            });
-        }
+    if (!telegramId) {
+        showNotification('❌ Ошибка: пользователь не найден', 'error');
+        return;
+    }
+    
+    const FREE_LINK = "https://dicstery.github.io/DicsteryVPN/free.txt";
+    const PREMIUM_LINK = "https://dicstery.github.io/DicsteryVPN/premium.txt";
+    
+    const linkToCopy = (isAdmin || isPremium) ? PREMIUM_LINK : FREE_LINK;
+    
+    if (tg) {
+        tg.HapticFeedback.impactOccurred('medium');
+    }
+    
+    navigator.clipboard.writeText(linkToCopy).then(() => {
+        showNotification('✅ Ссылка скопирована!');
+    }).catch(() => {
+        showNotification('❌ Ошибка копирования', 'error');
+    });
+}
 
         document.querySelectorAll('.platform-btn').forEach(btn => {
             btn.addEventListener('click', function() {
