@@ -827,16 +827,18 @@
         return;
     }
     
-    const apiUrl = `/api/subscription/${telegramId}`;
-    const fullUrl = window.location.origin + apiUrl;
-    const happLink = `happ://add/${encodeURIComponent(fullUrl)}`;
+    const FREE_LINK = "https://dicstery.github.io/DicsteryVPN/free.txt";
+    const PREMIUM_LINK = "https://dicstery.github.io/DicsteryVPN/premium.txt";
+    
+    const linkToCopy = (isAdmin || isPremium) ? PREMIUM_LINK : FREE_LINK;
+    const happLink = `happ://add/${encodeURIComponent(linkToCopy)}`;
     
     if (tg) {
         tg.HapticFeedback.impactOccurred('medium');
     }
     
     navigator.clipboard.writeText(happLink).then(() => {
-        showNotification('✅ Ссылка для Happ скопирована!');
+        showNotification('✅ Ссылка для Happ скопирована успешно!');
     }).catch(() => {
         showNotification('❌ Ошибка копирования', 'error');
     });
