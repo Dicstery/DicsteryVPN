@@ -832,44 +832,48 @@
         }
 
         function copySubscription() {
-            if (!telegramId) {
-                showNotification('❌ Ошибка: пользователь не найден', 'error');
-                return;
-            }
+    if (!telegramId) {
+        showNotification('❌ Ошибка: пользователь не найден', 'error');
+        return;
+    }
+    
+    const availableServers = getAvailableServers();
+    const status = isPremium ? 'PREMIUM' : 'FREE';
+    
+    let subscriptionText = `profile-title: DicsteryVPN ${status}\n`;
+    subscriptionText += `profile-update-interval: 3\n`;
+    subscriptionText += `announce: ТГ: @DicsteryVPN\n\n`;
+    
+    availableServers.forEach(server => {
+        if (server.protocol === 'vless') {
+            let params = `type=${server.network}`;
             
-            const availableServers = getAvailableServers();
-            
-            let vlessLinks = '';
-            availableServers.forEach(server => {
-                if (server.protocol === 'vless') {
-                    let params = `type=${server.network}`;
-                    
-                    if (server.security === 'reality') {
-                        params += `&security=reality&pbk=${server.public_key}&sni=${server.sni}&fp=${server.fingerprint}&sid=${server.short_id}`;
-                        if (server.flow) {
-                            params += `&flow=${server.flow}`;
-                        }
-                    }
-                    
-                    if (server.network === 'grpc') {
-                        params += `&serviceName=${server.grpc_service_name}&mode=gun`;
-                    }
-                    
-                    const link = `vless://${server.uuid}@${server.host}:${server.port}?${params}#${server.name}\n`;
-                    vlessLinks += link;
+            if (server.security === 'reality') {
+                params += `&security=reality&pbk=${server.public_key}&sni=${server.sni}&fp=${server.fingerprint}&sid=${server.short_id}`;
+                if (server.flow) {
+                    params += `&flow=${server.flow}`;
                 }
-            });
-            
-            if (tg) {
-                tg.HapticFeedback.impactOccurred('medium');
             }
             
-            navigator.clipboard.writeText(vlessLinks).then(() => {
-                showNotification(`✅ Скопировано ${availableServers.length} серверов!`);
-            }).catch(() => {
-                showNotification('❌ Ошибка копирования', 'error');
-            });
+            if (server.network === 'grpc') {
+                params += `&serviceName=${server.grpc_service_name}&mode=gun`;
+            }
+            
+            const link = `vless://${server.uuid}@${server.host}:${server.port}?${params}#${server.name}\n`;
+            subscriptionText += link;
         }
+    });
+    
+    if (tg) {
+        tg.HapticFeedback.impactOccurred('medium');
+    }
+    
+    navigator.clipboard.writeText(subscriptionText).then(() => {
+        showNotification(`✅ Скопировано ${availableServers.length} серверов!`);
+    }).catch(() => {
+        showNotification('❌ Ошибка копирования', 'error');
+    });
+}
 
         document.querySelectorAll('.platform-btn').forEach(btn => {
             btn.addEventListener('click', function() {
