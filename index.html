@@ -839,7 +839,7 @@
             
             const availableServers = getAvailableServers();
             
-            let vlessLinks = 'profile-title: DicsteryVPN\nprofile-update-interval: 3\nannounce: ТГ: @DicsteryVPN\n\n';
+            let vlessLinks = '';
             availableServers.forEach(server => {
                 if (server.protocol === 'vless') {
                     let params = `type=${server.network}`;
